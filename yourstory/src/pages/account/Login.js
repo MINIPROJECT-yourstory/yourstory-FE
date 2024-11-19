@@ -93,6 +93,7 @@ const Title = styled.div`
   font-weight: 700;
   margin-bottom: 8.125rem;
 `;
+
 const Right = styled.div`
   width: 100%;
   display: flex;
@@ -101,6 +102,7 @@ const Right = styled.div`
   align-items: center;
   background-color: #bcbf1f;
 `;
+
 const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -108,11 +110,11 @@ const FormContainer = styled.div`
 `;
 
 const StyledLink = styled(Link)`
-  justify-content: flex-end;
+  width: 320px;
+  text-align: right;
   color: #fafc97;
   text-decoration: none;
   margin-top: 1rem;
-  text-align: right;
   &:hover {
     text-decoration: underline;
   }
