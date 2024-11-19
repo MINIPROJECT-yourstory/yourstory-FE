@@ -6,6 +6,7 @@ import LogoIcon from "../../assets/images/icon-logo.svg";
 const NavBar = () => {
   const navigate = useNavigate();
   localStorage.clear();
+  //   연동 시 여기에서 회원 이름 조회
   //   localStorage.setItem("username", "숙멋사");
   const username = localStorage.getItem("username");
   return (

@@ -29,4 +29,5 @@ const ButtonBox = styled.button`
   font-weight: 700;
   cursor: pointer;
   font-size: 20px;
+  box-shadow: 0px 0px 12px 2px #0000001f;
 `;
