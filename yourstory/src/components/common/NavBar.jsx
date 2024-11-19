@@ -1,15 +1,21 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import styled from "styled-components";
 import LogoIcon from "../../assets/images/icon-logo.svg";
 import AlertModal from "./AlertModal";
+import SideMenu from "./SideMenu";
 
 const NavBar = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const [activeMenu, setActiveMenu] = useState(null);
+
+  const toggleMenu = (menu) => {
+    setActiveMenu((prevMenu) => (prevMenu === menu ? null : menu));
+  };
   localStorage.clear();
   //   연동 시 여기에서 회원 이름 조회
-  //   localStorage.setItem("username", "숙멋사");
+  localStorage.setItem("username", "숙멋사");
   const username = localStorage.getItem("username");
 
   return (
@@ -23,16 +29,28 @@ const NavBar = () => {
               <Welcome>환영합니다</Welcome>
             </SubText>
             <NavList>
-              <NavItem>
-                <StyledLink to="/volunteer">봉사활동</StyledLink>
+              <NavItem
+                $isActive={activeMenu === "volunteer"}
+                onClick={() => toggleMenu("volunteer")}
+              >
+                <Menu>봉사활동</Menu>
               </NavItem>
-              <NavItem>
-                <StyledLink to="/library">이타적 도서관</StyledLink>
+              <NavItem
+                $isActive={activeMenu === "library"}
+                onClick={() => toggleMenu("library")}
+              >
+                <Menu>이타적 도서관</Menu>
               </NavItem>
-              <NavItem>
-                <StyledLink to="/story">우리의 이야기</StyledLink>
+              <NavItem
+                $isActive={activeMenu === "story"}
+                onClick={() => toggleMenu("story")}
+              >
+                <Menu>우리의 이야기</Menu>
               </NavItem>
             </NavList>
+            {activeMenu && (
+              <SideMenu isVisible={!!activeMenu} menu={activeMenu} />
+            )}
           </>
         ) : (
           <>
@@ -97,6 +115,8 @@ const NavList = styled.ul`
 
 const NavItem = styled.li`
   text-align: center;
+  font-weight: ${(props) => (props.$isActive ? "700" : "400")};
+  color: ${(props) => (props.$isActive ? "white" : "#fafc97")};
 `;
 
 const Logo = styled.img`
@@ -131,21 +151,14 @@ const PointerText = styled.div`
   cursor: pointer;
 `;
 
-const StyledLink = styled(Link)`
-  cursor: pointer;
-  font-family: Inter;
-  line-height: 21.78px;
-  letter-spacing: -0.06em;
-  color: #fafc97;
-  text-decoration: none;
-  font-size: 18px;
-`;
 const Menu = styled.div`
   cursor: pointer;
   font-family: Inter;
   line-height: 21.78px;
   letter-spacing: -0.06em;
-  color: #fafc97;
   text-decoration: none;
   font-size: 18px;
+  &:hover {
+    font-weight: 700;
+  }
 `;
