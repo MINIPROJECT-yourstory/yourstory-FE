@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Layout from "./components/common/Layout";
 
 // 메인 페이지들
 import Home from "./pages/Home";
@@ -30,7 +29,7 @@ function App() {
         <Route path="/register" element={<Register />} />
 
         {/* 메인 레이아웃 */}
-        <Route element={<Layout />}>
+        <Route>
           <Route path="/" element={<Home />} />
 
           {/* 봉사활동 */}

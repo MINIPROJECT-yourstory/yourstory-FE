@@ -21,7 +21,7 @@ export default AccountButton;
 const ButtonBox = styled.button`
   font-family: "Intel";
   background-color: ${(props) => props.backgroundColor || "#363721"};
-  width: ${(props) => props.width || "151px"};
+  width: 151px;
   height: 49px;
   border-radius: 60px;
   border: none;
