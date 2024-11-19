@@ -152,7 +152,7 @@ const Right = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #bcbf1f;
+  background-color: var(--green);
 `;
 
 const FormContainer = styled.div`

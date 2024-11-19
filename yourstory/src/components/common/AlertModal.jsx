@@ -54,7 +54,7 @@ const ModalWrapper = styled.div`
 const ModalHeader = styled.div`
   padding: 16px 0px;
   text-align: center;
-  background-color: #bcbf1f;
+  background-color: var(--green);
   color: white;
   width: 482px;
   border-radius: 20px 20px 0px 0px;

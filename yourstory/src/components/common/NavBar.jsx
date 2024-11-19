@@ -76,7 +76,7 @@ export default NavBar;
 const Wrapper = styled.div`
   position: fixed;
   left: 0;
-  background-color: #bcbf1f;
+  background-color: var(--green);
   color: white;
   width: 145px;
   height: 100vh;
