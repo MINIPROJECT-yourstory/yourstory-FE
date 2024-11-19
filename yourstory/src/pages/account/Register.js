@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import Line from "../../assets/images/dashed-line.svg";
+import Line from "../../assets/images/line-register.svg";
 import AccountInput from "../../components/account/AccountInput";
 import LogoZone from "../../components/account/LogoZone";
 import AccountButton from "../../components/account/AccountButton";
