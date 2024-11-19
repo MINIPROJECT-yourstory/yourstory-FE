@@ -1,12 +1,8 @@
 import { Link } from "react-router-dom";
-import AlertModal from "../components/common/AlertModal";
 
 function Home() {
   return (
     <div>
-      <AlertModal
-        message={"로그인이 필요합니다\n로그인 화면으로 이동합니다."}
-      />
       <h1>당신의 이야기</h1>
       <nav>
         <ul>
