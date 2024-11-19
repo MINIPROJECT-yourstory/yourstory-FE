@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import AccountInput from "../../components/account/AccountInput";
 import LogoZone from "../../components/account/LogoZone";
+import AccountButton from "../../components/account/AccountButton";
 
 const Login = () => {
   const [formValue, setFormValue] = useState({
@@ -70,6 +71,14 @@ const Login = () => {
             />
           </FormContainer>
           <StyledLink to="/register">회원가입이 필요한가요?</StyledLink>
+          <BtnBox>
+            <AccountButton txt={"메인페이지"} />
+            <AccountButton
+              txt={"로그인"}
+              backgroundColor={"#EAF0C3"}
+              color={"#919400"}
+            />
+          </BtnBox>
         </Right>
       </Wrapper>
     </div>
@@ -118,4 +127,9 @@ const StyledLink = styled(Link)`
   &:hover {
     text-decoration: underline;
   }
+`;
+const BtnBox = styled.div`
+  display: flex;
+  gap: 1.1875rem;
+  margin-top: 4rem;
 `;
