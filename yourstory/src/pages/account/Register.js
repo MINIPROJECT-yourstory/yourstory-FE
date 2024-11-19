@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import Line from "../../assets/images/dashed-line.svg";
 import AccountInput from "../../components/account/AccountInput";
 import LogoZone from "../../components/account/LogoZone";
 import AccountButton from "../../components/account/AccountButton";
 
 const Register = () => {
+  const navigate = useNavigate();
   const [formValue, setFormValue] = useState({
     nickname: "",
     username: "",
@@ -110,7 +112,10 @@ const Register = () => {
             />
           </FormContainer>
           <BtnBox>
-            <AccountButton txt={"메인페이지"} />
+            <AccountButton
+              txt={"메인페이지"}
+              onBtnClick={() => navigate("/")}
+            />
             <AccountButton
               txt={"회원가입"}
               backgroundColor={"#EAF0C3"}

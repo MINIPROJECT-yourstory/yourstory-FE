@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AccountInput from "../../components/account/AccountInput";
 import LogoZone from "../../components/account/LogoZone";
 import AccountButton from "../../components/account/AccountButton";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [formValue, setFormValue] = useState({
     username: "",
     password: "",
@@ -72,7 +73,10 @@ const Login = () => {
           </FormContainer>
           <StyledLink to="/register">회원가입이 필요한가요?</StyledLink>
           <BtnBox>
-            <AccountButton txt={"메인페이지"} />
+            <AccountButton
+              txt={"메인페이지"}
+              onBtnClick={() => navigate("/")}
+            />
             <AccountButton
               txt={"로그인"}
               backgroundColor={"#EAF0C3"}
