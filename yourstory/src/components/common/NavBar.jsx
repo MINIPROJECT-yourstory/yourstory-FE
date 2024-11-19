@@ -15,7 +15,7 @@ const NavBar = () => {
   return (
     <div>
       <Wrapper>
-        <Logo src={LogoIcon}></Logo>
+        <Logo src={LogoIcon} onClick={() => navigate("/")}></Logo>
         {username ? (
           <>
             <SubText>
@@ -103,6 +103,7 @@ const Logo = styled.img`
   width: 109px;
   height: 73px;
   margin-bottom: 50px;
+  cursor: pointer;
 `;
 
 const SubText = styled.div`
