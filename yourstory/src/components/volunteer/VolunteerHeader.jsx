@@ -4,38 +4,67 @@ import styled from 'styled-components';
 const VolunteerHeader = () => {
   return (
     <HeaderContainer>
-      <ButtonGroup>
-        <ActiveButton>봉사 신청</ActiveButton>
-        <InactiveButton>봉사 현황</InactiveButton>
-      </ButtonGroup>
-    </HeaderContainer>
+    <HeaderTitle>
+      봉사 활동
+      <HeaderLine />
+    </HeaderTitle>
+    <ButtonGroup>
+      <ActiveButton>봉사 신청</ActiveButton>
+      <InactiveButton>봉사 현황</InactiveButton>
+    </ButtonGroup>
+    <HeaderLine />
+  </HeaderContainer>
   );
 };
 
 const HeaderContainer = styled.div`
-  border-bottom: 1px solid #eee;
   padding-bottom: 1rem;
   margin-bottom: 2rem;
 `;
 
-const ButtonGroup = styled.div`
+const HeaderTitle = styled.div`
+  font-size: 30px;
+  font-weight: 400;
+  color: var(--green);
   display: flex;
+  align-items: center;
   gap: 1rem;
 `;
 
+const HeaderLine = styled.div`
+  border-bottom: 2px solid var(--green);
+  flex: 1; 
+  height: 1px;
+
+  &:last-child {  
+    margin-top: -1px;
+  }
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  justify-content: flex-end; 
+  width: 100%;  
+  margin-top: -19px;  
+`;
+
 const Button = styled.button`
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
+  font-size: 20px;
+  padding: 1rem;
   cursor: pointer;
+  border: none;
+  height: 88px;
+  width: 175px;
 `;
 
 const ActiveButton = styled(Button)`
-  background-color: #C5D82D;
+  background-color: var(--green);
   color: white;
 `;
 
 const InactiveButton = styled(Button)`
   background: none;
+  color: var(--green);
 `;
 
 export default VolunteerHeader;
