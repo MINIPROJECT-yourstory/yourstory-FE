@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const VolunteerFilter = () => {
     return (
       <FilterContainer>
-        <FilterTitle>봉사 신청</FilterTitle>
+      <FilterTitle>봉사 신청</FilterTitle>
         <FilterGrid>
           <FilterSection>
             <FilterSectionTitle>봉사 지역/센터</FilterSectionTitle>
@@ -80,17 +80,17 @@ const VolunteerFilter = () => {
 `;
   
   const FilterContainer = styled.div`
-    background-color: #C5D82D;
-    border-radius: 8px;
-    padding: 1.5rem;
     margin-bottom: 2rem;
   `;
   
-  const FilterTitle = styled.h2`
+  const FilterTitle = styled.div`
+    padding: 1rem 2rem;
+    background-color: #CED118;
     color: white;
-    font-size: 1.25rem;
+    font-size: 20px;
     margin-bottom: 1rem;
-    font-weight: 500;
+    font-weight: 700;
+    border-radius: 50px;
   `;
   
   const FilterGrid = styled.div`
