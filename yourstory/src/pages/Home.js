@@ -1,29 +1,29 @@
-import { Link } from "react-router-dom";
 import NavBar from "../components/common/NavBar";
+import HomeImg from "../assets/images/img-home.svg";
+import styled from "styled-components";
 
 function Home() {
   return (
     <div>
-      <NavBar />
-      {/* <h1>당신의 이야기</h1>
-      <nav>
-        <ul>
-          <li>
-            <Link to="/volunteer">봉사활동</Link>
-          </li>
-          <li>
-            <Link to="/library">이타적 도서관</Link>
-          </li>
-          <li>
-            <Link to="/story">우리의 이야기</Link>
-          </li>
-          <li>
-            <Link to="/login">로그인</Link>
-          </li>
-        </ul>
-      </nav> */}
+      <Wrapper>
+        <NavBar />
+        <ContentWrapper>
+          <WelcomeImg src={HomeImg} />
+        </ContentWrapper>
+      </Wrapper>
     </div>
   );
 }
 
 export default Home;
+const Wrapper = styled.div`
+  margin: 0;
+  padding: 0;
+  margin-left: 265px;
+  height: 100vh;
+`;
+const ContentWrapper = styled.div``;
+
+const WelcomeImg = styled.img`
+  width: 100%;
+`;

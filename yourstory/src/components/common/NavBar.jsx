@@ -1,43 +1,71 @@
 import { Link, useNavigate } from "react-router-dom";
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import LogoIcon from "../../assets/images/icon-logo.svg";
+import AlertModal from "./AlertModal";
 
 const NavBar = () => {
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
   localStorage.clear();
   //   연동 시 여기에서 회원 이름 조회
   //   localStorage.setItem("username", "숙멋사");
   const username = localStorage.getItem("username");
+
   return (
     <div>
       <Wrapper>
         <Logo src={LogoIcon}></Logo>
         {username ? (
-          <SubText>
-            <Name>숙멋사님</Name>
-            <Welcome>환영합니다</Welcome>
-          </SubText>
+          <>
+            <SubText>
+              <Name>숙멋사님</Name>
+              <Welcome>환영합니다</Welcome>
+            </SubText>
+            <NavList>
+              <NavItem>
+                <StyledLink to="/volunteer">봉사활동</StyledLink>
+              </NavItem>
+              <NavItem>
+                <StyledLink to="/library">이타적 도서관</StyledLink>
+              </NavItem>
+              <NavItem>
+                <StyledLink to="/story">우리의 이야기</StyledLink>
+              </NavItem>
+            </NavList>
+          </>
         ) : (
-          <SubText>
-            <PointerText onClick={() => navigate("/login")}>로그인</PointerText>
-            <PointerText onClick={() => navigate("/register")}>
-              회원가입
-            </PointerText>
-          </SubText>
+          <>
+            <SubText>
+              <PointerText onClick={() => navigate("/login")}>
+                로그인
+              </PointerText>
+              <PointerText onClick={() => navigate("/register")}>
+                회원가입
+              </PointerText>
+            </SubText>
+            <NavList>
+              <NavItem>
+                <Menu onClick={() => setIsOpen(true)}>
+                  <AlertModal isOpen={isOpen} />
+                  봉사활동
+                </Menu>
+              </NavItem>
+              <NavItem>
+                <Menu onClick={() => setIsOpen(true)}>
+                  <AlertModal isOpen={isOpen} />
+                  이타적 도서관
+                </Menu>
+              </NavItem>
+              <NavItem>
+                <Menu onClick={() => setIsOpen(true)}>
+                  <AlertModal isOpen={isOpen} />
+                  우리의 이야기
+                </Menu>
+              </NavItem>
+            </NavList>
+          </>
         )}
-
-        <NavList>
-          <NavItem>
-            <StyledLink to="/volunteer">봉사활동</StyledLink>
-          </NavItem>
-          <NavItem>
-            <StyledLink to="/library">이타적 도서관</StyledLink>
-          </NavItem>
-          <NavItem>
-            <StyledLink to="/story">우리의 이야기</StyledLink>
-          </NavItem>
-        </NavList>
       </Wrapper>
     </div>
   );
@@ -103,6 +131,15 @@ const PointerText = styled.div`
 `;
 
 const StyledLink = styled(Link)`
+  cursor: pointer;
+  font-family: Inter;
+  line-height: 21.78px;
+  letter-spacing: -0.06em;
+  color: #fafc97;
+  text-decoration: none;
+  font-size: 18px;
+`;
+const Menu = styled.div`
   cursor: pointer;
   font-family: Inter;
   line-height: 21.78px;

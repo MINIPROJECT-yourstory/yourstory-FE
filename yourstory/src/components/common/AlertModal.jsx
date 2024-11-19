@@ -1,18 +1,26 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-const AlertModal = ({ message, onBtnClick, txt }) => {
+const AlertModal = ({ isOpen }) => {
+  const navigate = useNavigate();
   return (
     <div>
-      <ModalOverlay>
-        <ModalWrapper>
-          <ModalHeader>알림</ModalHeader>
-          <ModalBody>{message}</ModalBody>
-          <ModalFooter>
-            <Button onClick={onBtnClick}> {txt || "확인"}</Button>
-          </ModalFooter>
-        </ModalWrapper>
-      </ModalOverlay>
+      {isOpen && (
+        <ModalOverlay>
+          <ModalWrapper>
+            <ModalHeader>알림</ModalHeader>
+            <ModalBody>
+              로그인이 필요합니다
+              <br />
+              로그인 화면으로 이동합니다.
+            </ModalBody>
+            <ModalFooter>
+              <Button onClick={() => navigate("/login")}>확인</Button>
+            </ModalFooter>
+          </ModalWrapper>
+        </ModalOverlay>
+      )}
     </div>
   );
 };
