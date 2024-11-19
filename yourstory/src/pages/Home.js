@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
+import NavBar from "../components/common/NavBar";
 
 function Home() {
   return (
     <div>
-      <h1>당신의 이야기</h1>
+      <NavBar />
+      {/* <h1>당신의 이야기</h1>
       <nav>
         <ul>
           <li>
@@ -19,7 +21,7 @@ function Home() {
             <Link to="/login">로그인</Link>
           </li>
         </ul>
-      </nav>
+      </nav> */}
     </div>
   );
 }
