@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import logoImg from "../../assets/images/logo-photo.svg";
+import LoginImg from "../../assets/images/img-login.svg";
 
 const LogoZone = () => {
   return (
@@ -15,5 +15,5 @@ export default LogoZone;
 const Wrapper = styled.div`
   width: 670px;
   height: 832px;
-  background-image: url(${logoImg});
+  background-image: url(${LoginImg});
 `;
