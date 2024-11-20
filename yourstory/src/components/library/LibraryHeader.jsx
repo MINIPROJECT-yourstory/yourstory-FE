@@ -55,12 +55,12 @@ const SubTitleWrapper = styled.div`
   height: 94px;
 
   ${media.tablet} {
-    margin-top: 0; // margin-top 제거
-    padding-bottom: 2px; // HeaderLine과 정렬을 맞추기 위한 미세 조정
+    margin-top: 0;
+    padding-bottom: 2px;
     justify-content: flex-end;
     position: relative;
     z-index: 1;
-    align-items: flex-end; // 하단 정렬
+    align-items: flex-end;
   }
 `;
 
@@ -78,7 +78,7 @@ const SubTitle = styled.div`
     height: 50px;
     width: 120px;
     font-size: ${({ theme }) => theme.typography.fontSize.sm};
-    margin-bottom: 0; // 하단 여백 제거
+    margin-bottom: 0;
   }
 
   ${media.mobile} {

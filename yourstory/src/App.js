@@ -45,13 +45,11 @@ function App() {
             </Route>
 
             {/* 이타적 도서관 */}
-            <Route path="/library">
-              <Route index element={<Library />} />
-              <Route path="book/:id" element={<BookDetail />} />
-              <Route path="book/:id/view" element={<BookViewer />} />  {/* e-book 보기 */}
-              <Route path="letter/:id" element={<LetterBox />} />      {/* 우편함 보기 */}
-              <Route path="letter/:id/write" element={<WriteLetter />} /> {/* 편지 쓰기 */}
-            </Route>
+            <Route path="/library" element={<Library />} />
+          <Route path="/library/book/:id" element={<BookDetail />} />
+            <Route path="/library/book/:id/view" element={<BookViewer />} />
+            <Route path="/library/letter/:id" element={<LetterBox />} />
+            <Route path="/library/letter/:id/write" element={<WriteLetter />} />
 
             {/* 우리의 이야기 */}
             <Route path="/story">
