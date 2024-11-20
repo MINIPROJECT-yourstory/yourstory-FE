@@ -4,7 +4,7 @@ import styled from "styled-components";
 import Line from "../../assets/images/line-menu.svg";
 
 const SideMenu = ({ isVisible, menu }) => {
-  const renderContent = () => {
+  const SideContent = () => {
     if (menu === "volunteer") {
       return (
         <>
@@ -61,7 +61,7 @@ const SideMenu = ({ isVisible, menu }) => {
     return null;
   };
 
-  return <Wrapper isVisible={isVisible}>{renderContent()}</Wrapper>;
+  return <Wrapper isVisible={isVisible}>{SideContent()}</Wrapper>;
 };
 
 export default SideMenu;
