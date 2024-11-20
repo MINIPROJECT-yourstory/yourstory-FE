@@ -5,89 +5,78 @@ import LogoIcon from "../../assets/images/icon-logo.svg";
 import AlertModal from "./AlertModal";
 import SideMenu from "./SideMenu";
 
-const NavBar = () => {
+const NavBar = ({ pagename }) => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
 
-  const toggleMenu = (menu) => {
+  const toggleActiveMenu = (menu) => {
     setActiveMenu((prevMenu) => (prevMenu === menu ? null : menu));
   };
+
+  const handleLogout = () => {
+    navigate("/login");
+  };
+
   localStorage.clear();
   //   연동 시 여기에서 회원 이름 조회
   localStorage.setItem("username", "숙멋사");
   const username = localStorage.getItem("username");
 
   return (
-    <div>
-      <Wrapper>
-        <Logo src={LogoIcon} onClick={() => navigate("/")}></Logo>
-        {username ? (
-          <>
-            <SubText>
-              <Name>숙멋사님</Name>
-              <Welcome>환영합니다</Welcome>
-            </SubText>
-            <Logout style={{ visibility: "visible" }}>로그아웃</Logout>
-            <NavList>
+    <Wrapper>
+      <Logo src={LogoIcon} onClick={() => navigate("/")} />
+      {username ? (
+        <>
+          <SubText>
+            <Name>{username}님</Name>
+            <Welcome>환영합니다</Welcome>
+          </SubText>
+          <Logout onClick={handleLogout}>로그아웃</Logout>
+          <NavList>
+            {["volunteer", "library", "story"].map((menu) => (
               <NavItem
-                $isActive={activeMenu === "volunteer"}
-                onClick={() => toggleMenu("volunteer")}
+                key={menu}
+                $isActive={activeMenu === menu}
+                $isSelected={pagename === menu}
+                onClick={() => toggleActiveMenu(menu)}
               >
-                <Menu>봉사활동</Menu>
+                <Menu>
+                  {menu === "volunteer"
+                    ? "봉사활동"
+                    : menu === "library"
+                    ? "이타적 도서관"
+                    : "우리의 이야기"}
+                </Menu>
               </NavItem>
-              <NavItem
-                $isActive={activeMenu === "library"}
-                onClick={() => toggleMenu("library")}
-              >
-                <Menu>이타적 도서관</Menu>
-              </NavItem>
-              <NavItem
-                $isActive={activeMenu === "story"}
-                onClick={() => toggleMenu("story")}
-              >
-                <Menu>우리의 이야기</Menu>
-              </NavItem>
-            </NavList>
-            {activeMenu && (
-              <SideMenu isVisible={!!activeMenu} menu={activeMenu} />
+            ))}
+          </NavList>
+          {activeMenu && (
+            <SideMenu isVisible={!!activeMenu} menu={activeMenu} />
+          )}
+        </>
+      ) : (
+        <>
+          <SubText>
+            <PointerText onClick={() => navigate("/login")}>로그인</PointerText>
+            <PointerText onClick={() => navigate("/register")}>
+              회원가입
+            </PointerText>
+          </SubText>
+          <Logout style={{ visibility: "hidden" }}>로그아웃</Logout>
+          <NavList>
+            {["봉사활동", "이타적 도서관", "우리의 이야기"].map(
+              (menu, index) => (
+                <NavItem key={index}>
+                  <Menu onClick={() => setIsOpen(true)}>{menu}</Menu>
+                </NavItem>
+              )
             )}
-          </>
-        ) : (
-          <>
-            <SubText>
-              <PointerText onClick={() => navigate("/login")}>
-                로그인
-              </PointerText>
-              <PointerText onClick={() => navigate("/register")}>
-                회원가입
-              </PointerText>
-            </SubText>
-            <Logout style={{ visibility: "hidden" }}>로그아웃</Logout>
-            <NavList>
-              <NavItem>
-                <Menu onClick={() => setIsOpen(true)}>
-                  <AlertModal isOpen={isOpen} />
-                  봉사활동
-                </Menu>
-              </NavItem>
-              <NavItem>
-                <Menu onClick={() => setIsOpen(true)}>
-                  <AlertModal isOpen={isOpen} />
-                  이타적 도서관
-                </Menu>
-              </NavItem>
-              <NavItem>
-                <Menu onClick={() => setIsOpen(true)}>
-                  <AlertModal isOpen={isOpen} />
-                  우리의 이야기
-                </Menu>
-              </NavItem>
-            </NavList>
-          </>
-        )}
-      </Wrapper>
-    </div>
+          </NavList>
+          {isOpen && <AlertModal isOpen={isOpen} />}
+        </>
+      )}
+    </Wrapper>
   );
 };
 
@@ -117,8 +106,10 @@ const NavList = styled.ul`
 
 const NavItem = styled.li`
   text-align: center;
-  font-weight: ${(props) => (props.$isActive ? "700" : "400")};
-  color: ${(props) => (props.$isActive ? "white" : "#fafc97")};
+  font-weight: ${({ $isActive, $isSelected }) =>
+    $isActive || $isSelected ? "700" : "400"};
+  color: ${({ $isActive, $isSelected }) =>
+    $isActive || $isSelected ? "white" : "#fafc97"};
 `;
 
 const Logo = styled.img`
