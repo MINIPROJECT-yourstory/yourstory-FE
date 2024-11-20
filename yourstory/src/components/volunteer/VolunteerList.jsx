@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import theme, { media } from '../../../src/styles/theme';
 
 
 const VolunteerList = () => {
@@ -42,60 +43,103 @@ const VolunteerList = () => {
   };
   
   const ListContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  `;
+  display: flex;
+  flex-direction: column;
+  background: #F3F3F3;
+  border-radius: 17px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+`;
+
   
-  // components/volunteer/VolunteerCard.jsx
   const VolunteerCard = ({ data }) => {
     return (
       <CardContainer>
         <CardHeader>
-          <CardTitle>
-            <CenterName>{data.center}</CenterName>
-            <StatusBadge status={data.status}>
-              {data.status}
-            </StatusBadge>
-          </CardTitle>
-          <DetailButton>자세히 보기</DetailButton>
+          <HeaderLeft>
+            <CardTitle>
+              <CenterName>{data.center}</CenterName>
+              <StatusBadge status={data.status}>
+                {data.status}
+              </StatusBadge>
+            </CardTitle>
+            <InfoText>
+              <InfoLabel>[모집기간]</InfoLabel> {data.recruitPeriod}
+            </InfoText>
+            <InfoText>
+              <InfoLabel>[등록기관]</InfoLabel> {data.organization}
+            </InfoText>
+          </HeaderLeft>
+          <HeaderRight>
+            <InfoText>
+              <InfoLabel>[봉사기간]</InfoLabel> {data.period}
+            </InfoText>
+            <InfoContainer>
+              <InfoText>
+                <InfoLabel>[봉사요일]</InfoLabel> {data.schedule}
+              </InfoText>
+              <DetailButton>자세히 보기</DetailButton>
+            </InfoContainer>
+          </HeaderRight>
         </CardHeader>
-        <CardContent>
-          <InfoText>
-            <InfoLabel>[모집기간]</InfoLabel> {data.recruitPeriod}
-          </InfoText>
-          <InfoText>
-            <InfoLabel>[등록기관]</InfoLabel> {data.organization}
-          </InfoText>
-          <InfoText>
-            <InfoLabel>[봉사기간]</InfoLabel> {data.period}
-          </InfoText>
-          <InfoText>
-            <InfoLabel>[봉사요일]</InfoLabel> {data.schedule}
-          </InfoText>
-        </CardContent>
       </CardContainer>
     );
   };
-  
+
   const CardContainer = styled.div`
-    background:F3F3F3;
-    border-radius: 8px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease;
-    
-    &:hover {
-      transform: translateY(-2px);
-    }
-  `;
+  background: transparent;
+  padding: 1.125rem;
+  transition: transform 0.2s ease;
+  position: relative;
   
-  const CardHeader = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-  `;
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 28px;
+    right: 28px;
+    height: 0.7px;
+    background-color: #BCBF1F;
+  }
+
+  ${media.tablet} {
+    padding: 1rem;
+  }
+`;
+  
+const CardHeader = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  
+  ${media.mobile} {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+`;
+
+const HeaderLeft = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+`;
+
+const HeaderRight = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+`;
+
+const InfoContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+`;
   
   const CardTitle = styled.div`
     display: flex;
@@ -104,44 +148,42 @@ const VolunteerList = () => {
   `;
   
   const CenterName = styled.h3`
-    font-size: 1.125rem;
+    font-size: 1.5rem;
     font-weight: 500;
-    color: #333;
+    color: #919400;
   `;
   
   const StatusBadge = styled.span`
-    padding: 0.25rem 0.75rem;
+    padding: 0.25rem 2.6875rem;
     border-radius: 999px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    background-color: ${props => props.status === '모집중' ? '#C5D82D' : '#666'};
-    color: white;
+    font-size: 1.125rem;
+    font-weight: 800;
+    color: #CED118;
   `;
   
   const DetailButton = styled.button`
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 4px;
-    background-color: #C5D82D;
-    color: white;
-    font-size: 0.875rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    
-    &:hover {
-      opacity: 0.9;
-    }
-  `;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 50px;
+  background-color: #CED118;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: auto;
   
-  const CardContent = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  `;
+  &:hover {
+    opacity: 0.9;
+  }
+`;
   
   const InfoText = styled.p`
-    font-size: 0.875rem;
-    color: #666;
+    font-size: 1.125rem;
+    color: #000000;
+    font-weight: 350;
+    margin: 0;
     line-height: 1.5;
   `;
   
@@ -150,6 +192,7 @@ const VolunteerList = () => {
     font-weight: 500;
   `;
   
+
   
   export default VolunteerList;
 

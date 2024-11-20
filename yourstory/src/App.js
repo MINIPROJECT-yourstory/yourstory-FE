@@ -1,4 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ThemeProvider } from "styled-components";
+import theme, { media } from './styles/theme';  
 
 // 메인 페이지들
 import Home from "./pages/Home";
@@ -22,41 +24,43 @@ import WriteLetter from "./pages/library/WriteLetter";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        {/* 인증 관련 */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+    <ThemeProvider theme={theme}>
+      <Router>
+        <Routes>
+          {/* 인증 관련 */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
-        {/* 메인 레이아웃 */}
-        <Route>
-          <Route path="/" element={<Home />} />
+          {/* 메인 레이아웃 */}
+          <Route>
+            <Route path="/" element={<Home />} />
 
-          {/* 봉사활동 */}
-          <Route path="/volunteer">
-            <Route index element={<Volunteer />} />
-            <Route path="list" element={<VolunteerList />} />
-            <Route path=":id" element={<VolunteerDetail />} />
-            <Route path="status" element={<VolunteerStatus />} />
-            <Route path="diary" element={<VolunteerDiary />} />
+            {/* 봉사활동 */}
+            <Route path="/volunteer">
+              <Route index element={<Volunteer />} />
+              <Route path="list" element={<VolunteerList />} />
+              <Route path=":id" element={<VolunteerDetail />} />
+              <Route path="status" element={<VolunteerStatus />} />
+              <Route path="diary" element={<VolunteerDiary />} />
+            </Route>
+
+            {/* 이타적 도서관 */}
+            <Route path="/library">
+              <Route index element={<Library />} />
+              <Route path="book/:id" element={<BookDetail />} />
+              <Route path="book/:id/read" element={<BookViewer />} />
+              <Route path="book/:id/letters" element={<LetterBox />} />
+              <Route path="book/:id/write-letter" element={<WriteLetter />} />
+            </Route>
+
+            {/* 우리의 이야기 */}
+            <Route path="/story">
+              <Route index element={<Story />} />
+            </Route>
           </Route>
-
-          {/* 이타적 도서관 */}
-          <Route path="/library">
-            <Route index element={<Library />} />
-            <Route path="book/:id" element={<BookDetail />} />
-            <Route path="book/:id/read" element={<BookViewer />} />
-            <Route path="book/:id/letters" element={<LetterBox />} />
-            <Route path="book/:id/write-letter" element={<WriteLetter />} />
-          </Route>
-
-          {/* 우리의 이야기 */}
-          <Route path="/story">
-            <Route index element={<Story />} />
-          </Route>
-        </Route>
-      </Routes>
-    </Router>
+        </Routes>
+      </Router>
+    </ThemeProvider>
   );
 }
 
