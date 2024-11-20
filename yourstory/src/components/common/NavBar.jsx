@@ -28,6 +28,7 @@ const NavBar = () => {
               <Name>숙멋사님</Name>
               <Welcome>환영합니다</Welcome>
             </SubText>
+            <Logout style={{ visibility: "visible" }}>로그아웃</Logout>
             <NavList>
               <NavItem
                 $isActive={activeMenu === "volunteer"}
@@ -62,6 +63,7 @@ const NavBar = () => {
                 회원가입
               </PointerText>
             </SubText>
+            <Logout style={{ visibility: "hidden" }}>로그아웃</Logout>
             <NavList>
               <NavItem>
                 <Menu onClick={() => setIsOpen(true)}>
@@ -110,7 +112,7 @@ const NavList = styled.ul`
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 43px;
+  gap: 30px;
 `;
 
 const NavItem = styled.li`
@@ -131,7 +133,7 @@ const SubText = styled.div`
   flex-direction: row;
   align-items: center;
   gap: 16px;
-  margin-bottom: 140px;
+  /* margin-bottom: 140px; */
   line-height: 19.36px;
   letter-spacing: -0.06em;
   text-align: center;
@@ -146,6 +148,18 @@ const Name = styled.div`
 
 const Welcome = styled.div`
   font-weight: 400;
+`;
+
+const Logout = styled.div`
+  margin-top: 32px;
+  margin-bottom: 90px;
+  cursor: pointer;
+  font-family: Inter;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 19.36px;
+  letter-spacing: -0.06em;
+  color: #fafc97;
 `;
 const PointerText = styled.div`
   cursor: pointer;
