@@ -1,6 +1,6 @@
-import React from 'react';
-import styled from 'styled-components';
-import theme, { media } from '../../styles/theme';
+import React from "react";
+import styled from "styled-components";
+import theme, { media } from "../../styles/theme";
 
 const LibraryHeader = () => {
   return (
@@ -19,21 +19,21 @@ const LibraryHeader = () => {
 
 const HeaderContainer = styled.div`
   padding-bottom: ${({ theme }) => theme.spacing.padding.md};
-  margin-bottom: ${({ theme }) => theme.spacing.padding.lg};
+  margin-bottom: ${({ theme }) => theme.spacing.padding.md};
 `;
 
 const HeaderLine = styled.div`
   border-bottom: 2px solid ${({ theme }) => theme.colors.primary.main};
-  flex: 1; 
+  flex: 1;
   height: 1px;
 
-  &:last-child {  
+  &:last-child {
     margin-top: -1px;
   }
 `;
 
 const HeaderTitle = styled.div`
-  font-size: ${({ theme }) => theme.typography.fontSize.xl};  // 30px
+  font-size: ${({ theme }) => theme.typography.fontSize.xl}; // 30px
   font-weight: ${({ theme }) => theme.typography.fontWeight.regular};
   color: ${({ theme }) => theme.colors.primary.main};
   display: flex;
@@ -43,24 +43,24 @@ const HeaderTitle = styled.div`
   z-index: 0;
 
   ${media.tablet} {
-    font-size: ${({ theme }) => theme.typography.fontSize.lg};  // 24px
+    font-size: ${({ theme }) => theme.typography.fontSize.lg}; // 24px
   }
 `;
 
 const SubTitleWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
-  width: 100%;  
+  width: 100%;
   margin-top: -19px;
   height: 94px;
-  
+
   ${media.tablet} {
-    margin-top: 0;         // margin-top 제거
-    padding-bottom: 2px;   // HeaderLine과 정렬을 맞추기 위한 미세 조정
-    justify-content: flex-end; 
+    margin-top: 0; // margin-top 제거
+    padding-bottom: 2px; // HeaderLine과 정렬을 맞추기 위한 미세 조정
+    justify-content: flex-end;
     position: relative;
     z-index: 1;
-    align-items: flex-end;  // 하단 정렬
+    align-items: flex-end; // 하단 정렬
   }
 `;
 
@@ -78,7 +78,7 @@ const SubTitle = styled.div`
     height: 50px;
     width: 120px;
     font-size: ${({ theme }) => theme.typography.fontSize.sm};
-    margin-bottom: 0;      // 하단 여백 제거
+    margin-bottom: 0; // 하단 여백 제거
   }
 
   ${media.mobile} {

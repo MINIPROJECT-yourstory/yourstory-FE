@@ -2,11 +2,11 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-const AlertModal = ({ isOpen }) => {
+const AlertModal = ({ isAlertOpen }) => {
   const navigate = useNavigate();
   return (
     <div>
-      {isOpen && (
+      {isAlertOpen && (
         <ModalOverlay>
           <ModalWrapper>
             <ModalHeader>알림</ModalHeader>
