@@ -13,9 +13,8 @@ const BookViewer = () => {
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
 
-  // 테스트용 PDF URL 사용
+  // 테스트용 PDF URL
   const pdfUrl = "https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf";
-  // const pdfUrl = "/sample.pdf";  // 로컬 파일은 나중에 테스트
 
   function onDocumentLoadSuccess({ numPages }) {
     console.log('PDF 파일 로드 성공! 페이지 수:', numPages);
