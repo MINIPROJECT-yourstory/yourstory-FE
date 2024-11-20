@@ -19,7 +19,7 @@ const LibraryHeader = () => {
 
 const HeaderContainer = styled.div`
   padding-bottom: ${({ theme }) => theme.spacing.padding.md};
-  margin-bottom: ${({ theme }) => theme.spacing.padding.lg};
+  margin-bottom: ${({ theme }) => theme.spacing.padding.md};
 `;
 
 const HeaderLine = styled.div`

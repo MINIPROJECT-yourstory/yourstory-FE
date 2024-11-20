@@ -3,7 +3,7 @@ import styled from "styled-components";
 import NavBar from "../../components/common/NavBar";
 import theme from "../../styles/theme";
 import LibraryHeader from "../../components/library/LibraryHeader";
-import LetterList from "../../components/library/LetterList";
+import Letter from "../../components/library/Letter";
 
 const LetterBox = () => {
   return (
@@ -15,7 +15,7 @@ const LetterBox = () => {
           우편함
           <HeaderLine />
         </HeaderTitle>
-        <LetterList />
+        <Letter />
       </PageContainer>
     </div>
   );
