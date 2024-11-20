@@ -1,13 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-const ConfirmModal = ({
-  message,
-  onLeftClick,
-  onRightClick,
-  leftTxt,
-  rightTxt,
-}) => {
+const ConfirmModal = ({ message, onConfirm, onCancel, leftTxt, rightTxt }) => {
   return (
     <div>
       <ModalOverlay>
@@ -15,8 +9,8 @@ const ConfirmModal = ({
           <ModalHeader>알림</ModalHeader>
           <ModalBody>{message}</ModalBody>
           <ModalFooter>
-            <YesBtn onClick={onLeftClick}> {leftTxt || "예"}</YesBtn>
-            <NoBtn onClick={onRightClick}> {rightTxt || "아니오"}</NoBtn>
+            <YesBtn onClick={onConfirm}> {leftTxt || "예"}</YesBtn>
+            <NoBtn onClick={onCancel}> {rightTxt || "아니오"}</NoBtn>
           </ModalFooter>
         </ModalWrapper>
       </ModalOverlay>

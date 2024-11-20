@@ -3,11 +3,13 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import LogoIcon from "../../assets/images/icon-logo.svg";
 import AlertModal from "./AlertModal";
+import ConfirmModal from "./ConfirmModal";
 import SideMenu from "./SideMenu";
 
 const NavBar = ({ pagename }) => {
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
 
   const toggleActiveMenu = (menu) => {
@@ -15,12 +17,12 @@ const NavBar = ({ pagename }) => {
   };
 
   const handleLogout = () => {
-    navigate("/login");
+    setIsConfirmOpen(true);
   };
 
   localStorage.clear();
   //   연동 시 여기에서 회원 이름 조회
-  localStorage.setItem("username", "숙멋사");
+  //   localStorage.setItem("username", "숙멋사");
   const username = localStorage.getItem("username");
 
   return (
@@ -68,13 +70,24 @@ const NavBar = ({ pagename }) => {
             {["봉사활동", "이타적 도서관", "우리의 이야기"].map(
               (menu, index) => (
                 <NavItem key={index}>
-                  <Menu onClick={() => setIsOpen(true)}>{menu}</Menu>
+                  <Menu onClick={() => setIsAlertOpen(true)}>{menu}</Menu>
                 </NavItem>
               )
             )}
           </NavList>
-          {isOpen && <AlertModal isOpen={isOpen} />}
+          {isAlertOpen && <AlertModal isAlertOpen={isAlertOpen} />}
         </>
+      )}
+      {isConfirmOpen && (
+        <ConfirmModal
+          isConfirmOpen={isConfirmOpen}
+          onConfirm={() => {
+            setIsConfirmOpen(false);
+            navigate("/login");
+          }}
+          message={"로그아웃 하시겠습니까?"}
+          onCancel={() => setIsConfirmOpen(false)}
+        />
       )}
     </Wrapper>
   );
