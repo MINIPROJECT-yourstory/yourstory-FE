@@ -48,9 +48,9 @@ function App() {
             <Route path="/library">
               <Route index element={<Library />} />
               <Route path="book/:id" element={<BookDetail />} />
-              <Route path="book/:id/read" element={<BookViewer />} />
-              <Route path="book/:id/letters" element={<LetterBox />} />
-              <Route path="book/:id/write-letter" element={<WriteLetter />} />
+              <Route path="book/:id/view" element={<BookViewer />} />  {/* e-book 보기 */}
+              <Route path="letter/:id" element={<LetterBox />} />      {/* 우편함 보기 */}
+              <Route path="letter/:id/write" element={<WriteLetter />} /> {/* 편지 쓰기 */}
             </Route>
 
             {/* 우리의 이야기 */}
