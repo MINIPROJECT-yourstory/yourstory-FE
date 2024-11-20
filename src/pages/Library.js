@@ -11,7 +11,10 @@ const Library = () => {
       <NavBar pagename="library" />
       <PageContainer>
         <LibraryHeader />
-        <div>이타적 자서전 도서 목록</div>
+        <TitleContainer>
+          <TitleText>이타적 자서전 도서 목록</TitleText>
+          <TitleLine />
+        </TitleContainer>
         <LibraryContent />
       </PageContainer>
     </div>
@@ -34,4 +37,31 @@ const PageContainer = styled.div`
   }
 `;
 
-export default Library;
+const TitleContainer = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 17px;
+  margin-bottom: 60px;
+  padding: 0;
+`;
+
+const TitleText = styled.h2`
+  font-family: 'Inter', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  color: #BCBF1F;
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+`;
+
+const TitleLine = styled.div`
+  flex: 1;
+  height: 2px;
+  background-color: #BCBF1F;
+  margin: 0;
+  padding: 0;
+`;
+
+export default Library; 
