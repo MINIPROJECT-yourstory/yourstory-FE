@@ -1,18 +1,16 @@
-import React from 'react';
-import styled from 'styled-components';
-import VolunteerHeader from '../components/volunteer/VolunteerHeader';
-import VolunteerFilter from '../components/volunteer/VolunteerFilter';
-import VolunteerList from '../components/volunteer/VolunteerList';
+import React from "react";
+import styled from "styled-components";
+import VolunteerHeader from "../components/volunteer/VolunteerHeader";
+import VolunteerFilter from "../components/volunteer/VolunteerFilter";
+import VolunteerList from "../components/volunteer/VolunteerList";
 import NavBar from "../components/common/NavBar";
-import { media } from '../styles/theme';  
-import theme from '../styles/theme';
-
-
+import { media } from "../styles/theme";
+import theme from "../styles/theme";
 
 const VolunteerPage = () => {
   return (
     <div>
-      <NavBar />  
+      <NavBar pagename={"volunteer"} />
       <PageContainer>
         <VolunteerHeader />
         <VolunteerFilter />
