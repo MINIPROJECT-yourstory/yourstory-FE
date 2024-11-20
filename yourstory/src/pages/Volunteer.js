@@ -4,7 +4,8 @@ import VolunteerHeader from '../components/volunteer/VolunteerHeader';
 import VolunteerFilter from '../components/volunteer/VolunteerFilter';
 import VolunteerList from '../components/volunteer/VolunteerList';
 import NavBar from "../components/common/NavBar";
-import { media } from '../styles/theme';
+import { media } from '../styles/theme';  
+import theme from '../styles/theme';
 
 
 

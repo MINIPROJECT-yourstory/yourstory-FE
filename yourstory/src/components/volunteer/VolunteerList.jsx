@@ -1,6 +1,5 @@
 import styled from 'styled-components';
-import { media } from '../../styles/theme';
-
+import theme, { media } from '../../../src/styles/theme';
 
 
 const VolunteerList = () => {
