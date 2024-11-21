@@ -137,8 +137,8 @@ const BookDetail = () => {
             </EbookButton>
           </BookHeader>
           <DashedLine />
-          <SectionWrapper>
-            <Section>
+          <SectionContainer>
+            <LeftSection>
               <SectionTitle>함께한 사람들</SectionTitle>
               <ContributorBox>
                 <ContributorList>
@@ -155,9 +155,9 @@ const BookDetail = () => {
               <DescriptionBox>
                 <Description>{book.description}</Description>
               </DescriptionBox>
-            </Section>
+            </LeftSection>
 
-            <Section>
+            <RightSection>
               <MailboxHeader>
                 <div>우편함</div>
                 <span>{book.title}께 드리는 우리의 편지</span>
@@ -173,8 +173,8 @@ const BookDetail = () => {
               <WriteLetterButton onClick={handleWriteLetter}>
                 편지 남기기
               </WriteLetterButton>
-            </Section>
-          </SectionWrapper>
+            </RightSection>
+          </SectionContainer>
         </ContentWrapper>
       </Container>
     </>
@@ -304,51 +304,60 @@ const DashedLine = styled.div`
   background-repeat: repeat-x;
 `;
 
-const SectionWrapper = styled.div`
+const SectionContainer = styled.div`
   display: flex;
   width: 100%;
   gap: 14px;
-  align-items: stretch;
+  margin-bottom: ${({ theme }) => theme.spacing.padding.lg};
 `;
 
-const Section = styled.div`
+const LeftSection = styled.div`
+  flex: 1;
   display: flex;
   flex-direction: column;
-  flex: 1 1 43%;
-  overflow: hidden;
+  gap: 14px;
+  max-height: 297px;
+`;
 
-  &:last-child {
-    flex: 1 1 57%;
-    background-color: ${({ theme }) => theme.colors.background.paper};
-    padding: ${({ theme }) => theme.spacing.padding.lg};
-    border-radius: ${({ theme }) => theme.borderRadius.md};
-    max-height: 100%;
-  }
+const RightSection = styled.div`
+  flex: 1.3;
+  background-color: ${({ theme }) => theme.colors.background.paper};
+  padding: ${({ theme }) => theme.spacing.padding.lg};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  height: 308px;
+  overflow: auto;
 `;
 
 const SectionTitle = styled.h3`
   color: ${({ theme }) => theme.colors.primary.main};
   font-size: ${({ theme }) => theme.typography.fontSize.lg};
-  margin-bottom: 8px; // 8px 갭 추가
+  margin: 0; // 모든 마진 제거
 `;
 
 const ContributorBox = styled.div`
-  width: 100%;
   background-color: ${({ theme }) => theme.colors.background.paper};
   padding: ${({ theme }) => theme.spacing.padding.lg};
   border-radius: ${({ theme }) => theme.borderRadius.md};
-  margin-bottom: 21px; // 21px 갭 추가
+  height: calc(
+    (297px - 14px - 24px) / 2
+  ); // 전체높이에서 gap과 제목 높이를 뺀 후 2로 나눔
 `;
 
 const DescriptionBox = styled.div`
-  width: 100%;
   background-color: ${({ theme }) => theme.colors.background.paper};
   padding: ${({ theme }) => theme.spacing.padding.lg};
   border-radius: ${({ theme }) => theme.borderRadius.md};
+  height: calc((297px - 14px - 24px) / 2); // ContributorBox와 동일한 높이
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const ContributorList = styled.div`
-  margin-bottom: ${({ theme }) => theme.spacing.padding.md};
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;
 
 const ContributorItem = styled.div`
