@@ -17,7 +17,7 @@ const MOCK_BOOK = {
     writer: "김OO 청년 봉사자",
     organization: "멋진사자 센터",
   },
-  description: "평범한 하루의 소중함을 알게해주는\n따뜻한 삶의 기록!",
+  description: "평범한 하루의 소중함을 일깨워주는\n따뜻한 삶의 기록!",
 };
 
 const MOCK_LETTERS = [
@@ -289,6 +289,9 @@ const EbookButton = styled.button`
   justify-content: center;
   align-items: center;
   line-height: 1.5;
+  font-size: 24px;
+  font-weight: 700;
+  box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.25);
 `;
 
 const DashedLine = styled.div`
@@ -321,7 +324,7 @@ const LeftSection = styled.div`
 
 const RightSection = styled.div`
   flex: 1.3;
-  background-color: ${({ theme }) => theme.colors.background.paper};
+  background-color: #ced118;
   padding: ${({ theme }) => theme.spacing.padding.lg};
   border-radius: ${({ theme }) => theme.borderRadius.md};
   height: 308px;
@@ -331,20 +334,19 @@ const RightSection = styled.div`
 const SectionTitle = styled.h3`
   color: ${({ theme }) => theme.colors.primary.main};
   font-size: ${({ theme }) => theme.typography.fontSize.lg};
-  margin: 0; // 모든 마진 제거
+  margin: 0;
+  align-self: center;
 `;
 
 const ContributorBox = styled.div`
-  background-color: ${({ theme }) => theme.colors.background.paper};
+  background-color: #ebece1;
   padding: ${({ theme }) => theme.spacing.padding.lg};
   border-radius: ${({ theme }) => theme.borderRadius.md};
-  height: calc(
-    (297px - 14px - 24px) / 2
-  ); // 전체높이에서 gap과 제목 높이를 뺀 후 2로 나눔
+  height: calc((297px - 14px - 24px) / 2);
 `;
 
 const DescriptionBox = styled.div`
-  background-color: ${({ theme }) => theme.colors.background.paper};
+  background-color: #ebece1;
   padding: ${({ theme }) => theme.spacing.padding.lg};
   border-radius: ${({ theme }) => theme.borderRadius.md};
   height: calc((297px - 14px - 24px) / 2); // ContributorBox와 동일한 높이
@@ -372,35 +374,42 @@ const Label = styled.span`
     ${({ theme }) => theme.spacing.padding.sm};
   border-radius: ${({ theme }) => theme.borderRadius.sm};
   margin-right: ${({ theme }) => theme.spacing.padding.sm};
+  border-radius: 9px;
+  font-size: 16px;
+  font-weight: 700;
 `;
 
 const Value = styled.span`
-  color: ${({ theme }) => theme.colors.text.primary};
+  color: #7f810d;
 `;
 
 const Description = styled.p`
   text-align: center;
-  color: ${({ theme }) => theme.colors.text.primary};
+  color: #7f810d;
   line-height: ${({ theme }) => theme.typography.lineHeight.relaxed};
+  white-space: pre-line;
 `;
 
 const MailboxHeader = styled.div`
+  background-color: CED118;
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: ${({ theme }) => theme.spacing.padding.md};
 
   div {
-    color: ${({ theme }) => theme.colors.primary.main};
+    color: ${({ theme }) => theme.colors.text.white};
     font-size: ${({ theme }) => theme.typography.fontSize.lg};
+    font-weight: 700;
   }
 
   span {
-    color: ${({ theme }) => theme.colors.text.secondary};
+    color: #fafc97;
   }
 `;
 
 const LetterList = styled.div`
+  background-color: #ced118;
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.padding.sm};
