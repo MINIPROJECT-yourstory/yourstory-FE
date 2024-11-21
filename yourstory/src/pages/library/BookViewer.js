@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { Book } from 'lucide-react';
-import NavBar from '../../components/common/NavBar';
-import { Document, Page, pdfjs } from 'react-pdf';
-import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
-import 'react-pdf/dist/esm/Page/TextLayer.css';
+import React, { useState } from "react";
+import styled from "styled-components";
+import { Book } from "lucide-react";
+import NavBar from "../../components/common/NavBar";
+import { Document, Page, pdfjs } from "react-pdf";
+import "react-pdf/dist/esm/Page/AnnotationLayer.css";
+import "react-pdf/dist/esm/Page/TextLayer.css";
 
-// 최신 버전의 worker 파일 사용
 pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 const BookViewer = () => {
@@ -14,18 +13,21 @@ const BookViewer = () => {
   const [pageNumber, setPageNumber] = useState(1);
 
   // 테스트용 PDF URL
-  const pdfUrl = "https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf";
+  const pdfUrl =
+    "https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf";
 
   function onDocumentLoadSuccess({ numPages }) {
-    console.log('PDF 파일 로드 성공! 페이지 수:', numPages);
     setNumPages(numPages);
   }
 
   return (
-    <div>
+    <>
       <NavBar pagename="library" />
       <PageContainer>
-        <Title>E-북 도서읽기</Title>
+        <TitleContainer>
+          <Title>E-북 도서읽기</Title>
+          <Line />
+        </TitleContainer>
         <ViewerCard>
           <ViewerContent>
             <PDFWrapper>
@@ -35,49 +37,49 @@ const BookViewer = () => {
                 loading={<LoadingMessage />}
                 error={<ErrorMessage />}
               >
-                <Page 
-                  pageNumber={pageNumber} 
+                <Page
+                  pageNumber={pageNumber}
                   renderTextLayer={false}
                   renderAnnotationLayer={false}
                 />
               </Document>
               {numPages && (
                 <PageControls>
-                  <button
+                  <PageButton
                     disabled={pageNumber <= 1}
-                    onClick={() => setPageNumber(prev => prev - 1)}
+                    onClick={() => setPageNumber((prev) => prev - 1)}
                   >
                     이전
-                  </button>
-                  <span>
+                  </PageButton>
+                  <PageNumber>
                     {pageNumber} / {numPages}
-                  </span>
-                  <button
+                  </PageNumber>
+                  <PageButton
                     disabled={pageNumber >= numPages}
-                    onClick={() => setPageNumber(prev => prev + 1)}
+                    onClick={() => setPageNumber((prev) => prev + 1)}
                   >
                     다음
-                  </button>
+                  </PageButton>
                 </PageControls>
               )}
             </PDFWrapper>
           </ViewerContent>
         </ViewerCard>
       </PageContainer>
-    </div>
+    </>
   );
 };
 
 const LoadingMessage = () => (
-  <div style={{ textAlign: 'center', padding: '20px' }}>
-    <Book size={64} color="#DC3545" />
+  <div style={{ textAlign: "center", padding: "20px" }}>
+    <Book size={64} color="#BCBF1F" />
     <p>PDF를 불러오는 중입니다...</p>
   </div>
 );
 
 const ErrorMessage = () => (
-  <div style={{ textAlign: 'center', padding: '20px' }}>
-    <Book size={64} color="#DC3545" />
+  <div style={{ textAlign: "center", padding: "20px" }}>
+    <Book size={64} color="#BCBF1F" />
     <p>PDF를 불러오는데 실패했습니다.</p>
   </div>
 );
@@ -89,19 +91,34 @@ const PageContainer = styled.div`
   background: #fafafa;
 `;
 
+const TitleContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.3125rem;
+`;
+
 const Title = styled.div`
   font-size: 1.875rem;
-  font-weight: 600;
-  color: #333;
+  font-weight: 500;
+  color: ${({ theme }) => theme.colors.primary.main};
+  white-space: nowrap;
   margin-bottom: 2rem;
+  line-height: -6%;
+`;
+
+const Line = styled.div`
+  width: 100%;
+  height: 2px;
+  margin-top: -1.8rem;
+  background-color: ${({ theme }) => theme.colors.primary.light};
 `;
 
 const ViewerCard = styled.div`
   background: #f7f7f3;
   padding: 2rem;
   min-height: 600px;
-  border-radius: 0.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: ${({ theme }) => theme.borderRadius.md};
 `;
 
 const ViewerContent = styled.div`
@@ -136,23 +153,30 @@ const PDFWrapper = styled.div`
 
 const PageControls = styled.div`
   display: flex;
-  gap: 1rem;
+  gap: ${({ theme }) => theme.spacing.padding.sm};
   align-items: center;
   margin-top: 1rem;
+`;
 
-  button {
-    padding: 0.5rem 1rem;
-    background: #dc3545;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+const PageButton = styled.button`
+  width: 103px;
+  height: 37px;
+  background-color: ${({ disabled }) =>
+    disabled ? "#989971" : ({ theme }) => theme.colors.primary.light};
+  color: ${({ theme }) => theme.colors.text.white};
+  border: none;
+  border-radius: ${({ theme }) => theme.borderRadius.pill};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.extraBold};
+  font-family: ${({ theme }) => theme.typography.fontFamily.main};
+  font-size: ${({ theme }) => theme.typography.fontSize.xs};
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+`;
 
-    &:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-    }
-  }
+const PageNumber = styled.span`
+  font-family: ${({ theme }) => theme.typography.fontFamily.main};
+  font-size: ${({ theme }) => theme.typography.fontSize.md};
+  color: ${({ theme }) => theme.colors.text.primary};
+  padding: 0 ${({ theme }) => theme.spacing.padding.sm};
 `;
 
 export default BookViewer;
