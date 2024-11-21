@@ -306,22 +306,23 @@ const DashedLine = styled.div`
 
 const SectionWrapper = styled.div`
   display: flex;
-  gap: ${({ theme }) => theme.spacing.padding.sm}; // 14px gap
   width: 100%;
+  gap: 14px;
+  align-items: stretch;
 `;
 
 const Section = styled.div`
-  // section을 div로 변경
   display: flex;
   flex-direction: column;
-  align-items: center; // 세로 중앙정렬
-  flex: 353;
+  flex: 1 1 43%;
+  overflow: hidden;
 
   &:last-child {
-    flex: 462;
+    flex: 1 1 57%;
     background-color: ${({ theme }) => theme.colors.background.paper};
     padding: ${({ theme }) => theme.spacing.padding.lg};
     border-radius: ${({ theme }) => theme.borderRadius.md};
+    max-height: 100%;
   }
 `;
 
