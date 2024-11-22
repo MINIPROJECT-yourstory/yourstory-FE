@@ -3,6 +3,7 @@ import styled from "styled-components";
 import NavBar from "../../components/common/NavBar";
 import LibraryHeader from "../../components/library/LibraryHeader";
 import Letter from "../../components/library/Letter";
+import WriteLetter from "../../components/library/WriteLetter";
 
 const LetterBox = () => {
   return (
@@ -11,7 +12,7 @@ const LetterBox = () => {
       <PageContainer>
         <LibraryHeader />
         <LetterWrapper>
-          <HeaderTitle style={{ fontSize: "24px" }}>
+          <HeaderTitle style={{ fontSize: "1.5rem" }}>
             우편함
             <HeaderLine />
           </HeaderTitle>
@@ -20,10 +21,11 @@ const LetterBox = () => {
           </LetterContainer>
         </LetterWrapper>
         <WriteWrapper>
-          <HeaderTitle style={{ fontSize: "20px" }}>
+          <HeaderTitle style={{ fontSize: "1.25rem" }}>
             <span>나의 편지 남기기</span>
             <DashedLine />
           </HeaderTitle>
+          <WriteLetter />
         </WriteWrapper>
       </PageContainer>
     </div>
@@ -49,7 +51,7 @@ const HeaderTitle = styled.div`
   align-items: center;
   gap: 1rem;
   > span {
-    width: 150px;
+    width: 180px;
     margin-left: 1.3125rem;
   }
 `;
