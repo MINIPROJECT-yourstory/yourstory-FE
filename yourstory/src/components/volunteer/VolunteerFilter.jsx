@@ -205,12 +205,17 @@ const FilterContent = styled.div`
   margin: 0;
   padding: 0;
   height: 261px;
+  overflow: hidden;
 `;
 
 const TitlesContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: ${({ theme }) => theme.spacing.padding.lg};
+  background: ${({ theme }) => theme.colors.primary.main};
+  border-top-left-radius: ${({ theme }) => theme.borderRadius.sm}; // 추가
+  border-top-right-radius: ${({ theme }) => theme.borderRadius.sm}; // 추가
+  position: relative;
+  z-index: 1;
 
   ${media.laptop} {
     grid-template-columns: repeat(2, 1fr);

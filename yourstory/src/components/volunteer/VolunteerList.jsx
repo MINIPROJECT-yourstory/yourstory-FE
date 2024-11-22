@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import theme, { media } from "../../../src/styles/theme";
+import { useNavigate } from "react-router-dom";
 
 const VolunteerList = ({ searchResults, isSearched }) => {
   // 검색 전 상태
@@ -29,6 +30,12 @@ const VolunteerList = ({ searchResults, isSearched }) => {
 };
 
 const VolunteerCard = ({ data }) => {
+  const navigate = useNavigate();
+
+  const handleDetailClick = () => {
+    navigate(`/volunteer/${data.id}`);
+  };
+
   return (
     <CardContainer>
       <CardHeader>
@@ -53,7 +60,7 @@ const VolunteerCard = ({ data }) => {
             <InfoText>
               <InfoLabel>[봉사요일]</InfoLabel> {data.day}
             </InfoText>
-            <DetailButton>자세히 보기</DetailButton>
+            <DetailButton onClick={handleDetailClick}>자세히 보기</DetailButton>
           </InfoContainer>
         </HeaderRight>
       </CardHeader>

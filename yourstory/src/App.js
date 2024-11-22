@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
-import theme, { media } from './styles/theme';  
+import theme, { media } from "./styles/theme";
 
 // 메인 페이지들
 import Home from "./pages/Home";
@@ -11,7 +11,6 @@ import Login from "./pages/account/Login";
 import Register from "./pages/account/Register";
 
 // 봉사활동 관련 서브페이지들
-import VolunteerList from "./pages/volunteer/VolunteerList";
 import VolunteerDetail from "./pages/volunteer/VolunteerDetail";
 import VolunteerStatus from "./pages/volunteer/VolunteerStatus";
 import VolunteerDiary from "./pages/volunteer/VolunteerDiary";
@@ -32,27 +31,28 @@ function App() {
           <Route path="/register" element={<Register />} />
 
           {/* 메인 레이아웃 */}
-          <Route>
-            <Route path="/" element={<Home />} />
+          <Route path="/">
+            <Route index element={<Home />} />
 
             {/* 봉사활동 */}
-            <Route path="/volunteer">
+            <Route path="volunteer">
               <Route index element={<Volunteer />} />
-              <Route path="list" element={<VolunteerList />} />
               <Route path=":id" element={<VolunteerDetail />} />
               <Route path="status" element={<VolunteerStatus />} />
               <Route path="diary" element={<VolunteerDiary />} />
             </Route>
 
             {/* 이타적 도서관 */}
-            <Route path="/library" element={<Library />} />
-          <Route path="/library/book/:id" element={<BookDetail />} />
-            <Route path="/library/book/:id/view" element={<BookViewer />} />
-            <Route path="/library/letter/:id" element={<LetterBox />} />
-            <Route path="/library/letter/:id/write" element={<WriteLetter />} />
+            <Route path="library">
+              <Route index element={<Library />} />
+              <Route path="book/:id" element={<BookDetail />} />
+              <Route path="book/:id/view" element={<BookViewer />} />
+              <Route path="letter/:id" element={<LetterBox />} />
+              <Route path="letter/:id/write" element={<WriteLetter />} />
+            </Route>
 
             {/* 우리의 이야기 */}
-            <Route path="/story">
+            <Route path="story">
               <Route index element={<Story />} />
             </Route>
           </Route>
