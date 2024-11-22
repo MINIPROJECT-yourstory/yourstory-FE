@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
-import theme, { media } from './styles/theme';  
+import theme, { media } from "./styles/theme";
 
 // 메인 페이지들
 import Home from "./pages/Home";
@@ -20,7 +20,6 @@ import VolunteerDiary from "./pages/volunteer/VolunteerDiary";
 import BookDetail from "./pages/library/BookDetail";
 import BookViewer from "./pages/library/BookViewer";
 import LetterBox from "./pages/library/LetterBox";
-import WriteLetter from "./pages/library/WriteLetter";
 
 function App() {
   return (
@@ -46,10 +45,9 @@ function App() {
 
             {/* 이타적 도서관 */}
             <Route path="/library" element={<Library />} />
-          <Route path="/library/book/:id" element={<BookDetail />} />
+            <Route path="/library/book/:id" element={<BookDetail />} />
             <Route path="/library/book/:id/view" element={<BookViewer />} />
             <Route path="/library/letter/:id" element={<LetterBox />} />
-            <Route path="/library/letter/:id/write" element={<WriteLetter />} />
 
             {/* 우리의 이야기 */}
             <Route path="/story">
