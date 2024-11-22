@@ -51,7 +51,7 @@ const HeaderTitle = styled.div`
   align-items: center;
   gap: 1rem;
   > span {
-    width: 180px;
+    width: 11rem;
     margin-left: 1.3125rem;
   }
 `;
