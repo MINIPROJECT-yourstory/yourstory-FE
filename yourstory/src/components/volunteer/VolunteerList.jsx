@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import theme, { media } from "../../../src/styles/theme";
 import { useNavigate } from "react-router-dom";
+import DecoratedTitle from "../common/DecoratedTitle";
 
 const VolunteerList = ({ searchResults, isSearched }) => {
   // 검색 전 상태
@@ -8,24 +9,26 @@ const VolunteerList = ({ searchResults, isSearched }) => {
     return null;
   }
 
-  // 검색 결과가 없는 경우
-  if (searchResults.length === 0) {
-    return (
-      <ListContainer>
-        <EmptyStateContainer>
-          <EmptyStateMessage>검색 결과가 없습니다.</EmptyStateMessage>
-        </EmptyStateContainer>
-      </ListContainer>
-    );
-  }
-
-  // 검색 결과가 있는 경우
   return (
-    <ListContainer>
-      {searchResults.map((volunteer) => (
-        <VolunteerCard key={volunteer.id} data={volunteer} />
-      ))}
-    </ListContainer>
+    <>
+      <DecoratedTitle
+        frontText="봉사 신청"
+        frontWeight="400"
+        middleText="봉사 조회"
+        middleWeight="bold"
+      />
+      <ListContainer>
+        {searchResults.length === 0 ? (
+          <EmptyStateContainer>
+            <EmptyStateMessage>검색 결과가 없습니다.</EmptyStateMessage>
+          </EmptyStateContainer>
+        ) : (
+          searchResults.map((volunteer) => (
+            <VolunteerCard key={volunteer.id} data={volunteer} />
+          ))
+        )}
+      </ListContainer>
+    </>
   );
 };
 

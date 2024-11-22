@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { media } from "../../../src/styles/theme";
 import { useState } from "react";
+import DecoratedTitle from "../common/DecoratedTitle";
 
 const VolunteerFilter = ({ onSearch }) => {
   const [filters, setFilters] = useState({
@@ -42,7 +43,7 @@ const VolunteerFilter = ({ onSearch }) => {
 
   return (
     <FilterContainer>
-      <FilterTitle>봉사 신청</FilterTitle>
+      <DecoratedTitle frontText="봉사 신청" frontWeight="bold" />
       <FilterContent>
         <TitlesContainer>
           <FilterSectionTitle>봉사 지역/센터</FilterSectionTitle>
@@ -236,22 +237,6 @@ const Button = styled.button`
 
 const FilterContainer = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing.padding.lg};
-`;
-
-const FilterTitle = styled.div`
-  padding: ${({ theme }) =>
-    `${theme.spacing.padding.sm} ${theme.spacing.padding.lg}`};
-  background-color: ${({ theme }) => theme.colors.primary.light};
-  color: ${({ theme }) => theme.colors.text.white};
-  font-size: ${({ theme }) => theme.typography.fontSize.lg};
-  margin-bottom: 32px;
-  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
-  border-radius: ${({ theme }) => theme.borderRadius.pill};
-
-  ${media.tablet} {
-    font-size: ${({ theme }) => theme.typography.fontSize.sm};
-    padding: ${({ theme }) => `0.75rem 1.5rem`};
-  }
 `;
 
 const FilterGrid = styled.div`
