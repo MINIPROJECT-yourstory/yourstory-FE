@@ -4,6 +4,7 @@ import NavBar from "../../components/common/NavBar";
 import DecoratedTitle from "../../components/common/DecoratedTitle";
 import VolunteerHeader from "../../components/volunteer/VolunteerHeader";
 import { media } from "../../styles/theme";
+import VolunteerInfo from "../../components/volunteer/VolunteerInfo";
 
 const VolunteerDetail = () => {
   return (
@@ -20,8 +21,11 @@ const VolunteerDetail = () => {
           backWeight="bold"
         />
         <ContentContainer>
-          {/* 여기에 상세 내용 컴포넌트들이 들어갈 예정 */}
+          <VolunteerInfo />
         </ContentContainer>
+        <ApplyButtonContainer>
+          <ApplyButton>신청하기</ApplyButton>
+        </ApplyButtonContainer>
       </PageContainer>
     </>
   );
@@ -47,7 +51,25 @@ const ContentContainer = styled.div`
   background: #ffffff;
   border-radius: 17px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
+`;
+
+const ApplyButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 54.21px;
+`;
+
+const ApplyButton = styled.button`
+  width: 226px;
+  height: 67.39px;
+  background-color: #ced118;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 50px;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 `;
 
 export default VolunteerDetail;
