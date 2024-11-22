@@ -64,17 +64,18 @@ const WriteLetter = () => {
 export default WriteLetter;
 
 const Wrapper = styled.div`
-  height: 13.0625rem;
+  height: 12rem;
   background-color: #eaf0c3;
   border-radius: ${({ theme }) => theme.borderRadius.md};
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 2rem 2.5rem;
+  padding: 1rem 2.5rem;
 `;
 
 const TitleInput = styled.input`
-  padding: 0rem 0.5rem 1rem 0.5rem;
+  font-family: Inter;
+  padding: 0.4rem 0.5rem 0.7rem 0.5rem;
   color: ${({ theme }) => theme.colors.primary.main};
   font-size: ${({ theme }) => theme.typography.fontSize.lg};
   font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
@@ -90,6 +91,7 @@ const TitleInput = styled.input`
 `;
 
 const ContentTextArea = styled.textarea`
+  font-family: Inter;
   padding: 0rem 0.5rem 1rem 0.5rem;
   color: ${({ theme }) => theme.colors.primary.main};
   font-size: ${({ theme }) => theme.typography.fontSize.sm};
@@ -107,6 +109,7 @@ const ContentTextArea = styled.textarea`
 `;
 
 const WriteBtn = styled.button`
+  font-family: Inter;
   width: 110px;
   height: 37px;
   border-radius: 50px;

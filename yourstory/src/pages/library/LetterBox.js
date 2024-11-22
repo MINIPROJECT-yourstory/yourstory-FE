@@ -67,7 +67,7 @@ const LetterContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.primary.light};
   border-radius: ${({ theme }) => theme.borderRadius.md};
   margin-top: ${({ theme }) => theme.spacing.padding.md};
-  min-height: 13.5625rem;
+  min-height: 11.5rem;
   overflow-y: scroll;
 `;
 
