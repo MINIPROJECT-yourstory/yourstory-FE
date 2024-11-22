@@ -78,6 +78,7 @@ const Wrapper = styled.div`
   font-weight: 400;
   line-height: 24.2px;
   letter-spacing: -0.06em;
+  z-index: 9998;
 `;
 
 const Container = styled.div`

@@ -1,11 +1,7 @@
-import React from 'react';
+import React from "react";
 
 const VolunteerDiary = () => {
-    return (
-        <div>
-            봉사활동 일지
-        </div>
-    );
+  return <div>자서전 기록장</div>;
 };
 
 export default VolunteerDiary;

@@ -1,11 +1,7 @@
-import React from 'react';
+import React from "react";
 
 const VolunteerStatus = () => {
-    return (
-        <div>
-            봉사 센터 상태
-        </div>
-    );
+  return <div>봉사 활동 현황</div>;
 };
 
 export default VolunteerStatus;
