@@ -1,21 +1,27 @@
-import React from 'react';
-import styled from 'styled-components';
-import theme, { media } from '../../../src/styles/theme';
-
+import React from "react";
+import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
+import theme, { media } from "../../../src/styles/theme";
 
 const VolunteerHeader = () => {
+  const navigate = useNavigate();
+
+  const handleVolunteerClick = () => {
+    navigate("/volunteer");
+  };
+
   return (
     <HeaderContainer>
-    <HeaderTitle>
-      봉사 활동
+      <HeaderTitle>
+        봉사 활동
+        <HeaderLine />
+      </HeaderTitle>
+      <ButtonGroup>
+        <ActiveButton onClick={handleVolunteerClick}>봉사 신청</ActiveButton>
+        <InactiveButton>봉사 현황</InactiveButton>
+      </ButtonGroup>
       <HeaderLine />
-    </HeaderTitle>
-    <ButtonGroup>
-      <ActiveButton>봉사 신청</ActiveButton>
-      <InactiveButton>봉사 현황</InactiveButton>
-    </ButtonGroup>
-    <HeaderLine />
-  </HeaderContainer>
+    </HeaderContainer>
   );
 };
 
@@ -26,10 +32,10 @@ const HeaderContainer = styled.div`
 
 const HeaderLine = styled.div`
   border-bottom: 2px solid var(--green);
-  flex: 1; 
+  flex: 1;
   height: 1px;
 
-  &:last-child {  
+  &:last-child {
     margin-top: -1px;
   }
 `;
@@ -52,12 +58,12 @@ const HeaderTitle = styled.div`
 const ButtonGroup = styled.div`
   display: flex;
   justify-content: flex-end;
-  width: 100%;  
-  margin-top: -19px;  
-  
+  width: 100%;
+  margin-top: -19px;
+
   ${media.tablet} {
     margin-top: 20px;
-    justify-content: flex-end; 
+    justify-content: flex-end;
     position: relative;
     z-index: 1;
   }
