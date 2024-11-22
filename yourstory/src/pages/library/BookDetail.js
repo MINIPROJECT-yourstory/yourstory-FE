@@ -99,7 +99,7 @@ const BookDetail = () => {
   };
 
   const handleWriteLetter = () => {
-    navigate(`/library/letter/${id}/write`);
+    navigate(`/library/letter/${id}`);
   };
 
   return (
