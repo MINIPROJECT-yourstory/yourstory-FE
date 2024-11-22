@@ -35,7 +35,7 @@ const LetterBox = () => {
 export default LetterBox;
 
 const PageContainer = styled.div`
-  padding: 81px 5%;
+  padding: 81px 7%;
   margin-left: 16.5625rem;
   font-family: Inter;
 `;
