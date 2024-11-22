@@ -98,7 +98,7 @@ const TitleText = styled.div`
   ${({ $width }) => {
     if ($width === "25%") {
       return `
-        left: 7.8rem; 
+        left: 38%; 
       `;
     }
     if ($width === "70%") {
@@ -119,7 +119,7 @@ const TitleText = styled.div`
     ${({ $width }) => {
       if ($width === "25%") {
         return `
-          left: 5.8rem;  
+          left: 38%;  
         `;
       }
       if ($width === "70%") {
@@ -139,7 +139,7 @@ const TitleText = styled.div`
     ${({ $width }) => {
       if ($width === "25%") {
         return `
-          left: 3.8rem; 
+          left: 38%; 
         `;
       }
       if ($width === "70%") {
