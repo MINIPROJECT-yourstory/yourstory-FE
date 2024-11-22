@@ -52,92 +52,141 @@ const VolunteerFilter = ({ onSearch }) => {
 
         <FilterGrid>
           <CheckboxGroup>
-            <CheckboxLabel>
-              <Checkbox
+            <LocationStatusLabel>
+              <input
                 type="checkbox"
                 checked={filters.location.includes("전체")}
                 onChange={() => handleCheckboxChange("location", "전체")}
               />
               <span>전체</span>
-            </CheckboxLabel>
-            <CheckboxLabel>
-              <Checkbox
+            </LocationStatusLabel>
+            <LocationStatusLabel>
+              <input
                 type="checkbox"
                 checked={filters.location.includes("남일면")}
                 onChange={() => handleCheckboxChange("location", "남일면")}
               />
               <span>남일면</span>
-            </CheckboxLabel>
-            <CheckboxLabel>
-              <Checkbox
+            </LocationStatusLabel>
+            <LocationStatusLabel>
+              <input
                 type="checkbox"
                 checked={filters.location.includes("남이면")}
                 onChange={() => handleCheckboxChange("location", "남이면")}
               />
               <span>남이면</span>
-            </CheckboxLabel>
-            <CheckboxLabel>
-              <Checkbox
+            </LocationStatusLabel>
+            <LocationStatusLabel>
+              <input
                 type="checkbox"
                 checked={filters.location.includes("진산면")}
                 onChange={() => handleCheckboxChange("location", "진산면")}
               />
               <span>진산면</span>
-            </CheckboxLabel>
+            </LocationStatusLabel>
+            <LocationStatusLabel>
+              <input
+                type="checkbox"
+                checked={filters.location.includes("금성면")}
+                onChange={() => handleCheckboxChange("location", "금성면")}
+              />
+              <span>금성면</span>
+            </LocationStatusLabel>
+            <LocationStatusLabel>
+              <input
+                type="checkbox"
+                checked={filters.location.includes("군북면")}
+                onChange={() => handleCheckboxChange("location", "군북면")}
+              />
+              <span>군북면</span>
+            </LocationStatusLabel>
+            <LocationStatusLabel>
+              <input
+                type="checkbox"
+                checked={filters.location.includes("복수면")}
+                onChange={() => handleCheckboxChange("location", "복수면")}
+              />
+              <span>복수면</span>
+            </LocationStatusLabel>
+            <LocationStatusLabel>
+              <input
+                type="checkbox"
+                checked={filters.location.includes("부리면")}
+                onChange={() => handleCheckboxChange("location", "부리면")}
+              />
+              <span>부리면</span>
+            </LocationStatusLabel>
+            <LocationStatusLabel>
+              <input
+                type="checkbox"
+                checked={filters.location.includes("제원면")}
+                onChange={() => handleCheckboxChange("location", "제원면")}
+              />
+              <span>제원면</span>
+            </LocationStatusLabel>
+            <LocationStatusLabel>
+              <input
+                type="checkbox"
+                checked={filters.location.includes("추부면")}
+                onChange={() => handleCheckboxChange("location", "추부면")}
+              />
+              <span>추부면</span>
+            </LocationStatusLabel>
           </CheckboxGroup>
 
           <CheckboxGroup>
-            <CheckboxLabel>
-              <Checkbox
+            <LocationStatusLabel>
+              <input
                 type="checkbox"
                 checked={filters.status.includes("전체")}
                 onChange={() => handleCheckboxChange("status", "전체")}
               />
               <span>전체</span>
-            </CheckboxLabel>
-            <CheckboxLabel>
-              <Checkbox
+            </LocationStatusLabel>
+            <LocationStatusLabel>
+              <input
                 type="checkbox"
                 checked={filters.status.includes("모집중")}
                 onChange={() => handleCheckboxChange("status", "모집중")}
               />
               <span>모집중</span>
-            </CheckboxLabel>
-            <CheckboxLabel>
-              <Checkbox
+            </LocationStatusLabel>
+            <LocationStatusLabel>
+              <input
                 type="checkbox"
                 checked={filters.status.includes("모집 완료")}
                 onChange={() => handleCheckboxChange("status", "모집 완료")}
               />
               <span>모집 완료</span>
-            </CheckboxLabel>
+            </LocationStatusLabel>
           </CheckboxGroup>
 
           <CheckboxGroup>
-            <CheckboxLabel>
-              <Checkbox
+            {" "}
+            <DayCheckboxLabel>
+              <DayCheckbox
                 type="checkbox"
                 checked={filters.day.includes("전체")}
                 onChange={() => handleCheckboxChange("day", "전체")}
               />
               <span>전체</span>
-            </CheckboxLabel>
-            <CheckboxLabel>
-              <Checkbox
+            </DayCheckboxLabel>
+            <DayCheckboxLabel>
+              <DayCheckbox
                 type="checkbox"
                 checked={filters.day.includes("평일")}
                 onChange={() => handleCheckboxChange("day", "평일")}
               />
               <span>평일</span>
-            </CheckboxLabel>
-            <CheckboxLabel>
-              <Checkbox
+            </DayCheckboxLabel>
+            <DayCheckboxLabel>
+              <DayCheckbox
                 type="checkbox"
                 checked={filters.day.includes("주말")}
                 onChange={() => handleCheckboxChange("day", "주말")}
               />
               <span>주말</span>
-            </CheckboxLabel>
+            </DayCheckboxLabel>
           </CheckboxGroup>
         </FilterGrid>
       </FilterContent>
@@ -150,16 +199,18 @@ const VolunteerFilter = ({ onSearch }) => {
 };
 
 const FilterContent = styled.div`
-  background: ${({ theme }) => theme.colors.primary.main}; // #BCBF1F
-  border-radius: ${({ theme }) => theme.borderRadius.sm}; // 17px
+  background: ${({ theme }) => theme.colors.primary.main};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  box-shadow: 0 0 30px 3px rgba(0, 0, 0, 0.15);
   margin: 0;
   padding: 0;
+  height: 261px;
 `;
 
 const TitlesContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: ${({ theme }) => theme.spacing.padding.lg}; // 2rem
+  gap: ${({ theme }) => theme.spacing.padding.lg};
 
   ${media.laptop} {
     grid-template-columns: repeat(2, 1fr);
@@ -185,10 +236,10 @@ const FilterContainer = styled.div`
 const FilterTitle = styled.div`
   padding: ${({ theme }) =>
     `${theme.spacing.padding.sm} ${theme.spacing.padding.lg}`};
-  background-color: ${({ theme }) => theme.colors.primary.light}; // #CED118
+  background-color: ${({ theme }) => theme.colors.primary.light};
   color: ${({ theme }) => theme.colors.text.white};
-  font-size: ${({ theme }) => theme.typography.fontSize.lg}; // 20px
-  margin-bottom: ${({ theme }) => theme.spacing.padding.sm};
+  font-size: ${({ theme }) => theme.typography.fontSize.lg};
+  margin-bottom: 32px;
   font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
   border-radius: ${({ theme }) => theme.borderRadius.pill};
 
@@ -202,16 +253,55 @@ const FilterGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: ${({ theme }) => theme.spacing.padding.lg};
-  background: ${({ theme }) => theme.colors.background.default}; // white
-  padding: ${({ theme }) => theme.spacing.padding.lg};
+  background: #f3f3f3;
+  padding: 25px 35px;
   border-radius: ${({ theme }) => theme.borderRadius.xs};
+  position: relative;
+
+  // 첫 번째 구분선
+  &::before {
+    content: "";
+    position: absolute;
+    left: calc(33.33%);
+    top: 1rem;
+    bottom: 1rem;
+    width: 2px;
+    background-color: #bcbf1f;
+  }
+
+  // 두 번째 구분선
+  &::after {
+    content: "";
+    position: absolute;
+    left: calc(66.66%);
+    top: 1rem;
+    bottom: 1rem;
+    width: 2px;
+    background-color: #bcbf1f;
+  }
 
   ${media.laptop} {
     grid-template-columns: repeat(2, 1fr);
+
+    // 태블릿 크기에서는 첫 번째 구분선만 표시
+    &::before {
+      left: 50%;
+    }
+
+    // 두 번째 구분선 숨기기
+    &::after {
+      display: none;
+    }
   }
 
   ${media.tablet} {
     grid-template-columns: 1fr;
+
+    // 모바일에서는 구분선 모두 숨기기
+    &::before,
+    &::after {
+      display: none;
+    }
   }
 `;
 
@@ -227,32 +317,102 @@ const FilterSectionTitle = styled.h3`
 const CheckboxGroup = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-`;
-
-const CheckboxLabel = styled.label`
-  display: flex;
+  gap: 24px;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing.padding.xs};
-  cursor: pointer;
-  color: ${({ theme }) => theme.colors.text.secondary}; // #666
+  text-align: center;
 
-  &:hover {
-    color: ${({ theme }) => theme.colors.text.primary}; // #333
+  &:first-child {
+    max-height: 150px;
+    overflow-y: auto;
+
+    // 스크롤바 스타일링 (선택사항)
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 3px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #bcbf1f;
+      border-radius: 3px;
+    }
   }
 `;
 
-const Checkbox = styled.input`
+const LocationStatusLabel = styled.label`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: ${({ theme }) => theme.spacing.padding.xs};
+  cursor: pointer;
+  color: ${({ theme }) => theme.colors.text.secondary};
+  width: 100%;
+
+  input {
+    display: none;
+  }
+
+  span {
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  input:checked + span {
+    color: #bcbf1f;
+    font-weight: 500;
+  }
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.text.primary};
+  }
+`;
+
+const DayCheckboxLabel = styled.label`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: ${({ theme }) => theme.spacing.padding.xs};
+  cursor: pointer;
+  color: ${({ theme }) => theme.colors.text.secondary};
+  width: 100%;
+
+  span {
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.text.primary};
+  }
+`;
+
+const DayCheckbox = styled.input`
+  appearance: none;
   width: 16px;
   height: 16px;
+  border: 1px solid #ced118;
+  border-radius: 3px;
   cursor: pointer;
+  margin: 0;
+
+  &:checked {
+    background-color: #ced118;
+    border-color: #ced118;
+  }
+
+  &:focus {
+    outline: none;
+  }
 `;
 
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: ${({ theme }) => theme.spacing.padding.sm};
-  margin-top: ${({ theme }) => theme.spacing.padding.sm};
+  margin-top: 40px;
   padding: 0 0.5rem;
 `;
 
