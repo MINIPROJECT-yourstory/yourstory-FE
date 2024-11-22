@@ -97,27 +97,62 @@ const TitleText = styled.div`
 
   ${({ $width }) => {
     if ($width === "25%") {
-      // FrontLayer 텍스트
       return `
-        left: 110px; 
+        left: 7.8rem; 
       `;
     }
     if ($width === "70%") {
-      // MiddleLayer 텍스트
       return `
-        left: 235px;
+        left: 37%; 
       `;
     }
     if ($width === "100%") {
-      // BackgroundLayer 텍스트
       return `
-        right: 800px;
+        left: 34%; 
       `;
     }
   }}
 
   ${({ theme }) => theme.media.tablet} {
     font-size: ${({ theme }) => theme.typography.fontSize.sm};
+
+    ${({ $width }) => {
+      if ($width === "25%") {
+        return `
+          left: 5.8rem;  
+        `;
+      }
+      if ($width === "70%") {
+        return `
+          left: 37%; 
+        `;
+      }
+      if ($width === "100%") {
+        return `
+          left: 34%; 
+        `;
+      }
+    }}
+  }
+
+  ${({ theme }) => theme.media.mobile} {
+    ${({ $width }) => {
+      if ($width === "25%") {
+        return `
+          left: 3.8rem; 
+        `;
+      }
+      if ($width === "70%") {
+        return `
+          left: 37%; 
+        `;
+      }
+      if ($width === "100%") {
+        return `
+          left: 34%; 
+        `;
+      }
+    }}
   }
 `;
 
