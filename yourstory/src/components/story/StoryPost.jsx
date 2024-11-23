@@ -62,6 +62,8 @@ const Category = styled.div`
 const Photo = styled.img`
   width: 248px;
   height: 248px;
+  object-fit: cover;
+  object-position: center;
 `;
 const Title = styled.div`
   color: #4b4b4b;
