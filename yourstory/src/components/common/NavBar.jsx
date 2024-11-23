@@ -30,18 +30,19 @@ const NavBar = ({ pagename }) => {
     window.location.reload();
   };
   useEffect(() => {
-    axios
-      .get(`${baseURL}/name`, {
-        headers: {
-          Authorization: `Bearer ${access}`,
-        },
-      })
-      .then((response) => {
+    const fetchUsername = async () => {
+      try {
+        const response = await axios.get(`${baseURL}/name`, {
+          headers: {
+            Authorization: `Bearer ${access}`,
+          },
+        });
         setUsername(response.data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.log(error);
-      });
+      }
+    };
+    fetchUsername();
   }, [username, access, baseURL]);
 
   return (
