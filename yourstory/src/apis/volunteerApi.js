@@ -156,26 +156,36 @@ export const volunteerApi = {
   // 자서전 작성
   createRecord: async (recordData) => {
     try {
-      console.log("자서전 작성 시작, 전송할 데이터:", recordData); // 데이터 확인용 로그
+      console.log("자서전 작성 API 호출 - 데이터:", recordData);
       const headers = getAuthHeader();
+      console.log("사용할 헤더:", headers);
 
-      // API 요청 형식에 맞게 데이터 구조화
+      // username 추가
+      const token = localStorage.getItem("access");
+      const base64Url = token.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      const payload = JSON.parse(window.atob(base64));
+      const username = payload.username;
+
       const requestData = {
-        conditionId: recordData.conditionId,
-        date: recordData.date,
-        content: recordData.content,
+        ...recordData,
+        username, // username 추가
       };
+
+      console.log("최종 요청 데이터:", requestData);
 
       const response = await axios.post(`${baseURL}/work/record`, requestData, {
         headers,
       });
 
-      console.log("자서전 작성 성공:", response.data);
+      console.log("API 응답:", response.data);
       return response.data;
     } catch (error) {
-      console.error("자서전 작성 실패:", error);
+      console.error("API 에러 상세:", error.response?.data);
       if (error.response?.status === 403) {
-        throw new Error("자서전 작성 권한이 없습니다.");
+        throw new Error(
+          error.response.data?.message || "자서전 작성 권한이 없습니다."
+        );
       }
       throw error;
     }
@@ -186,14 +196,32 @@ export const volunteerApi = {
     try {
       console.log(`자서전 상세 조회 시작 - ID: ${conditionId}, Date: ${date}`);
       const headers = getAuthHeader();
+
+      // 토큰에서 username 추출 (필요한 경우)
+      const token = localStorage.getItem("access");
+      const base64Url = token.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      const payload = JSON.parse(window.atob(base64));
+      const username = payload.username;
+
       const response = await axios.get(
-        `${baseURL}/work/record/by-condition-and-date?conditionId=${conditionId}&date=${date}`,
-        { headers }
+        `${baseURL}/work/record/by-condition-and-date`,
+        {
+          headers,
+          params: {
+            conditionId,
+            date,
+            username, // 필요한 경우 username 추가
+          },
+        }
       );
       console.log("자서전 상세 조회 성공:", response.data);
       return response.data;
     } catch (error) {
       console.error("자서전 상세 조회 실패:", error);
+      if (error.response?.status === 404) {
+        return null; // 기록이 없는 경우
+      }
       throw error;
     }
   },
