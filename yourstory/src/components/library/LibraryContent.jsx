@@ -83,42 +83,45 @@ const LibraryContent = () => {
   return (
     <ContentWrapper>
       <BookList>
-        {books.map((book) => (
-          <BookCard key={book.id}>
-            <BookInfo>
-              <div>
-                <BookTitle>{book.addressee} 어르신의 이야기,</BookTitle>
-                <BookSubtitle>{book.title}</BookSubtitle>
-              </div>
+        {books.map((book, index) => (
+          <React.Fragment key={book.id}>
+            <BookCard>
+              <BookInfo>
+                <Titlediv>
+                  <BookTitle>{book.addressee} 어르신의 이야기,</BookTitle>
+                  <BookSubtitle>{book.title}</BookSubtitle>
+                </Titlediv>
 
-              <StatsContainer>
-                <Stat onClick={() => handleLike(book.id)}>
-                  <Heart
-                    fill={book.isLike ? "white" : "none"}
-                    color="white"
-                    size={20}
-                  />
-                  <span>{book.likes}</span>
-                </Stat>
-                <Stat>
-                  <Mail
-                    fill={book.isMine ? "white" : "none"}
-                    color="white"
-                    size={20}
-                    onClick={() => handleMailClick(book.id)}
-                  />
-                  <span>{book.letters}</span>
-                </Stat>
-              </StatsContainer>
-            </BookInfo>
+                <StatsContainer>
+                  <Stat onClick={() => handleLike(book.id)}>
+                    <Heart
+                      fill={book.isLike ? "white" : "none"}
+                      color="white"
+                      size={20}
+                    />
+                    <span>{book.likes}</span>
+                  </Stat>
+                  <Stat>
+                    <Mail
+                      fill={book.isMine ? "white" : "none"}
+                      color="white"
+                      size={20}
+                      onClick={() => handleMailClick(book.id)}
+                    />
+                    <span>{book.letters}</span>
+                  </Stat>
+                </StatsContainer>
+              </BookInfo>
 
-            <ImageContainer>
-              <BookImage src={book.imgPath} alt={book.title} />
-              <ViewButton onClick={() => handleBookView(book.id)}>
-                도서 보기
-              </ViewButton>
-            </ImageContainer>
-          </BookCard>
+              <ImageContainer>
+                <BookImage src={book.imgPath} alt={book.title} />
+                <ViewButton onClick={() => handleBookView(book.id)}>
+                  도서 보기
+                </ViewButton>
+              </ImageContainer>
+            </BookCard>
+            {index < books.length - 1 && <DashedLine />}
+          </React.Fragment>
         ))}
       </BookList>
     </ContentWrapper>
@@ -143,8 +146,9 @@ const EmptyContainer = styled.div`
 `;
 
 const BookList = styled.div`
-  display: grid;
-  gap: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 `;
 
 const BookCard = styled.div`
@@ -154,6 +158,7 @@ const BookCard = styled.div`
   border-radius: 17px;
   overflow: hidden;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  height: 306px;
 
   ${media.tablet} {
     flex-direction: column;
@@ -161,26 +166,35 @@ const BookCard = styled.div`
 `;
 
 const BookInfo = styled.div`
-  flex-grow: 1;
+  flex: 1;
   padding: 1.5rem;
+  padding-right: 60px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  min-width: 0;
+  align-items: flex-end;
 `;
 
-const BookTitle = styled.h2`
+const Titlediv = styled.div`
+  gap: 20px;
+``
+`;
+
+const BookTitle = styled.div`
   color: white;
-  font-size: 1.125rem;
-  margin-bottom: 0.5rem;
+  font-size: 20px;
   font-family: Inter;
+  text-shadow: 0px 0px 9.1px rgba(0, 0, 0, 0.16);
 `;
 
-const BookSubtitle = styled.h3`
+const BookSubtitle = styled.div`
   color: white;
-  font-size: 1.5rem;
+  font-size: 32px;
   font-weight: bold;
   margin-bottom: 1rem;
   font-family: Inter;
+  text-shadow: 0px 0px 9.1px rgba(0, 0, 0, 0.16);
 `;
 
 const StatsContainer = styled.div`
@@ -201,8 +215,9 @@ const Stat = styled.div`
 `;
 
 const ImageContainer = styled.div`
-  width: 20rem;
+  width: 379px;
   position: relative;
+  flex-shrink: 0;
 
   ${media.tablet} {
     width: 100%;
@@ -218,6 +233,8 @@ const BookImage = styled.img`
 
 const ViewButton = styled.button`
   position: absolute;
+  width: 170px;
+  height: 42.95px;
   bottom: 1rem;
   right: 1rem;
   background-color: #ced118;
@@ -225,14 +242,24 @@ const ViewButton = styled.button`
   padding: 0.5rem 1.5rem;
   border: none;
   border-radius: 50px;
-  font-size: 0.875rem;
+  font-size: 20px;
   font-weight: bold;
+  letter-spacing: -0.02em;
   cursor: pointer;
   transition: all 0.2s ease;
 
   &:hover {
     opacity: 0.9;
   }
+`;
+
+const DashedLine = styled.div`
+  width: 100%;
+  height: 2px;
+  margin: 70px 0;
+  background-image: linear-gradient(to right, #ced118 50%, transparent 50%);
+  background-size: 10px 2px;
+  background-repeat: repeat-x;
 `;
 
 export default LibraryContent;

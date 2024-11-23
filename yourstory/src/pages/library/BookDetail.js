@@ -36,15 +36,19 @@ const BookDetail = () => {
 
   const handleLike = async () => {
     try {
+      let updatedLikes;
       if (bookDetail.isLike) {
-        await bookApi.deleteLike(id);
+        updatedLikes = await bookApi.deleteLike(id);
       } else {
-        await bookApi.createLike(id);
+        updatedLikes = await bookApi.createLike(id);
       }
 
-      // 좋아요 상태 업데이트를 위해 상세 정보 다시 조회
-      const response = await bookApi.getBookDetail(id);
-      setBookDetail(response.data);
+      // 좋아요 상태
+      setBookDetail((prev) => ({
+        ...prev,
+        likes: updatedLikes,
+        isLike: !prev.isLike,
+      }));
     } catch (error) {
       console.error("좋아요 처리 실패:", error);
     }
@@ -58,7 +62,17 @@ const BookDetail = () => {
     navigate(`/letter/${id}`);
   };
 
-  if (isLoading || !bookDetail) return <div>로딩 중...</div>;
+  const LoadingContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: ${({ theme }) => theme.colors.text.primary};
+  `;
+
+  if (isLoading || !bookDetail) {
+    return <LoadingContainer>도서 상세 정보를 불러오는 중...</LoadingContainer>;
+  }
 
   return (
     <>
@@ -344,6 +358,15 @@ const Description = styled.p`
   color: #7f810d;
   line-height: ${({ theme }) => theme.typography.lineHeight.relaxed};
   white-space: pre-line;
+  word-break: keep-all;
+  width: 100%;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+  padding: 0 1rem;
 `;
 
 const MailboxHeader = styled.div`
