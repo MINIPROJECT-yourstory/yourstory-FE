@@ -1,63 +1,83 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import Thumbn from "../../assets/images/sample-thumbnail.png";
+import axios from "axios";
+// import Thumbn from "../../assets/images/sample-thumbnail.png";
 
-const MOCK_STORYS = [
-  {
-    id: 1,
-    category: "나누는 이야기",
-    img: Thumbn,
-    title: "기쁨으로 맞이하는 내일, 김금자 어르신의 이야기",
-    content:
-      "김금자 어르신(86)의 이야기, 이타적 자서전을 통해 살펴보았습니다. 현재 86세를 넘긴 금자 어르신은 세월의 무게를 간직한 분이지만, 여전히 하루하루를 활기차게 맞이하며 순간의 기쁨을 찾기 위해 노력하십니다. 이타적 자서전은 경제적 성과나 사회적 지위를 넘어, 어르신 그 자체의 이야기를 담아내는 데 초점을 맞췄습니다. 여기에서는 그런 어르신의 하루와 기쁨을 다채로운 이야기로 엮어 소개합니다.",
-  },
-  {
-    id: 2,
-    category: "소식과 이야기",
-    img: Thumbn,
-    title: "기쁨으로 맞이하는 내일, 김금자 어르신의 이야기",
-    content:
-      "김금자 어르신(86)의 이야기, 이타적 자서전을 통해 살펴보았습니다. 현재 86세를 넘긴 금자 어르신은 세월의 무게를 간직한 분이지만, 여전히 하루하루를 활기차게 맞이하며 순간의 기쁨을 찾기 위해 노력하십니다. 이타적 자서전은 경제적 성과나 사회적 지위를 넘어, 어르신 그 자체의 이야기를 담아내는 데 초점을 맞췄습니다. 여기에서는 그런 어르신의 하루와 기쁨을 다채로운 이야기로 엮어 소개합니다.",
-  },
-  {
-    id: 3,
-    category: "소식과 이야기",
-    img: Thumbn,
-    title: "기쁨으로 맞이하는 내일, 김금자 어르신의 이야기",
-    content:
-      "김금자 어르신(86)의 이야기, 이타적 자서전을 통해 살펴보았습니다. 현재 86세를 넘긴 금자 어르신은 세월의 무게를 간직한 분이지만, 여전히 하루하루를 활기차게 맞이하며 순간의 기쁨을 찾기 위해 노력하십니다. 이타적 자서전은 경제적 성과나 사회적 지위를 넘어, 어르신 그 자체의 이야기를 담아내는 데 초점을 맞췄습니다. 여기에서는 그런 어르신의 하루와 기쁨을 다채로운 이야기로 엮어 소개합니다.",
-  },
-  {
-    id: 4,
-    category: "소식과 이야기",
-    img: Thumbn,
-    title: "기쁨으로 맞이하는 내일, 김금자 어르신의 이야기",
-    content:
-      "김금자 어르신(86)의 이야기, 이타적 자서전을 통해 살펴보았습니다. 현재 86세를 넘긴 금자 어르신은 세월의 무게를 간직한 분이지만, 여전히 하루하루를 활기차게 맞이하며 순간의 기쁨을 찾기 위해 노력하십니다. 이타적 자서전은 경제적 성과나 사회적 지위를 넘어, 어르신 그 자체의 이야기를 담아내는 데 초점을 맞췄습니다. 여기에서는 그런 어르신의 하루와 기쁨을 다채로운 이야기로 엮어 소개합니다.",
-  },
-  {
-    id: 5,
-    category: "소식과 이야기",
-    img: Thumbn,
-    title: "기쁨으로 맞이하는 내일, 김금자 어르신의 이야기",
-    content:
-      "김금자 어르신(86)의 이야기, 이타적 자서전을 통해 살펴보았습니다. 현재 86세를 넘긴 금자 어르신은 세월의 무게를 간직한 분이지만, 여전히 하루하루를 활기차게 맞이하며 순간의 기쁨을 찾기 위해 노력하십니다. 이타적 자서전은 경제적 성과나 사회적 지위를 넘어, 어르신 그 자체의 이야기를 담아내는 데 초점을 맞췄습니다. 여기에서는 그런 어르신의 하루와 기쁨을 다채로운 이야기로 엮어 소개합니다.",
-  },
-];
+// const MOCK_STORYS = [
+//   {
+//     id: 1,
+//     category: "나누는 이야기",
+//     img: Thumbn,
+//     title: "기쁨으로 맞이하는 내일, 김금자 어르신의 이야기",
+//     content:
+//       "김금자 어르신(86)의 이야기, 이타적 자서전을 통해 살펴보았습니다. 현재 86세를 넘긴 금자 어르신은 세월의 무게를 간직한 분이지만, 여전히 하루하루를 활기차게 맞이하며 순간의 기쁨을 찾기 위해 노력하십니다. 이타적 자서전은 경제적 성과나 사회적 지위를 넘어, 어르신 그 자체의 이야기를 담아내는 데 초점을 맞췄습니다. 여기에서는 그런 어르신의 하루와 기쁨을 다채로운 이야기로 엮어 소개합니다.",
+//   },
+//   {
+//     id: 2,
+//     category: "소식과 이야기",
+//     img: Thumbn,
+//     title: "기쁨으로 맞이하는 내일, 김금자 어르신의 이야기",
+//     content:
+//       "김금자 어르신(86)의 이야기, 이타적 자서전을 통해 살펴보았습니다. 현재 86세를 넘긴 금자 어르신은 세월의 무게를 간직한 분이지만, 여전히 하루하루를 활기차게 맞이하며 순간의 기쁨을 찾기 위해 노력하십니다. 이타적 자서전은 경제적 성과나 사회적 지위를 넘어, 어르신 그 자체의 이야기를 담아내는 데 초점을 맞췄습니다. 여기에서는 그런 어르신의 하루와 기쁨을 다채로운 이야기로 엮어 소개합니다.",
+//   },
+//   {
+//     id: 3,
+//     category: "소식과 이야기",
+//     img: Thumbn,
+//     title: "기쁨으로 맞이하는 내일, 김금자 어르신의 이야기",
+//     content:
+//       "김금자 어르신(86)의 이야기, 이타적 자서전을 통해 살펴보았습니다. 현재 86세를 넘긴 금자 어르신은 세월의 무게를 간직한 분이지만, 여전히 하루하루를 활기차게 맞이하며 순간의 기쁨을 찾기 위해 노력하십니다. 이타적 자서전은 경제적 성과나 사회적 지위를 넘어, 어르신 그 자체의 이야기를 담아내는 데 초점을 맞췄습니다. 여기에서는 그런 어르신의 하루와 기쁨을 다채로운 이야기로 엮어 소개합니다.",
+//   },
+//   {
+//     id: 4,
+//     category: "소식과 이야기",
+//     img: Thumbn,
+//     title: "기쁨으로 맞이하는 내일, 김금자 어르신의 이야기",
+//     content:
+//       "김금자 어르신(86)의 이야기, 이타적 자서전을 통해 살펴보았습니다. 현재 86세를 넘긴 금자 어르신은 세월의 무게를 간직한 분이지만, 여전히 하루하루를 활기차게 맞이하며 순간의 기쁨을 찾기 위해 노력하십니다. 이타적 자서전은 경제적 성과나 사회적 지위를 넘어, 어르신 그 자체의 이야기를 담아내는 데 초점을 맞췄습니다. 여기에서는 그런 어르신의 하루와 기쁨을 다채로운 이야기로 엮어 소개합니다.",
+//   },
+//   {
+//     id: 5,
+//     category: "소식과 이야기",
+//     img: Thumbn,
+//     title: "기쁨으로 맞이하는 내일, 김금자 어르신의 이야기",
+//     content:
+//       "김금자 어르신(86)의 이야기, 이타적 자서전을 통해 살펴보았습니다. 현재 86세를 넘긴 금자 어르신은 세월의 무게를 간직한 분이지만, 여전히 하루하루를 활기차게 맞이하며 순간의 기쁨을 찾기 위해 노력하십니다. 이타적 자서전은 경제적 성과나 사회적 지위를 넘어, 어르신 그 자체의 이야기를 담아내는 데 초점을 맞췄습니다. 여기에서는 그런 어르신의 하루와 기쁨을 다채로운 이야기로 엮어 소개합니다.",
+//   },
+// ];
 const StoryPost = () => {
   const navigate = useNavigate();
-  const [storys, setStorys] = useState(MOCK_STORYS);
+  const baseURL = process.env.REACT_APP_baseURL;
+  const access = localStorage.getItem("access");
+  const [storys, setStorys] = useState([]);
+
+  useEffect(() => {
+    const fetchStoryList = async () => {
+      try {
+        const response = await axios.get(`${baseURL}/story`, {
+          headers: {
+            Authorization: `Bearer ${access}`,
+          },
+        });
+        setStorys(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchStoryList();
+  });
   return (
     <>
-      {storys.map((story) => (
-        <Wrapper key={story.id} onClick={() => navigate(`${story.id}`)}>
-          <Category>{story.category}</Category>
-          <Photo src={story.img} alt="썸네일 이미지" />
-          <Title>{story.title}</Title>
-          <Content>{story.content}</Content>
-        </Wrapper>
-      ))}
+      {Array.isArray(storys) &&
+        storys.map((story) => (
+          <Wrapper key={story.id} onClick={() => navigate(`${story.id}`)}>
+            <Category>{story.category}</Category>
+            <Photo src={story.img} alt="썸네일 이미지" />
+            <Title>{story.title}</Title>
+            <Content>{story.content}</Content>
+          </Wrapper>
+        ))}
     </>
   );
 };
@@ -83,8 +103,8 @@ const Category = styled.div`
 `;
 
 const Photo = styled.img`
-  width: 100%;
-  height: auto;
+  width: 248px;
+  height: 248px;
 `;
 const Title = styled.div`
   color: #4b4b4b;
