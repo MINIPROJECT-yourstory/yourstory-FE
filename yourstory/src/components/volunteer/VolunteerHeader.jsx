@@ -3,11 +3,15 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import theme, { media } from "../../../src/styles/theme";
 
-const VolunteerHeader = () => {
+const VolunteerHeader = ({ currentPage = "apply" }) => {
   const navigate = useNavigate();
 
   const handleVolunteerClick = () => {
-    navigate("/volunteer");
+    navigate("/work");
+  };
+
+  const handleStatusClick = () => {
+    navigate("/work/my-status");
   };
 
   return (
@@ -17,8 +21,18 @@ const VolunteerHeader = () => {
         <HeaderLine />
       </HeaderTitle>
       <ButtonGroup>
-        <ActiveButton onClick={handleVolunteerClick}>봉사 신청</ActiveButton>
-        <InactiveButton>봉사 현황</InactiveButton>
+        <Button
+          onClick={handleVolunteerClick}
+          $isActive={currentPage === "apply"}
+        >
+          봉사 신청
+        </Button>
+        <Button
+          onClick={handleStatusClick}
+          $isActive={currentPage === "status"}
+        >
+          봉사 현황
+        </Button>
       </ButtonGroup>
       <HeaderLine />
     </HeaderContainer>
@@ -76,6 +90,9 @@ const Button = styled.button`
   border: none;
   height: 88px;
   width: 175px;
+  background-color: ${(props) =>
+    props.$isActive ? "var(--green)" : "transparent"};
+  color: ${(props) => (props.$isActive ? "white" : "var(--green)")};
 
   ${media.tablet} {
     height: 50px;
@@ -89,16 +106,6 @@ const Button = styled.button`
     font-size: 14px;
     padding: 0.5rem;
   }
-`;
-
-const ActiveButton = styled(Button)`
-  background-color: var(--green);
-  color: white;
-`;
-
-const InactiveButton = styled(Button)`
-  background: none;
-  color: var(--green);
 `;
 
 export default VolunteerHeader;

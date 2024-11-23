@@ -37,11 +37,11 @@ function App() {
             <Route index element={<Home />} />
 
             {/* 봉사활동 */}
-            <Route path="volunteer">
+            <Route path="work">
               <Route index element={<Volunteer />} />
-              <Route path=":id" element={<VolunteerDetail />} />
-              <Route path="status" element={<VolunteerStatus />} />
-              <Route path="diary" element={<VolunteerDiary />} />
+              <Route path=":work_id" element={<VolunteerDetail />} />
+              <Route path="my-status" element={<VolunteerStatus />} />
+              <Route path="record" element={<VolunteerDiary />} />
             </Route>
 
             {/* 이타적 도서관 */}
@@ -53,7 +53,6 @@ function App() {
             {/* 우리의 이야기 */}
             <Route path="story">
               <Route index element={<Story />} />
-              <Route path=":id" element={<StoryDetail />} />
             </Route>
           </Route>
         </Routes>

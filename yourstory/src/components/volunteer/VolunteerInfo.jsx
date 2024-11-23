@@ -1,73 +1,47 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { volunteerApi } from "../../apis/volunteerApi";
+import LoadingSpinner from "../common/LoadingSpinner";
 
-const VolunteerInfo = () => {
-  const volunteerInfo = [
-    {
-      label: "봉사 기간",
-      value: "6개월",
-      description: "모집 기관",
-      info: "하늘꿈센터",
-    },
-    {
-      label: "봉사 장소",
-      value: "하늘꿈센터",
-      description: "모집 인원",
-      info: "3명",
-    },
-    {
-      label: "봉사 요일",
-      value: "매주\n월/수/금 중 택1",
-      description: "담당자",
-      info: "숙멋사 팀장",
-    },
-    {
-      label: "봉사 시간",
-      value: "15시 0분~17시 0분",
-      description: "기타사항",
-      info: "식수 제공",
-    },
-  ];
+const LABELS = {
+  firstRow: ["봉사 기간", "봉사 장소", "봉사 요일", "봉사 시간"],
+  secondRow: ["모집 기관", "모집 인원", "담당자", "기타사항"],
+};
+
+const VolunteerInfo = ({ workId }) => {
+  const [volunteerInfo, setVolunteerInfo] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchVolunteerDetail();
+  }, [workId]);
+
+  const fetchVolunteerDetail = async () => {
+    try {
+      setIsLoading(true);
+      const data = await volunteerApi.getVolunteerDetail(workId);
+      setVolunteerInfo(data);
+    } catch (error) {
+      console.error("봉사 상세 정보 조회 실패:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (isLoading) return <LoadingSpinner />;
+  if (!volunteerInfo) return <div>정보를 불러올 수 없습니다.</div>;
 
   return (
     <>
-      <BoxTitle>하늘꿈센터</BoxTitle>
+      <BoxTitle>{volunteerInfo.title}</BoxTitle>
       <Container>
         <InfoTable>
-          {volunteerInfo.map((info, index) => (
-            <Row key={index}>
-              <Label>{info.label}</Label>
-              <Value>{info.value}</Value>
-              <Description>{info.description}</Description>
-              <Info>{info.info}</Info>
-            </Row>
-          ))}
+          <GridLines>
+            <span />
+          </GridLines>
+          {/* volunteerInfo의 데이터를 사용하여 정보 표시 */}
         </InfoTable>
-
-        <ContentBox>
-          <BoldText>
-            하늘꿈센터에서 홀몸 어르신의 이타적 자서전 작성을 함께할
-            자원봉사자를 모집합니다.
-          </BoldText>
-          <Text>
-            우리 센터에는 70대에서 80대의 어르신 다섯 분과 함께하고 있습니다.
-            울고 웃으며 여러 해를 함께해왔습니다. 센터에서의 활동을 넘어서 청년
-            여러분들과의 만남을 통해 힘을 얻으시는 할머님, 할아버님의 모습을
-            보며 올해 하반기 다시 한 번 청년 자원봉사자를 모집합니다. 처음에는
-            처음 뵙는 어르신과의 시간이 어색했지만, 점차 마음을 열며 여러
-            이야기들에 눈시울을 붉히던 이전 청년 분들이 기억납니다.
-          </Text>
-          <Text>
-            오늘 이 글과 함께 다시 한 번 어르신들의 이야기를 세상에 전할
-            여러분을 기다립니다.
-          </Text>
-
-          <Text>숙멋사 팀장 드림</Text>
-          <Contact>
-            문의사항은 아래 전화번호로 부탁드립니다.
-            <PhoneNumber>전화번호: 0X-XXXX-XXXX</PhoneNumber>
-          </Contact>
-        </ContentBox>
+        {/* ... 나머지 컴포넌트 ... */}
       </Container>
     </>
   );
@@ -87,17 +61,18 @@ const BoxTitle = styled.div`
 
 const Container = styled.div`
   background-color: #f3f3f3;
-  padding: 2rem;
+  padding: 60px 2rem 84px 2rem;
   border-radius: 0 0 10px 10px;
 `;
 
 const InfoTable = styled.div`
+  position: relative;
   display: grid;
   grid-gap: 1rem;
   margin-bottom: 2rem;
   background-color: #f3f3f3;
-  padding: 1.5rem;
   border-radius: 8px;
+  padding-bottom: 50px;
 `;
 
 const Row = styled.div`
@@ -108,28 +83,21 @@ const Row = styled.div`
   padding: 0.5rem 0;
 `;
 
-const Label = styled.div`
-  font-weight: 500;
-  color: #333;
-`;
-
-const Value = styled.span`
-  color: #333;
+const ContentText = styled.span`
+  color: #000000;
   white-space: pre-line;
-`;
-
-const Description = styled.span`
-  color: #666;
-`;
-
-const Info = styled.span`
-  color: #333;
   text-align: left;
+  margin-left: 20px;
+  font-size: 18px;
+
+  &:nth-of-type(2) {
+    margin-left: 30px;
+  }
 `;
 
 const ContentBox = styled.div`
   background-color: #f3f3f3;
-  padding: 1.5rem;
+  padding: 1.2rem;
   border-radius: 8px;
   margin: 1rem 0;
 `;
@@ -152,6 +120,45 @@ const Contact = styled.div`
 
 const PhoneNumber = styled.div`
   margin-top: 0.5rem;
+`;
+
+const StyledLabel = styled.div`
+  font-weight: 700;
+  font-size: 20px;
+  color: #bcbf1f;
+  text-align: center;
+`;
+
+const GridLines = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+
+  &::before,
+  &::after,
+  & span {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 0.7px;
+    height: 100%;
+    background-color: #bcbf1f;
+  }
+
+  &::before {
+    left: 25%;
+  }
+
+  &::after {
+    left: 50%;
+  }
+
+  & span {
+    left: 75%;
+  }
 `;
 
 export default VolunteerInfo;
