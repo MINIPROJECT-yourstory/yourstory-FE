@@ -114,11 +114,11 @@ export const bookApi = {
   },
 
   // 우편함 목록
-  getLetters: async (bookId) => {
+  getLetters: async (book_id) => {
     try {
-      console.log(`우편함 목록 조회 시작 - ID: ${bookId}`);
+      console.log(`우편함 목록 조회 시작 - ID: ${book_id}`);
       const headers = getAuthHeader();
-      const response = await axios.get(`${baseURL}/letter/${bookId}`, {
+      const response = await axios.get(`${baseURL}/letter/${book_id}`, {
         headers,
       });
       console.log("우편함 목록 조회 성공:", response.data);
