@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
-import theme, { media } from "./styles/theme";
+import theme from "./styles/theme";
 
 // 메인 페이지들
 import Home from "./pages/Home";

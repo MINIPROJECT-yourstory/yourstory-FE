@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import theme, { media } from "../../../src/styles/theme";
+import { media } from "../../../src/styles/theme";
 import { useNavigate } from "react-router-dom";
 import DecoratedTitle from "../common/DecoratedTitle";
 

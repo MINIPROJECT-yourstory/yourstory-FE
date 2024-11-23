@@ -4,7 +4,6 @@ import { Heart, Mail } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import NavBar from "../../components/common/NavBar";
 import LibraryHeader from "../../components/library/LibraryHeader";
-import Grandma from "../../assets/images/grandma.svg";
 import { bookApi } from "../../apis/bookApi";
 
 const BookDetail = () => {

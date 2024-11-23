@@ -156,15 +156,6 @@ const Text = styled.p`
   margin-bottom: 1rem;
 `;
 
-const Contact = styled.div`
-  margin-top: 0.5rem;
-  color: #666;
-`;
-
-const PhoneNumber = styled.div`
-  margin-top: 0.5rem;
-`;
-
 const StyledLabel = styled.div`
   font-weight: 700;
   font-size: 20px;
