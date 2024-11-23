@@ -1,114 +1,135 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { Heart, Mail } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-
-const MOCK_BOOKS = [
-    {
-        id: 1,
-        title: "김금자 어르신의 이야기",
-        subtitle: "기쁨으로 맞이하는 내일",
-        likes: 78,
-        messages: 4,
-        image: "/api/placeholder/400/320",
-    },
-    {
-        id: 2,
-        title: "최명환 어르신의 이야기",
-        subtitle: "손으로 만지는 음악의 세계",
-        likes: 63,
-        messages: 2,
-        image: "/api/placeholder/400/320",
-    }
-];
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import { Heart, Mail } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { bookApi } from "../../apis/bookApi";
 
 const LibraryContent = () => {
-    const navigate = useNavigate();
-    const [books, setBooks] = useState(MOCK_BOOKS);
-    const [likedBooks, setLikedBooks] = useState(new Set());
+  const navigate = useNavigate();
+  const [books, setBooks] = useState([]);
+  const [likedBooks, setLikedBooks] = useState(new Set());
+  const [isLoading, setIsLoading] = useState(true);
 
-    // 실제 API 연동 시 사용할 useEffect
-    // useEffect(() => {
-    //     const fetchBooks = async () => {
-    //         try {
-    //             const response = await fetch('/book');
-    //             if (!response.ok) throw new Error('Failed to fetch books');
-    //             const data = await response.json();
-    //             setBooks(data);
-    //         } catch (error) {
-    //             console.error('Error fetching books:', error);
-    //         }
-    //     };
-    //     fetchBooks();
-    // }, []);
+  useEffect(() => {
+    const checkAuthAndFetchBooks = async () => {
+      try {
+        console.log("=== 인증 상태 체크 시작 ===");
+        setIsLoading(true);
 
-    const handleLike = async (bookId) => {
-        // API 호출 대신 즉시 상태 업데이트
-        if (likedBooks.has(bookId)) {
-            setLikedBooks(prev => {
-                const newSet = new Set(prev);
-                newSet.delete(bookId);
-                return newSet;
-            });
-            
-            setBooks(books.map(book => 
-                book.id === bookId 
-                    ? { ...book, likes: book.likes - 1 }
-                    : book
-            ));
-        } else {
-            setLikedBooks(prev => new Set([...prev, bookId]));
-            setBooks(books.map(book => 
-                book.id === bookId 
-                    ? { ...book, likes: book.likes + 1 }
-                    : book
-            ));
+        const token = localStorage.getItem("accessToken");
+        console.log("저장된 토큰:", token);
+
+        if (!token) {
+          console.log("토큰이 없습니다. 로그인 페이지로 이동합니다.");
+          navigate("/login"); // 로그인 페이지로 리다이렉트
+          return;
         }
+
+        // 토큰 유효성 테스트를 위한 volunteer API 호출 테스트
+        try {
+          console.log("토큰 유효성 테스트 중...");
+          const testResponse = await bookApi.getBooks();
+          console.log("토큰 유효성 테스트 성공:", testResponse);
+        } catch (error) {
+          console.error("토큰이 유효하지 않습니다:", error);
+          localStorage.removeItem("accessToken"); // 잘못된 토큰 제거
+          navigate("/login");
+          return;
+        }
+
+        // 도서 목록 가져오기
+        console.log("도서 목록 조회 시작");
+        const response = await bookApi.getBooks();
+
+        if (response && response.data) {
+          console.log("도서 목록 조회 성공:", response.data);
+          setBooks(response.data);
+        }
+      } catch (error) {
+        console.error("도서 목록 조회 실패:", error);
+        if (error.response?.status === 403) {
+          console.log("인증 에러. 로그인 페이지로 이동합니다.");
+          navigate("/login");
+        }
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    const handleMailClick = (bookId) => {
-        navigate(`/letter/${bookId}`);
-    };
+    checkAuthAndFetchBooks();
+  }, [navigate]);
 
-    const handleBookView = (bookId) => {
-        navigate(`/library/book/${bookId}`);
-    };
+  const handleLike = async (bookId) => {
+    try {
+      if (likedBooks.has(bookId)) {
+        await bookApi.deleteLike(bookId);
+        setLikedBooks((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(bookId);
+          return newSet;
+        });
+      } else {
+        await bookApi.createLike(bookId);
+        setLikedBooks((prev) => new Set([...prev, bookId]));
+      }
 
-    return (
+      // 좋아요 업데이트 후 도서 목록 새로고침
+      const response = await bookApi.getBooks();
+      setBooks(response.data);
+    } catch (error) {
+      console.error("좋아요 처리 중 오류가 발생했습니다:", error);
+    }
+  };
+
+  const handleMailClick = (bookId) => {
+    navigate(`/letter/list/${bookId}`);
+  };
+
+  const handleBookView = (bookId) => {
+    navigate(`/book/${bookId}`);
+  };
+
+  return (
+    <>
+      {isLoading ? (
+        <div>로딩 중...</div>
+      ) : (
         <BookList>
-            {books.map((book) => (
-                <BookCard key={book.id}>
-                    <BookInfo>
-                        <div>
-                            <BookTitle>{book.title},</BookTitle>
-                            <BookSubtitle>{book.subtitle}</BookSubtitle>
-                        </div>
-                        
-                        <StatsContainer>
-                            <Stat onClick={() => handleLike(book.id)}>
-                                <Heart 
-                                    fill={likedBooks.has(book.id) ? "white" : "none"}
-                                    style={{ cursor: 'pointer' }}
-                                />
-                                <span>{book.likes}</span>
-                            </Stat>
-                            <Stat onClick={() => handleMailClick(book.id)}>
-                                <Mail style={{ cursor: 'pointer' }} />
-                                <span>{book.messages}</span>
-                            </Stat>
-                        </StatsContainer>
-                    </BookInfo>
-                    
-                    <ImageContainer>
-                        <img src={book.image} alt={book.title} />
-                        <ViewButton onClick={() => handleBookView(book.id)}>
-                            도서 보기
-                        </ViewButton>
-                    </ImageContainer>
-                </BookCard>
-            ))}
+          {books.map((book) => (
+            <BookCard key={book.id}>
+              <BookInfo>
+                <div>
+                  <BookTitle>{book.title},</BookTitle>
+                  <BookSubtitle>{book.subtitle}</BookSubtitle>
+                </div>
+
+                <StatsContainer>
+                  <Stat onClick={() => handleLike(book.id)}>
+                    <Heart
+                      fill={likedBooks.has(book.id) ? "white" : "none"}
+                      style={{ cursor: "pointer" }}
+                    />
+                    <span>{book.likes}</span>
+                  </Stat>
+                  <Stat onClick={() => handleMailClick(book.id)}>
+                    <Mail style={{ cursor: "pointer" }} />
+                    <span>{book.messages}</span>
+                  </Stat>
+                </StatsContainer>
+              </BookInfo>
+
+              <ImageContainer>
+                <img src={book.image} alt={book.title} />
+                <ViewButton onClick={() => handleBookView(book.id)}>
+                  도서 보기
+                </ViewButton>
+              </ImageContainer>
+            </BookCard>
+          ))}
         </BookList>
-    );
+      )}
+    </>
+  );
 };
 
 const BookList = styled.div`
@@ -166,7 +187,7 @@ const Stat = styled.div`
   display: flex;
   align-items: center;
   color: ${({ theme }) => theme.colors.text.white};
-  
+
   svg {
     width: 1.25rem;
     height: 1.25rem;
@@ -177,7 +198,7 @@ const Stat = styled.div`
 const ImageContainer = styled.div`
   width: 20rem;
   position: relative;
-  
+
   img {
     width: 100%;
     height: 100%;
@@ -196,11 +217,12 @@ const ViewButton = styled.button`
   right: ${({ theme }) => theme.spacing.padding.sm};
   background-color: ${({ theme }) => theme.colors.primary.main};
   color: ${({ theme }) => theme.colors.text.white};
-  padding: ${({ theme }) => `${theme.spacing.padding.xs} ${theme.spacing.padding.md}`};
+  padding: ${({ theme }) =>
+    `${theme.spacing.padding.xs} ${theme.spacing.padding.md}`};
   border-radius: ${({ theme }) => theme.borderRadius.pill};
   transition: ${({ theme }) => theme.transitions.short};
   font-family: ${({ theme }) => theme.typography.fontFamily.main};
-  
+
   &:hover {
     background-color: ${({ theme }) => theme.colors.primary.dark};
   }

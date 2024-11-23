@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { bookApi } from "../../apis/bookApi";
 import styled from "styled-components";
 import { Book } from "lucide-react";
 import NavBar from "../../components/common/NavBar";
@@ -9,16 +11,47 @@ import "react-pdf/dist/esm/Page/TextLayer.css";
 pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 const BookViewer = () => {
+  const { id } = useParams();
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
+  const [pdfUrl, setPdfUrl] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // 테스트용 PDF URL
-  const pdfUrl =
-    "https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf";
+  useEffect(() => {
+    const fetchPdf = async () => {
+      try {
+        setIsLoading(true);
+        const response = await bookApi.getBookPdf(id);
+
+        // API 응답 형식에 따라 적절히 수정 필요
+        // 예: Blob으로 받는 경우
+        const blob = new Blob([response.data], { type: "application/pdf" });
+        const url = URL.createObjectURL(blob);
+        setPdfUrl(url);
+      } catch (error) {
+        console.error("PDF를 불러오는데 실패했습니다:", error);
+        setError(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPdf();
+
+    return () => {
+      if (pdfUrl) {
+        URL.revokeObjectURL(pdfUrl);
+      }
+    };
+  }, [id]);
 
   function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages);
   }
+
+  if (isLoading) return <LoadingMessage />;
+  if (error) return <ErrorMessage />;
 
   return (
     <>

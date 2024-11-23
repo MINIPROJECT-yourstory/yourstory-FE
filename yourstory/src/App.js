@@ -46,9 +46,9 @@ function App() {
 
             {/* 이타적 도서관 */}
             <Route path="/library" element={<Library />} />
-            <Route path="/library/book/:id" element={<BookDetail />} />
-            <Route path="/library/book/:id/view" element={<BookViewer />} />
-            <Route path="/library/letter/:id" element={<LetterBox />} />
+            <Route path="/book/:id" element={<BookDetail />} />
+            <Route path="/book/pdf/:id" element={<BookViewer />} />
+            <Route path="/letter/list/:bookId" element={<LetterBox />} />
 
             {/* 우리의 이야기 */}
             <Route path="story">

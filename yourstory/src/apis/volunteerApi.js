@@ -4,7 +4,7 @@ const baseURL = process.env.REACT_APP_baseURL;
 
 // 토큰을 가져오는 함수
 const getToken = () => {
-  return localStorage.getItem("accessToken"); // 또는 실제 토큰이 저장된 키 이름
+  return localStorage.getItem("accessToken");
 };
 
 export const volunteerApi = {
