@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import NavBar from "../../components/common/NavBar";
-import VolunteerHeader from "../../components/volunteer/VolunteerHeader";
-import { media } from "../../styles/theme";
 import { useNavigate } from "react-router-dom";
 import { volunteerApi } from "../../apis/volunteerApi";
+import { media } from "../../styles/theme";
+import NavBar from "../../components/common/NavBar";
+import VolunteerHeader from "../../components/volunteer/VolunteerHeader";
 
 const VolunteerStatus = () => {
   const [statusList, setStatusList] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,14 +16,24 @@ const VolunteerStatus = () => {
 
   const fetchMyStatus = async () => {
     try {
-      setIsLoading(true);
       const data = await volunteerApi.getMyStatus();
-      setStatusList(data);
+      const detailedList = await Promise.all(
+        data.map(async (status) => {
+          const details = await volunteerApi.getVolunteerDetail(status.workId);
+          return {
+            ...status,
+            ...details,
+          };
+        })
+      );
+      setStatusList(detailedList);
     } catch (error) {
-      setError("봉사 현황을 불러오는데 실패했습니다.");
-    } finally {
-      setIsLoading(false);
+      console.error("봉사 현황 조회 실패:", error);
     }
+  };
+
+  const handleDetailClick = (workId) => {
+    navigate(`/work/${workId}`);
   };
 
   return (
@@ -33,52 +41,50 @@ const VolunteerStatus = () => {
       <NavBar pagename={"volunteer"} />
       <PageContainer>
         <VolunteerHeader currentPage="status" />
-        <DecoratedTitle
-          frontText="봉사 현황"
-          frontWeight="400"
-          middleText="나의 봉사"
-          middleWeight="400"
-          backText="현황"
-          backWeight="bold"
-        />
-        <ContentContainer>
-          {isLoading ? (
-            <LoadingSpinner />
-          ) : error ? (
-            <ErrorMessage>{error}</ErrorMessage>
-          ) : statusList.length === 0 ? (
-            <NoDataMessage>진행 중인 봉사활동이 없습니다.</NoDataMessage>
+        <ListContainer>
+          {statusList.length === 0 ? (
+            <EmptyStateContainer>
+              <EmptyStateMessage>신청한 봉사활동이 없습니다.</EmptyStateMessage>
+            </EmptyStateContainer>
           ) : (
-            <>
-              {statusList.map((status) => (
-                <StatusCard key={status.id}>
-                  <StatusInfo>
-                    <Title>{status.title}</Title>
-                    <InfoRow>
-                      <Label>봉사 기간:</Label>
-                      <Value>{status.period}개월</Value>
-                    </InfoRow>
-                    <InfoRow>
-                      <Label>봉사 장소:</Label>
-                      <Value>{status.place}</Value>
-                    </InfoRow>
-                    <InfoRow>
-                      <Label>봉사 요일:</Label>
-                      <Value>{status.day}</Value>
-                    </InfoRow>
-                  </StatusInfo>
-                  <ButtonContainer>
-                    <WriteButton
-                      onClick={() => navigate(`/work/record/${status.id}`)}
-                    >
-                      자서전 작성하기
-                    </WriteButton>
-                  </ButtonContainer>
-                </StatusCard>
-              ))}
-            </>
+            statusList.map((volunteer) => (
+              <CardContainer key={volunteer.id}>
+                <CardHeader>
+                  <HeaderLeft>
+                    <CardTitle>
+                      <CenterName>{volunteer.title}</CenterName>
+                      <StatusBadge status={volunteer.state}>
+                        {volunteer.state}
+                      </StatusBadge>
+                    </CardTitle>
+                    <InfoText>
+                      <InfoLabel>[모집기간]</InfoLabel>{" "}
+                      {volunteer.recruitmentStart} ~ {volunteer.recruitmentEnd}
+                    </InfoText>
+                    <InfoText>
+                      <InfoLabel>[등록기관]</InfoLabel> {volunteer.org}
+                    </InfoText>
+                  </HeaderLeft>
+                  <HeaderRight>
+                    <InfoText>
+                      <InfoLabel>[봉사기간]</InfoLabel> {volunteer.period}개월
+                    </InfoText>
+                    <InfoContainer>
+                      <InfoText>
+                        <InfoLabel>[봉사요일]</InfoLabel> {volunteer.day}
+                      </InfoText>
+                      <DetailButton
+                        onClick={() => handleDetailClick(volunteer.workId)}
+                      >
+                        자세히 보기
+                      </DetailButton>
+                    </InfoContainer>
+                  </HeaderRight>
+                </CardHeader>
+              </CardContainer>
+            ))
           )}
-        </ContentContainer>
+        </ListContainer>
       </PageContainer>
     </>
   );
@@ -100,112 +106,132 @@ const PageContainer = styled.div`
   }
 `;
 
-const DecoratedTitle = styled.h1`
-  font-size: 2.5rem;
-  font-weight: ${(props) => props.frontWeight};
-  margin-bottom: 0.5rem;
-  color: ${(props) => props.theme.colors.primary};
-
-  &::before,
-  &::after {
-    content: "${(props) => props.frontText}";
-    font-size: 1.5rem;
-    font-weight: ${(props) => props.frontWeight};
-    color: ${(props) => props.theme.colors.secondary};
-  }
-
-  &::after {
-    content: "${(props) => props.backText}";
-    font-weight: ${(props) => props.backWeight};
-  }
-`;
-
-const ContentContainer = styled.div`
-  background: #ffffff;
+const ListContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  background: #f3f3f3;
   border-radius: 17px;
-  padding: 2rem;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 `;
 
-const StatusCard = styled.div`
-  border: 1px solid #e0e0e0;
-  border-radius: 10px;
-  padding: 1.5rem;
-  margin-bottom: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const StatusInfo = styled.div`
-  flex: 1;
-`;
-
-const Title = styled.h2`
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-`;
-
-const InfoRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 0.25rem;
-`;
-
-const Label = styled.span`
-  font-weight: 600;
-`;
-
-const Value = styled.span`
-  margin-left: 0.5rem;
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
-`;
-
-const WriteButton = styled.button`
-  background-color: ${(props) => props.theme.colors.primary};
-  color: #ffffff;
-  padding: 0.75rem 1rem;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
+const CardContainer = styled.div`
+  background: transparent;
+  padding: 1.125rem;
+  transition: transform 0.2s ease;
+  position: relative;
 
   &:hover {
-    background-color: ${(props) => props.theme.colors.primaryHover};
+    transform: translateY(-2px);
+  }
+
+  &:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 28px;
+    right: 28px;
+    height: 0.7px;
+    background-color: #bcbf1f;
+  }
+
+  ${media.tablet} {
+    padding: 1rem;
   }
 `;
 
-const LoadingSpinner = styled.div`
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  border-left-color: ${(props) => props.theme.colors.primary};
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  animation: spin 1s linear infinite;
+const CardHeader = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
 
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
+  ${media.mobile} {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 `;
 
-const ErrorMessage = styled.p`
-  color: ${(props) => props.theme.colors.error};
-  text-align: center;
+const HeaderLeft = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 `;
 
-const NoDataMessage = styled.p`
-  color: ${(props) => props.theme.colors.secondary};
-  text-align: center;
+const HeaderRight = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+`;
+
+const InfoContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+`;
+
+const CardTitle = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+`;
+
+const CenterName = styled.h3`
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #919400;
+`;
+
+const StatusBadge = styled.span`
+  padding: 0.25rem 2.6875rem;
+  border-radius: 999px;
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: #ced118;
+`;
+
+const DetailButton = styled.button`
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 50px;
+  background-color: #ced118;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: auto;
+
+  &:hover {
+    opacity: 0.9;
+  }
+`;
+
+const InfoText = styled.p`
+  font-size: 1.125rem;
+  color: #000000;
+  font-weight: 350;
+  margin: 0;
+  line-height: 1.5;
+`;
+
+const InfoLabel = styled.span`
+  color: #333;
+  font-weight: 500;
+`;
+
+const EmptyStateContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  width: 100%;
+`;
+
+const EmptyStateMessage = styled.p`
+  color: #666;
+  font-size: 1.1rem;
 `;
 
 export default VolunteerStatus;
