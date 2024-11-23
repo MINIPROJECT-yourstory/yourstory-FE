@@ -31,4 +31,16 @@ export const storyApi = {
       console.log(error);
     }
   },
+
+  getStory: async (id) => {
+    try {
+      const headers = getAuthHeader();
+      const response = await axios.get(`${baseURL}/story/${id}`, {
+        headers,
+      });
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
 };
