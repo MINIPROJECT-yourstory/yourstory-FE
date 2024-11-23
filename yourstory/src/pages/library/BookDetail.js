@@ -5,102 +5,55 @@ import { useParams, useNavigate } from "react-router-dom";
 import NavBar from "../../components/common/NavBar";
 import LibraryHeader from "../../components/library/LibraryHeader";
 import Grandma from "../../assets/images/grandma.svg";
-
-const MOCK_BOOK = {
-  id: 1,
-  title: "김금자 어르신의 이야기",
-  subtitle: "기쁨으로 맞이하는 내일",
-  likes: 78,
-  messages: 4,
-  image: Grandma,
-  contributors: {
-    writer: "김OO 청년 봉사자",
-    organization: "멋진사자 센터",
-  },
-  description: "평범한 하루의 소중함을 일깨워주는\n따뜻한 삶의 기록!",
-};
-
-const MOCK_LETTERS = [
-  {
-    id: 1,
-    content: "김금자 할머니께 안녕하세요. 저는 금산중학교에...",
-  },
-  {
-    id: 2,
-    content: "삶을 돌아보는 요즘, 지금까지의 제 삶을...",
-  },
-  {
-    id: 3,
-    content: "웃음가득하시길, 김금자 어르신께 안부 인사...",
-  },
-  {
-    id: 4,
-    content: "안녕하세요, 김금자 어르신께 편지를 남깁니다...",
-  },
-];
+import { bookApi } from "../../apis/bookApi";
 
 const BookDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [book, setBook] = useState(MOCK_BOOK);
-  const [letters, setLetters] = useState(MOCK_LETTERS);
-  const [isLiked, setIsLiked] = useState(false);
+  const [bookDetail, setBookDetail] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // const fetchBookDetail = async () => {
-    //     try {
-    //         const response = await fetch(`/book/${id}`);
-    //         if (!response.ok) throw new Error('Failed to fetch book details');
-    //         const data = await response.json();
-    //         setBook(data);
-    //     } catch (error) {
-    //         console.error('Error:', error);
-    //     }
-    // };
-    // fetchBookDetail();
-  }, [id]);
+    const fetchBookDetail = async () => {
+      try {
+        setIsLoading(true);
+        const response = await bookApi.getBookDetail(id);
+        setBookDetail(response.data);
+      } catch (error) {
+        console.error("도서 상세 정보 조회 실패:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  useEffect(() => {
-    // const fetchLetters = async () => {
-    //     try {
-    //         const response = await fetch(`/letter/${id}`);
-    //         if (!response.ok) throw new Error('Failed to fetch letters');
-    //         const data = await response.json();
-    //         setLetters(data);
-    //     } catch (error) {
-    //         console.error('Error:', error);
-    //     }
-    // };
-    // fetchLetters();
+    fetchBookDetail();
   }, [id]);
 
   const handleLike = async () => {
-    // try {
-    //     const method = isLiked ? 'DELETE' : 'POST';
-    //     const response = await fetch(`/like/${id}`, { method });
-    //     if (!response.ok) throw new Error('Failed to toggle like');
-    //     setIsLiked(!isLiked);
-    //     setBook(prev => ({
-    //         ...prev,
-    //         likes: isLiked ? prev.likes - 1 : prev.likes + 1
-    //     }));
-    // } catch (error) {
-    //     console.error('Error:', error);
-    // }
-    setIsLiked(!isLiked);
-    setBook((prev) => ({
-      ...prev,
-      likes: isLiked ? prev.likes - 1 : prev.likes + 1,
-    }));
+    try {
+      if (bookDetail.isLike) {
+        await bookApi.deleteLike(id);
+      } else {
+        await bookApi.createLike(id);
+      }
+
+      // 좋아요 상태 업데이트를 위해 상세 정보 다시 조회
+      const response = await bookApi.getBookDetail(id);
+      setBookDetail(response.data);
+    } catch (error) {
+      console.error("좋아요 처리 실패:", error);
+    }
   };
 
   const handleEbookView = () => {
-    navigate(`/library/book/${id}/view`);
+    navigate(`/book/pdf/${id}`);
   };
 
   const handleWriteLetter = () => {
-    navigate(`/library/letter/${id}`);
+    navigate(`/letter/${id}`);
   };
+
+  if (isLoading || !bookDetail) return <div>로딩 중...</div>;
 
   return (
     <>
@@ -116,17 +69,17 @@ const BookDetail = () => {
           </TitleContainer>
           <BookHeader>
             <ImageAndTitleWrapper>
-              <BookImage src={book.image} alt={book.title} />
+              <BookImage src={bookDetail.img} alt={bookDetail.addressee} />
               <TitleSection>
-                <Title>{book.title},</Title>
-                <Subtitle>{book.subtitle}</Subtitle>
+                <Title>{bookDetail.addressee} 어르신의 이야기,</Title>
+                <Subtitle>{bookDetail.title}</Subtitle>
                 <Stats onClick={handleLike}>
                   <Heart
-                    fill={isLiked ? "white" : "none"}
+                    fill={bookDetail.isLike ? "white" : "none"}
                     style={{ cursor: "pointer" }}
                     size={22}
                   />
-                  <Likespan>{book.likes}</Likespan>
+                  <Likespan>{bookDetail.likes}</Likespan>
                 </Stats>
               </TitleSection>
             </ImageAndTitleWrapper>
@@ -144,27 +97,26 @@ const BookDetail = () => {
                 <ContributorList>
                   <ContributorItem>
                     <Label>대필</Label>
-                    <Value>{book.contributors.writer}</Value>
+                    <Value>{bookDetail.writer}</Value>
                   </ContributorItem>
                   <ContributorItem>
                     <Label>주관</Label>
-                    <Value>{book.contributors.organization}</Value>
+                    <Value>{bookDetail.org}</Value>
                   </ContributorItem>
                 </ContributorList>
               </ContributorBox>
               <DescriptionBox>
-                <Description>{book.description}</Description>
+                <Description>{bookDetail.intro}</Description>
               </DescriptionBox>
             </LeftSection>
-
             <RightSection>
               <MailboxHeader>
                 <div>우편함</div>
-                <span>{book.title}께 드리는 우리의 편지</span>
+                <span>{bookDetail.addressee}님께 드리는 우리의 편지</span>
               </MailboxHeader>
               <LetterList>
-                {letters.map((letter) => (
-                  <LetterItem key={letter.id}>
+                {bookDetail.letterBox.map((letter, index) => (
+                  <LetterItem key={index}>
                     <Mail />
                     <LetterPreview>{letter.content}</LetterPreview>
                   </LetterItem>

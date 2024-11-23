@@ -24,13 +24,33 @@ const BookViewer = () => {
         setIsLoading(true);
         const response = await bookApi.getBookPdf(id);
 
-        // API 응답 형식에 따라 적절히 수정 필요
-        // 예: Blob으로 받는 경우
-        const blob = new Blob([response.data], { type: "application/pdf" });
+        // response.data가 Blob인지 확인
+        if (!(response.data instanceof Blob)) {
+          console.error("응답이 Blob 형식이 아닙니다:", response.data);
+          throw new Error("Invalid PDF data format");
+        }
+
+        // Content-Type 확인
+        const contentType = response.headers["content-type"];
+        console.log("응답 Content-Type:", contentType);
+
+        // PDF Blob 생성
+        const blob = new Blob([response.data], {
+          type: contentType || "application/pdf",
+        });
+
+        console.log("생성된 Blob:", blob);
         const url = URL.createObjectURL(blob);
+        console.log("생성된 URL:", url);
+
         setPdfUrl(url);
       } catch (error) {
-        console.error("PDF를 불러오는데 실패했습니다:", error);
+        console.error("PDF 로드 실패:", error);
+        console.error("에러 상세:", {
+          message: error.message,
+          response: error.response,
+          request: error.request,
+        });
         setError(error);
       } finally {
         setIsLoading(false);
@@ -46,12 +66,18 @@ const BookViewer = () => {
     };
   }, [id]);
 
-  function onDocumentLoadSuccess({ numPages }) {
+  const onDocumentLoadSuccess = ({ numPages }) => {
+    console.log("PDF 로드 성공. 총 페이지:", numPages);
     setNumPages(numPages);
-  }
+  };
+
+  const onDocumentLoadError = (error) => {
+    console.error("PDF 로드 에러:", error);
+    setError(error);
+  };
 
   if (isLoading) return <LoadingMessage />;
-  if (error) return <ErrorMessage />;
+  if (error) return <ErrorMessage error={error} />;
 
   return (
     <>
@@ -67,8 +93,9 @@ const BookViewer = () => {
               <Document
                 file={pdfUrl}
                 onLoadSuccess={onDocumentLoadSuccess}
+                onLoadError={onDocumentLoadError}
                 loading={<LoadingMessage />}
-                error={<ErrorMessage />}
+                error={<ErrorMessage error={error} />}
               >
                 <Page
                   pageNumber={pageNumber}
@@ -103,18 +130,21 @@ const BookViewer = () => {
   );
 };
 
+// LoadingMessage 컴포넌트 수정
 const LoadingMessage = () => (
-  <div style={{ textAlign: "center", padding: "20px" }}>
+  <MessageContainer>
     <Book size={64} color="#BCBF1F" />
-    <p>PDF를 불러오는 중입니다...</p>
-  </div>
+    <MessageText>PDF를 불러오는 중입니다...</MessageText>
+  </MessageContainer>
 );
 
-const ErrorMessage = () => (
-  <div style={{ textAlign: "center", padding: "20px" }}>
+// ErrorMessage 컴포넌트 수정
+const ErrorMessage = ({ error }) => (
+  <MessageContainer>
     <Book size={64} color="#BCBF1F" />
-    <p>PDF를 불러오는데 실패했습니다.</p>
-  </div>
+    <MessageText>PDF를 불러오는데 실패했습니다.</MessageText>
+    <ErrorDetails>{error?.message}</ErrorDetails>
+  </MessageContainer>
 );
 
 const PageContainer = styled.div`
@@ -210,6 +240,26 @@ const PageNumber = styled.span`
   font-size: ${({ theme }) => theme.typography.fontSize.md};
   color: ${({ theme }) => theme.colors.text.primary};
   padding: 0 ${({ theme }) => theme.spacing.padding.sm};
+`;
+
+const MessageContainer = styled.div`
+  text-align: center;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+`;
+
+const MessageText = styled.p`
+  margin: 0;
+  color: ${({ theme }) => theme.colors.text.primary};
+`;
+
+const ErrorDetails = styled.p`
+  margin: 0;
+  color: red;
+  font-size: 14px;
 `;
 
 export default BookViewer;

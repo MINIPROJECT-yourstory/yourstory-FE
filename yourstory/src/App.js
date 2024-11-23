@@ -48,7 +48,7 @@ function App() {
             <Route path="/library" element={<Library />} />
             <Route path="/book/:id" element={<BookDetail />} />
             <Route path="/book/pdf/:id" element={<BookViewer />} />
-            <Route path="/letter/list/:bookId" element={<LetterBox />} />
+            <Route path="/letter/:book_id" element={<LetterBox />} />
 
             {/* 우리의 이야기 */}
             <Route path="story">

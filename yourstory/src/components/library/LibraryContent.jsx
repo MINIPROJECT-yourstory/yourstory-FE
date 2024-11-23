@@ -16,12 +16,12 @@ const LibraryContent = () => {
         console.log("=== 인증 상태 체크 시작 ===");
         setIsLoading(true);
 
-        const token = localStorage.getItem("accessToken");
+        const token = localStorage.getItem("access");
         console.log("저장된 토큰:", token);
 
         if (!token) {
           console.log("토큰이 없습니다. 로그인 페이지로 이동합니다.");
-          navigate("/login"); // 로그인 페이지로 리다이렉트
+          navigate("/login");
           return;
         }
 
