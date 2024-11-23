@@ -25,6 +25,10 @@ const NavBar = ({ pagename }) => {
   localStorage.setItem("username", "숙멋사");
   const username = localStorage.getItem("username");
 
+  // pagename이 'volunteer'인 경우에도 하위 경로에서 활성화되도록 수정
+  const isVolunteerActive =
+    pagename === "volunteer" || pagename?.startsWith("volunteer/");
+
   return (
     <Wrapper>
       <Logo src={LogoIcon} onClick={() => navigate("/")} />
@@ -40,7 +44,9 @@ const NavBar = ({ pagename }) => {
               <NavItem
                 key={menu}
                 $isActive={activeMenu === menu}
-                $isSelected={pagename === menu}
+                $isSelected={
+                  menu === "volunteer" ? isVolunteerActive : pagename === menu
+                }
                 onClick={() => toggleActiveMenu(menu)}
               >
                 <Menu>

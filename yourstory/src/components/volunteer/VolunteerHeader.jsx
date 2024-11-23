@@ -10,6 +10,10 @@ const VolunteerHeader = () => {
     navigate("/volunteer");
   };
 
+  const handleStatusClick = () => {
+    navigate("/volunteer/status");
+  };
+
   return (
     <HeaderContainer>
       <HeaderTitle>
@@ -18,7 +22,7 @@ const VolunteerHeader = () => {
       </HeaderTitle>
       <ButtonGroup>
         <ActiveButton onClick={handleVolunteerClick}>봉사 신청</ActiveButton>
-        <InactiveButton>봉사 현황</InactiveButton>
+        <InactiveButton onClick={handleStatusClick}>봉사 현황</InactiveButton>
       </ButtonGroup>
       <HeaderLine />
     </HeaderContainer>

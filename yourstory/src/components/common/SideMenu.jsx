@@ -23,9 +23,11 @@ const SideMenu = ({ isVisible, menu }) => {
                   gap: "1.7rem",
                 }}
               >
-                <TitleLink to={"#"}>{">"}&nbsp;&nbsp;봉사 현황</TitleLink>
-                <SubLink to={"#"}>진행 중인 봉사활동</SubLink>
-                <SubLink to={"#"}>자서전 기록장</SubLink>
+                <TitleLink to={"/volunteer/status"}>
+                  {">"}&nbsp;&nbsp;봉사 현황
+                </TitleLink>
+                <SubLink to={"/volunteer/status"}>진행 중인 봉사활동</SubLink>
+                <SubLink to={"/volunteer/diary"}>자서전 기록장</SubLink>
               </div>
             </LinkBox>
           </Container>

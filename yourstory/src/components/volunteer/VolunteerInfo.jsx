@@ -1,30 +1,27 @@
 import React from "react";
 import styled from "styled-components";
 
+const LABELS = {
+  firstRow: ["봉사 기간", "봉사 장소", "봉사 요일", "봉사 시간"],
+  secondRow: ["모집 기관", "모집 인원", "담당자", "기타사항"],
+};
+
 const VolunteerInfo = () => {
   const volunteerInfo = [
     {
-      label: "봉사 기간",
       value: "6개월",
-      description: "모집 기관",
       info: "하늘꿈센터",
     },
     {
-      label: "봉사 장소",
       value: "하늘꿈센터",
-      description: "모집 인원",
       info: "3명",
     },
     {
-      label: "봉사 요일",
       value: "매주\n월/수/금 중 택1",
-      description: "담당자",
       info: "숙멋사 팀장",
     },
     {
-      label: "봉사 시간",
       value: "15시 0분~17시 0분",
-      description: "기타사항",
       info: "식수 제공",
     },
   ];
@@ -34,12 +31,15 @@ const VolunteerInfo = () => {
       <BoxTitle>하늘꿈센터</BoxTitle>
       <Container>
         <InfoTable>
+          <GridLines>
+            <span />
+          </GridLines>
           {volunteerInfo.map((info, index) => (
             <Row key={index}>
-              <Label>{info.label}</Label>
-              <Value>{info.value}</Value>
-              <Description>{info.description}</Description>
-              <Info>{info.info}</Info>
+              <StyledLabel>{LABELS.firstRow[index]}</StyledLabel>
+              <ContentText>{info.value}</ContentText>
+              <StyledLabel>{LABELS.secondRow[index]}</StyledLabel>
+              <ContentText>{info.info}</ContentText>
             </Row>
           ))}
         </InfoTable>
@@ -87,17 +87,18 @@ const BoxTitle = styled.div`
 
 const Container = styled.div`
   background-color: #f3f3f3;
-  padding: 2rem;
+  padding: 60px 2rem 84px 2rem;
   border-radius: 0 0 10px 10px;
 `;
 
 const InfoTable = styled.div`
+  position: relative;
   display: grid;
   grid-gap: 1rem;
   margin-bottom: 2rem;
   background-color: #f3f3f3;
-  padding: 1.5rem;
   border-radius: 8px;
+  padding-bottom: 50px;
 `;
 
 const Row = styled.div`
@@ -108,28 +109,21 @@ const Row = styled.div`
   padding: 0.5rem 0;
 `;
 
-const Label = styled.div`
-  font-weight: 500;
-  color: #333;
-`;
-
-const Value = styled.span`
-  color: #333;
+const ContentText = styled.span`
+  color: #000000;
   white-space: pre-line;
-`;
-
-const Description = styled.span`
-  color: #666;
-`;
-
-const Info = styled.span`
-  color: #333;
   text-align: left;
+  margin-left: 20px;
+  font-size: 18px;
+
+  &:nth-of-type(2) {
+    margin-left: 30px;
+  }
 `;
 
 const ContentBox = styled.div`
   background-color: #f3f3f3;
-  padding: 1.5rem;
+  padding: 1.2rem;
   border-radius: 8px;
   margin: 1rem 0;
 `;
@@ -152,6 +146,45 @@ const Contact = styled.div`
 
 const PhoneNumber = styled.div`
   margin-top: 0.5rem;
+`;
+
+const StyledLabel = styled.div`
+  font-weight: 700;
+  font-size: 20px;
+  color: #bcbf1f;
+  text-align: center;
+`;
+
+const GridLines = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+
+  &::before,
+  &::after,
+  & span {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 0.7px;
+    height: 100%;
+    background-color: #bcbf1f;
+  }
+
+  &::before {
+    left: 25%;
+  }
+
+  &::after {
+    left: 50%;
+  }
+
+  & span {
+    left: 75%;
+  }
 `;
 
 export default VolunteerInfo;
