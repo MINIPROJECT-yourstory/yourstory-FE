@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Thumbn from "../../assets/images/sample-thumbnail.png";
 
@@ -45,11 +46,12 @@ const MOCK_STORYS = [
   },
 ];
 const StoryPost = () => {
+  const navigate = useNavigate();
   const [storys, setStorys] = useState(MOCK_STORYS);
   return (
     <>
       {storys.map((story) => (
-        <Wrapper key={story.id}>
+        <Wrapper key={story.id} onClick={() => navigate(`${story.id}`)}>
           <Category>{story.category}</Category>
           <Photo src={story.img} alt="썸네일 이미지" />
           <Title>{story.title}</Title>
