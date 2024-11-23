@@ -34,7 +34,7 @@ const Login = () => {
     }
 
     try {
-      const response = await accountApi.postLogin(formValue);
+      await accountApi.postLogin(formValue);
       alert("로그인 성공!");
       navigate("/");
     } catch (error) {

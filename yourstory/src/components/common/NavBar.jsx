@@ -5,7 +5,7 @@ import LogoIcon from "../../assets/images/icon-logo.svg";
 import AlertModal from "./AlertModal";
 import ConfirmModal from "./ConfirmModal";
 import SideMenu from "./SideMenu";
-import axios from "axios";
+import { accountApi } from "../../apis/accountApi";
 
 const NavBar = ({ pagename }) => {
   const navigate = useNavigate();
@@ -32,11 +32,7 @@ const NavBar = ({ pagename }) => {
   useEffect(() => {
     const fetchUsername = async () => {
       try {
-        const response = await axios.get(`${baseURL}/name`, {
-          headers: {
-            Authorization: `Bearer ${access}`,
-          },
-        });
+        const response = await accountApi.getUsername();
         setUsername(response.data);
       } catch (error) {
         console.log(error);

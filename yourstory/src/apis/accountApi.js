@@ -5,7 +5,7 @@ const baseURL = process.env.REACT_APP_baseURL;
 // 토큰을 가져오는 함수
 const getToken = () => {
   const token = localStorage.getItem("access");
-  console.log("가져온 토큰:", token); // 토큰 값 확인
+  //   console.log("가져온 토큰:", token);
   return token;
 };
 
@@ -15,7 +15,7 @@ const getAuthHeader = () => {
   const headers = {
     Authorization: `Bearer ${token}`,
   };
-  console.log("생성된 헤더:", headers); // 헤더 확인
+  //   console.log("생성된 헤더:", headers);
   return headers;
 };
 
@@ -39,6 +39,17 @@ export const accountApi = {
       console.log(response);
     } catch (error) {
       throw error;
+    }
+  },
+  getUsername: async () => {
+    try {
+      const headers = getAuthHeader();
+      const response = await axios.get(`${baseURL}/name`, {
+        headers,
+      });
+      return response;
+    } catch (error) {
+      console.log(error);
     }
   },
 };
