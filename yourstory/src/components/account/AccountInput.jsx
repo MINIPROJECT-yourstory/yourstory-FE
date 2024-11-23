@@ -34,6 +34,7 @@ const InputTitle = styled.div`
 `;
 
 const Input = styled.input`
+  color: #bcbf1f;
   border: none;
   background-color: #f6f8c3;
   font-size: 15px;
