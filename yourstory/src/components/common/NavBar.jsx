@@ -37,13 +37,12 @@ const NavBar = ({ pagename }) => {
         },
       })
       .then((response) => {
-        console.log(response.data);
         setUsername(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, [access, baseURL]);
+  }, [username, access, baseURL]);
 
   return (
     <Wrapper>
