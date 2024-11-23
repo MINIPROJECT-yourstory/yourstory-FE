@@ -7,7 +7,7 @@ import StoryPost from "../components/story/StoryPost";
 
 const Story = () => {
   return (
-    <div>
+    <>
       <NavBar pagename="story" />
       <PageContainer>
         <HeaderWrapper>
@@ -21,7 +21,7 @@ const Story = () => {
           <StoryPost />
         </ContentWrapper>
       </PageContainer>
-    </div>
+    </>
   );
 };
 
