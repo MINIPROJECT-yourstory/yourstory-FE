@@ -62,7 +62,7 @@ const Letter = () => {
               key={letter.letter_id}
               letter={letter}
               index={idx + 1}
-              onClick={() => handleDetail(letter.letter_id)}
+              onBtnClick={() => handleDetail(letter.letter_id)}
             />
           ) : (
             <Wrapper
