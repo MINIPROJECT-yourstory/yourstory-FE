@@ -37,23 +37,22 @@ function App() {
             <Route index element={<Home />} />
 
             {/* 봉사활동 */}
-            <Route path="volunteer">
+            <Route path="work">
               <Route index element={<Volunteer />} />
-              <Route path=":id" element={<VolunteerDetail />} />
-              <Route path="status" element={<VolunteerStatus />} />
-              <Route path="diary" element={<VolunteerDiary />} />
+              <Route path=":work_id" element={<VolunteerDetail />} />
+              <Route path="my-status" element={<VolunteerStatus />} />
+              <Route path="record" element={<VolunteerDiary />} />
             </Route>
 
             {/* 이타적 도서관 */}
             <Route path="/library" element={<Library />} />
-            <Route path="/library/book/:id" element={<BookDetail />} />
-            <Route path="/library/book/:id/view" element={<BookViewer />} />
-            <Route path="/library/letter/:id" element={<LetterBox />} />
+            <Route path="/book/:id" element={<BookDetail />} />
+            <Route path="/book/pdf/:id" element={<BookViewer />} />
+            <Route path="/letter/:book_id" element={<LetterBox />} />
 
             {/* 우리의 이야기 */}
             <Route path="story">
               <Route index element={<Story />} />
-              <Route path=":id" element={<StoryDetail />} />
             </Route>
           </Route>
         </Routes>

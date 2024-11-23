@@ -11,7 +11,7 @@ const VolunteerDetail = () => {
     <>
       <NavBar pagename={"volunteer"} />
       <PageContainer>
-        <VolunteerHeader />
+        <VolunteerHeader currentPage="apply" />
         <DecoratedTitle
           frontText="봉사 신청"
           frontWeight="400"
