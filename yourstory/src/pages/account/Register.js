@@ -5,11 +5,10 @@ import Line from "../../assets/images/line-register.svg";
 import AccountInput from "../../components/account/AccountInput";
 import LogoZone from "../../components/account/LogoZone";
 import AccountButton from "../../components/account/AccountButton";
-import axios from "axios";
+import { accountApi } from "../../apis/accountApi";
 
 const Register = () => {
   const navigate = useNavigate();
-  const baseURL = process.env.REACT_APP_baseURL;
   const [formValue, setFormValue] = useState({
     nickname: "",
     username: "",
@@ -33,28 +32,24 @@ const Register = () => {
     Boolean(formValue.password) &&
     Boolean(formValue.password2);
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
     if (!isFilled) {
       return alert("모든 항목을 입력해 주세요.");
-    } else {
-      axios
-        .post(`${baseURL}/join`, formValue)
-        .then((response) => {
-          console.log(response);
-          alert("회원가입이 완료되었습니다.");
-          navigate("/login");
-        })
-        .catch((error) => {
-          if (error === "Usernames do not match") {
-            alert("아이디와 아이디 확인이 일치하지 않습니다.");
-          } else if (error === "Passwords do not match") {
-            alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
-          } else if (error === "The username already exists") {
-            alert("해당 아이디가 이미 존재합니다.");
-          } else {
-            console.log(error);
-          }
-        });
+    }
+    try {
+      await accountApi.postRegister(formValue);
+      alert("회원가입이 완료되었습니다.");
+      navigate("/login");
+    } catch (error) {
+      if (error.response.data === "Usernames do not match") {
+        alert("아이디와 아이디 확인이 일치하지 않습니다.");
+      } else if (error.response.data === "Passwords do not match") {
+        alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+      } else if (error.response.data === "The username already exists") {
+        alert("해당 아이디가 이미 존재합니다.");
+      } else {
+        console.log(error);
+      }
     }
   };
 

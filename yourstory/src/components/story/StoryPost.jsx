@@ -1,22 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import axios from "axios";
+import { storyApi } from "../../apis/storyApi";
 
 const StoryPost = () => {
   const navigate = useNavigate();
-  const baseURL = process.env.REACT_APP_baseURL;
-  const access = localStorage.getItem("access");
   const [storys, setStorys] = useState([]);
 
   useEffect(() => {
     const fetchStoryList = async () => {
       try {
-        const response = await axios.get(`${baseURL}/story`, {
-          headers: {
-            Authorization: `Bearer ${access}`,
-          },
-        });
+        const response = await storyApi.getStoryList();
         setStorys(response.data);
       } catch (error) {
         console.log(error);

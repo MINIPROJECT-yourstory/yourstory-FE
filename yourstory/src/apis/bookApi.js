@@ -114,17 +114,34 @@ export const bookApi = {
   },
 
   // 우편함 목록
-  getLetters: async (bookId) => {
+  getLetters: async (book_id) => {
     try {
-      console.log(`우편함 목록 조회 시작 - ID: ${bookId}`);
+      console.log(`우편함 목록 조회 시작 - ID: ${book_id}`);
       const headers = getAuthHeader();
-      const response = await axios.get(`${baseURL}/letter/${bookId}`, {
+      const response = await axios.get(`${baseURL}/letter/${book_id}`, {
         headers,
       });
       console.log("우편함 목록 조회 성공:", response.data);
       return response;
     } catch (error) {
       console.error("우편함 목록 조회 실패:", error);
+      throw error;
+    }
+  },
+
+  // 편지 남기기
+  postLetter: async (postValue, book_id) => {
+    try {
+      const headers = getAuthHeader();
+      const response = await axios.post(
+        `${baseURL}/letter/${book_id}`,
+        postValue,
+        {
+          headers,
+        }
+      );
+      console.log(response);
+    } catch (error) {
       throw error;
     }
   },

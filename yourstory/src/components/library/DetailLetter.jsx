@@ -2,38 +2,40 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import MailIcon from "../../assets/images/icon-email.svg";
 import ConfirmModal from "../common/ConfirmModal";
+import axios from "axios";
 
 const DetailLetter = ({ letter, index, onBtnClick, isMine }) => {
+  const baseURL = process.env.REACT_APP_baseURL;
+  const access = localStorage.getItem("access");
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const handleDelete = () => {
     setIsConfirmOpen(true);
   };
 
-  //   const onConfirm = (e) => {
-  //     let letter = e ? e.target.id : "";
-  //     axios
-  //       .delete(`${baseURL}/letter/${letter}/`, {
-  //         headers: {
-  //           Authorization: `Bearer ${accessToken}`,
-  //         },
-  //       })
-  //       .then((response) => {
-  //         setIsConfirmOpen(false);
-  //         alert("편지가 삭제되었습니다.");
-  //         window.location.reload();
-  //       })
-  //       .catch((error) => {
-  //         setIsConfirmOpen(false);
-  //         console.log(error);
-  //         alert("편지 삭제에 실패했습니다.");
-  //       });
-  //   };
+  const onConfirm = (letter_id) => {
+    axios
+      .delete(`${baseURL}/letter/${letter_id}`, {
+        headers: {
+          Authorization: `Bearer ${access}`,
+        },
+      })
+      .then((response) => {
+        setIsConfirmOpen(false);
+        alert("편지가 삭제되었습니다.");
+        window.location.reload();
+      })
+      .catch((error) => {
+        setIsConfirmOpen(false);
+        console.log(error);
+        alert("편지 삭제에 실패했습니다.");
+      });
+  };
 
   return (
     <div>
-      <Wrapper onClick={onBtnClick}>
-        <TitleBox>
+      <Wrapper id={letter.id}>
+        <TitleBox onClick={onBtnClick}>
           <Order>{index}</Order>
           <Icon src={MailIcon} alt="편지 아이콘" />
           <Title>{letter.title}</Title>
@@ -42,7 +44,7 @@ const DetailLetter = ({ letter, index, onBtnClick, isMine }) => {
           <Content>{letter.content}</Content>
           {isMine ? (
             <BtnContainer>
-              <DeleteBtn onClick={handleDelete}>삭제</DeleteBtn>{" "}
+              <DeleteBtn onClick={handleDelete}>삭제</DeleteBtn>
             </BtnContainer>
           ) : (
             ""
@@ -52,7 +54,7 @@ const DetailLetter = ({ letter, index, onBtnClick, isMine }) => {
       {isConfirmOpen && (
         <ConfirmModal
           isConfirmOpen={isConfirmOpen}
-          //   onConfirm={() => onConfirm}
+          onConfirm={() => onConfirm(letter.id)}
           message={"편지를 삭제할까요?"}
           onCancel={() => setIsConfirmOpen(false)}
         />
@@ -122,7 +124,7 @@ const BtnContainer = styled.div`
   align-items: flex-end;
 `;
 
-const DeleteBtn = styled.button`
+const DeleteBtn = styled.div`
   border: none;
   background: #bcbf1f;
   color: white;
