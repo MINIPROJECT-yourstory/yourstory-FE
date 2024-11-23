@@ -1,16 +1,20 @@
 import { useNavigate } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import LogoIcon from "../../assets/images/icon-logo.svg";
 import AlertModal from "./AlertModal";
 import ConfirmModal from "./ConfirmModal";
 import SideMenu from "./SideMenu";
+import axios from "axios";
 
 const NavBar = ({ pagename }) => {
   const navigate = useNavigate();
+  const baseURL = process.env.REACT_APP_baseURL;
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
+  const [username, setUsername] = useState("");
+  const access = localStorage.getItem("access");
 
   const toggleActiveMenu = (menu) => {
     setActiveMenu((prevMenu) => (prevMenu === menu ? null : menu));
@@ -20,29 +24,26 @@ const NavBar = ({ pagename }) => {
     setIsConfirmOpen(true);
   };
 
-  //   const onConfirm = () => {
-  //     axios
-  //       .delete(`${baseURL}/`, {
-  //         headers: {
-  //           Authorization: `Bearer ${accessToken}`,
-  //         },
-  //       })
-  //       .then((response) => {
-  //         setIsConfirmOpen(false);
-  //         alert("로그아웃되었습니다.");
-  //         navigate("/");
-  //       })
-  //       .catch((error) => {
-  //         setIsConfirmOpen(false);
-  //         console.log(error);
-  //         alert("로그아웃에 실패했습니다.");
-  //       });
-  //   };
-
-  localStorage.clear();
-  //   연동 시 여기에서 회원 이름 조회
-  localStorage.setItem("username", "숙멋사");
-  const username = localStorage.getItem("username");
+  const onConfirm = () => {
+    localStorage.removeItem("access");
+    setIsConfirmOpen(false);
+    window.location.reload();
+  };
+  useEffect(() => {
+    axios
+      .get(`${baseURL}/name`, {
+        headers: {
+          Authorization: `Bearer ${access}`,
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+        setUsername(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [access, baseURL]);
 
   return (
     <Wrapper>
@@ -100,11 +101,7 @@ const NavBar = ({ pagename }) => {
       {isConfirmOpen && (
         <ConfirmModal
           isConfirmOpen={isConfirmOpen}
-          onConfirm={() => {
-            setIsConfirmOpen(false);
-            navigate("/");
-          }}
-          // onConfirm={onConfirm}
+          onConfirm={onConfirm}
           message={"로그아웃 하시겠습니까?"}
           onCancel={() => setIsConfirmOpen(false)}
         />

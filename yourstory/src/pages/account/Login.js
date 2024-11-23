@@ -39,6 +39,7 @@ const Login = () => {
           localStorage.clear();
           const token = response.headers["authorization"];
           localStorage.setItem("access", token.split(" ")[1]);
+          navigate("/");
         })
         .catch((error) => {
           console.log(error);
