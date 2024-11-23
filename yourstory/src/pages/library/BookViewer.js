@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { bookApi } from "../../apis/bookApi";
 import styled from "styled-components";
 import { Book } from "lucide-react";
 import NavBar from "../../components/common/NavBar";
@@ -9,16 +11,73 @@ import "react-pdf/dist/esm/Page/TextLayer.css";
 pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 const BookViewer = () => {
+  const { id } = useParams();
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
+  const [pdfUrl, setPdfUrl] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // 테스트용 PDF URL
-  const pdfUrl =
-    "https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf";
+  useEffect(() => {
+    const fetchPdf = async () => {
+      try {
+        setIsLoading(true);
+        const response = await bookApi.getBookPdf(id);
 
-  function onDocumentLoadSuccess({ numPages }) {
+        // response.data가 Blob인지 확인
+        if (!(response.data instanceof Blob)) {
+          console.error("응답이 Blob 형식이 아닙니다:", response.data);
+          throw new Error("Invalid PDF data format");
+        }
+
+        // Content-Type 확인
+        const contentType = response.headers["content-type"];
+        console.log("응답 Content-Type:", contentType);
+
+        // PDF Blob 생성
+        const blob = new Blob([response.data], {
+          type: contentType || "application/pdf",
+        });
+
+        console.log("생성된 Blob:", blob);
+        const url = URL.createObjectURL(blob);
+        console.log("생성된 URL:", url);
+
+        setPdfUrl(url);
+      } catch (error) {
+        console.error("PDF 로드 실패:", error);
+        console.error("에러 상세:", {
+          message: error.message,
+          response: error.response,
+          request: error.request,
+        });
+        setError(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPdf();
+
+    return () => {
+      if (pdfUrl) {
+        URL.revokeObjectURL(pdfUrl);
+      }
+    };
+  }, [id]);
+
+  const onDocumentLoadSuccess = ({ numPages }) => {
+    console.log("PDF 로드 성공. 총 페이지:", numPages);
     setNumPages(numPages);
-  }
+  };
+
+  const onDocumentLoadError = (error) => {
+    console.error("PDF 로드 에러:", error);
+    setError(error);
+  };
+
+  if (isLoading) return <LoadingMessage />;
+  if (error) return <ErrorMessage error={error} />;
 
   return (
     <>
@@ -34,8 +93,9 @@ const BookViewer = () => {
               <Document
                 file={pdfUrl}
                 onLoadSuccess={onDocumentLoadSuccess}
+                onLoadError={onDocumentLoadError}
                 loading={<LoadingMessage />}
-                error={<ErrorMessage />}
+                error={<ErrorMessage error={error} />}
               >
                 <Page
                   pageNumber={pageNumber}
@@ -70,18 +130,21 @@ const BookViewer = () => {
   );
 };
 
+// LoadingMessage 컴포넌트 수정
 const LoadingMessage = () => (
-  <div style={{ textAlign: "center", padding: "20px" }}>
+  <MessageContainer>
     <Book size={64} color="#BCBF1F" />
-    <p>PDF를 불러오는 중입니다...</p>
-  </div>
+    <MessageText>PDF를 불러오는 중입니다...</MessageText>
+  </MessageContainer>
 );
 
-const ErrorMessage = () => (
-  <div style={{ textAlign: "center", padding: "20px" }}>
+// ErrorMessage 컴포넌트 수정
+const ErrorMessage = ({ error }) => (
+  <MessageContainer>
     <Book size={64} color="#BCBF1F" />
-    <p>PDF를 불러오는데 실패했습니다.</p>
-  </div>
+    <MessageText>PDF를 불러오는데 실패했습니다.</MessageText>
+    <ErrorDetails>{error?.message}</ErrorDetails>
+  </MessageContainer>
 );
 
 const PageContainer = styled.div`
@@ -177,6 +240,26 @@ const PageNumber = styled.span`
   font-size: ${({ theme }) => theme.typography.fontSize.md};
   color: ${({ theme }) => theme.colors.text.primary};
   padding: 0 ${({ theme }) => theme.spacing.padding.sm};
+`;
+
+const MessageContainer = styled.div`
+  text-align: center;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+`;
+
+const MessageText = styled.p`
+  margin: 0;
+  color: ${({ theme }) => theme.colors.text.primary};
+`;
+
+const ErrorDetails = styled.p`
+  margin: 0;
+  color: red;
+  font-size: 14px;
 `;
 
 export default BookViewer;
