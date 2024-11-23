@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { volunteerService } from "../services/volunteerService";
+import { volunteerApi } from "../../apis/volunteerApi";
+import LoadingSpinner from "../common/LoadingSpinner";
 
 const LABELS = {
   firstRow: ["봉사 기간", "봉사 장소", "봉사 요일", "봉사 시간"],
@@ -18,7 +19,7 @@ const VolunteerInfo = ({ workId }) => {
   const fetchVolunteerDetail = async () => {
     try {
       setIsLoading(true);
-      const data = await volunteerService.getVolunteerDetail(workId);
+      const data = await volunteerApi.getVolunteerDetail(workId);
       setVolunteerInfo(data);
     } catch (error) {
       console.error("봉사 상세 정보 조회 실패:", error);

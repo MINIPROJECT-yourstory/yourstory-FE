@@ -1,31 +1,54 @@
 import axios from "axios";
 
-const BASE_URL = "your_api_base_url";
+const BASE_URL = "http://13.209.83.206:8080";
+
+// 토큰을 가져오는 함수
+const getToken = () => {
+  return localStorage.getItem("accessToken"); // 또는 실제 토큰이 저장된 키 이름
+};
 
 export const volunteerApi = {
   // 봉사 목록 조회
   getVolunteerList: async (filters = {}) => {
-    const { regions, recruitmentStatus, dayOfWeek } = filters;
-    let url = `${BASE_URL}/work/list`;
+    try {
+      const { regions, recruitmentStatus, dayOfWeek } = filters;
+      let url = `${BASE_URL}/work`;
 
-    const params = new URLSearchParams();
-    if (regions) params.append("regions", regions);
-    if (recruitmentStatus)
-      params.append("recruitmentStatus", recruitmentStatus);
-    if (dayOfWeek) params.append("dayOfWeek", dayOfWeek);
+      const params = new URLSearchParams();
+      if (regions) params.append("regions", regions);
+      if (recruitmentStatus)
+        params.append("recruitmentStatus", recruitmentStatus);
+      if (dayOfWeek) params.append("dayOfWeek", dayOfWeek);
 
-    if (params.toString()) {
-      url += `?${params.toString()}`;
+      if (params.toString()) {
+        url += `?${params.toString()}`;
+      }
+
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`, // 토큰 추가
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("API 호출 에러:", error);
+      throw error;
     }
-
-    const response = await axios.get(url);
-    return response.data;
   },
 
   // 봉사 상세 조회
   getVolunteerDetail: async (workId) => {
-    const response = await axios.get(`${BASE_URL}/work/${workId}`);
-    return response.data;
+    try {
+      const response = await axios.get(`${BASE_URL}/work/${workId}`, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`, // 토큰 추가
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("API 호출 에러:", error);
+      throw error;
+    }
   },
 
   // 봉사 신청

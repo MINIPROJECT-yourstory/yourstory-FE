@@ -6,6 +6,7 @@ import VolunteerList from "../components/volunteer/VolunteerList";
 import NavBar from "../components/common/NavBar";
 import { media } from "../styles/theme";
 import { volunteerApi } from "../apis/volunteerApi";
+import LoadingSpinner from "../components/common/LoadingSpinner";
 
 const VolunteerPage = () => {
   const [volunteers, setVolunteers] = useState([]);
