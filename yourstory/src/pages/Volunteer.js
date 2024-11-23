@@ -26,7 +26,7 @@ const VolunteerPage = () => {
       setVolunteers(data);
       setSearchResults(data);
     } catch (error) {
-      console.error("봉사 목록 조회 실패:", error);
+      console.error("봉사 목록 조회 ���패:", error);
     } finally {
       setIsLoading(false);
     }
@@ -35,21 +35,49 @@ const VolunteerPage = () => {
   const handleSearch = async (filters) => {
     try {
       setIsLoading(true);
+      console.log("검색 시작 - 원본 필터:", filters);
+
+      // API 요청용 필터 데이터 변환
       const apiFilters = {
-        regions: filters.location.includes("전체")
-          ? null
-          : filters.location.join(","),
-        recruitmentStatus: filters.status.includes("전체")
-          ? null
-          : filters.status.join(","),
-        dayOfWeek: filters.day.includes("전체") ? null : filters.day.join(","),
+        regions: filters.location.filter((loc) => loc !== "전체"),
+        recruitmentStatus: filters.status
+          .filter((status) => status !== "전체")
+          .map((status) => {
+            // "모집중" -> "모집 중" 변환
+            if (status === "모집중") return "모집 중";
+            return status;
+          }),
+        dayOfWeek: [],
       };
 
+      // 요일 처리
+      if (!filters.day.includes("전체")) {
+        if (filters.day.includes("평일")) {
+          apiFilters.dayOfWeek.push(
+            ...["월요일", "화요일", "수요일", "목요일", "금요일"]
+          );
+        }
+        if (filters.day.includes("주말")) {
+          apiFilters.dayOfWeek.push(...["토요일", "일요일"]);
+        }
+        // 개별 요일 추가
+        filters.day.forEach((day) => {
+          if (!["전체", "평일", "주말"].includes(day)) {
+            apiFilters.dayOfWeek.push(day);
+          }
+        });
+      }
+
+      console.log("변환된 API 필터:", apiFilters);
+
       const filteredData = await volunteerApi.getVolunteerList(apiFilters);
+      console.log("필터링 결과:", filteredData);
+
       setSearchResults(filteredData);
       setIsSearched(true);
     } catch (error) {
       console.error("필터링 실패:", error);
+      alert("봉사 목록을 불러오는데 실패했습니다.");
     } finally {
       setIsLoading(false);
     }

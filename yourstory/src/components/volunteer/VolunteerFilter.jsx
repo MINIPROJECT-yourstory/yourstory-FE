@@ -11,13 +11,13 @@ const VolunteerFilter = ({ onSearch }) => {
   });
 
   const handleCheckboxChange = (category, value) => {
+    console.log(`체크박스 변경: ${category} - ${value}`);
+
     setFilters((prev) => {
       const updated = { ...prev };
       if (value === "전체") {
-        // 전체가 선택되면 다른 옵션들은 해제
         updated[category] = updated[category].includes("전체") ? [] : ["전체"];
       } else {
-        // 개별 옵션 선택 시 전체 옵션 해제
         const withoutAll = prev[category].filter((item) => item !== "전체");
         if (withoutAll.includes(value)) {
           updated[category] = withoutAll.filter((item) => item !== value);
@@ -25,12 +25,24 @@ const VolunteerFilter = ({ onSearch }) => {
           updated[category] = [...withoutAll, value];
         }
       }
+      console.log("업데이트된 필터:", updated);
       return updated;
     });
   };
 
   const handleSearch = () => {
-    onSearch(filters);
+    console.log("필터 검색 시작");
+    console.log("현재 필터 상태:", filters);
+
+    // 필터 데이터 정리
+    const searchFilters = {
+      location: filters.location.includes("전체") ? [] : filters.location,
+      status: filters.status.includes("전체") ? [] : filters.status,
+      day: filters.day.includes("전체") ? [] : filters.day,
+    };
+
+    console.log("적리된 검색 필터:", searchFilters);
+    onSearch(searchFilters);
   };
 
   const handleReset = () => {
