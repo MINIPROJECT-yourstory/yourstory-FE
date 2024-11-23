@@ -13,21 +13,13 @@ const SideMenu = ({ isVisible, menu }) => {
             <HrImg src={Line} alt="line" />
             <br />
             <LinkBox>
-              <TitleLink to={"/volunteer"}>
-                {">"}&nbsp;&nbsp;봉사 신청
-              </TitleLink>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "1.7rem",
-                }}
-              >
-                <TitleLink to={"/volunteer/status"}>
+              <TitleLink to="/work">{">"}&nbsp;&nbsp;봉사 신청</TitleLink>
+              <div>
+                <TitleLink to="/work/my-status">
                   {">"}&nbsp;&nbsp;봉사 현황
                 </TitleLink>
-                <SubLink to={"/volunteer/status"}>진행 중인 봉사활동</SubLink>
-                <SubLink to={"/volunteer/diary"}>자서전 기록장</SubLink>
+                <SubLink to="/work/my-status">진행 중인 봉사활동</SubLink>
+                <SubLink to="/work/record">자서전 기록장</SubLink>
               </div>
             </LinkBox>
           </Container>

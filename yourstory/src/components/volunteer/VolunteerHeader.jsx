@@ -7,11 +7,11 @@ const VolunteerHeader = () => {
   const navigate = useNavigate();
 
   const handleVolunteerClick = () => {
-    navigate("/volunteer");
+    navigate("/work");
   };
 
   const handleStatusClick = () => {
-    navigate("/volunteer/status");
+    navigate("/work/my-status");
   };
 
   return (

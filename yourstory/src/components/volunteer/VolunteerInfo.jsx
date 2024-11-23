@@ -1,73 +1,46 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { volunteerService } from "../services/volunteerService";
 
 const LABELS = {
   firstRow: ["봉사 기간", "봉사 장소", "봉사 요일", "봉사 시간"],
   secondRow: ["모집 기관", "모집 인원", "담당자", "기타사항"],
 };
 
-const VolunteerInfo = () => {
-  const volunteerInfo = [
-    {
-      value: "6개월",
-      info: "하늘꿈센터",
-    },
-    {
-      value: "하늘꿈센터",
-      info: "3명",
-    },
-    {
-      value: "매주\n월/수/금 중 택1",
-      info: "숙멋사 팀장",
-    },
-    {
-      value: "15시 0분~17시 0분",
-      info: "식수 제공",
-    },
-  ];
+const VolunteerInfo = ({ workId }) => {
+  const [volunteerInfo, setVolunteerInfo] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchVolunteerDetail();
+  }, [workId]);
+
+  const fetchVolunteerDetail = async () => {
+    try {
+      setIsLoading(true);
+      const data = await volunteerService.getVolunteerDetail(workId);
+      setVolunteerInfo(data);
+    } catch (error) {
+      console.error("봉사 상세 정보 조회 실패:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (isLoading) return <LoadingSpinner />;
+  if (!volunteerInfo) return <div>정보를 불러올 수 없습니다.</div>;
 
   return (
     <>
-      <BoxTitle>하늘꿈센터</BoxTitle>
+      <BoxTitle>{volunteerInfo.title}</BoxTitle>
       <Container>
         <InfoTable>
           <GridLines>
             <span />
           </GridLines>
-          {volunteerInfo.map((info, index) => (
-            <Row key={index}>
-              <StyledLabel>{LABELS.firstRow[index]}</StyledLabel>
-              <ContentText>{info.value}</ContentText>
-              <StyledLabel>{LABELS.secondRow[index]}</StyledLabel>
-              <ContentText>{info.info}</ContentText>
-            </Row>
-          ))}
+          {/* volunteerInfo의 데이터를 사용하여 정보 표시 */}
         </InfoTable>
-
-        <ContentBox>
-          <BoldText>
-            하늘꿈센터에서 홀몸 어르신의 이타적 자서전 작성을 함께할
-            자원봉사자를 모집합니다.
-          </BoldText>
-          <Text>
-            우리 센터에는 70대에서 80대의 어르신 다섯 분과 함께하고 있습니다.
-            울고 웃으며 여러 해를 함께해왔습니다. 센터에서의 활동을 넘어서 청년
-            여러분들과의 만남을 통해 힘을 얻으시는 할머님, 할아버님의 모습을
-            보며 올해 하반기 다시 한 번 청년 자원봉사자를 모집합니다. 처음에는
-            처음 뵙는 어르신과의 시간이 어색했지만, 점차 마음을 열며 여러
-            이야기들에 눈시울을 붉히던 이전 청년 분들이 기억납니다.
-          </Text>
-          <Text>
-            오늘 이 글과 함께 다시 한 번 어르신들의 이야기를 세상에 전할
-            여러분을 기다립니다.
-          </Text>
-
-          <Text>숙멋사 팀장 드림</Text>
-          <Contact>
-            문의사항은 아래 전화번호로 부탁드립니다.
-            <PhoneNumber>전화번호: 0X-XXXX-XXXX</PhoneNumber>
-          </Contact>
-        </ContentBox>
+        {/* ... 나머지 컴포넌트 ... */}
       </Container>
     </>
   );
