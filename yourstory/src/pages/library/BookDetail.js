@@ -11,22 +11,28 @@ const BookDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [bookDetail, setBookDetail] = useState(null);
+  const [letters, setLetters] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchBookDetail = async () => {
+    const fetchData = async () => {
       try {
         setIsLoading(true);
-        const response = await bookApi.getBookDetail(id);
-        setBookDetail(response.data);
+        const [bookResponse, lettersResponse] = await Promise.all([
+          bookApi.getBookDetail(id),
+          bookApi.getLetters(id),
+        ]);
+
+        setBookDetail(bookResponse.data);
+        setLetters(lettersResponse.data);
       } catch (error) {
-        console.error("도서 상세 정보 조회 실패:", error);
+        console.error("데이터 조회 실패:", error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchBookDetail();
+    fetchData();
   }, [id]);
 
   const handleLike = async () => {
@@ -115,8 +121,8 @@ const BookDetail = () => {
                 <span>{bookDetail.addressee}님께 드리는 우리의 편지</span>
               </MailboxHeader>
               <LetterList>
-                {bookDetail.letterBox.map((letter, index) => (
-                  <LetterItem key={index}>
+                {letters.map((letter, index) => (
+                  <LetterItem key={letter.id || index}>
                     <Mail />
                     <LetterPreview>{letter.content}</LetterPreview>
                   </LetterItem>
@@ -322,9 +328,8 @@ const ContributorItem = styled.div`
 const Label = styled.span`
   background-color: ${({ theme }) => theme.colors.primary.main};
   color: ${({ theme }) => theme.colors.text.white};
-  padding: ${({ theme }) => theme.spacing.padding.xs}
-    ${({ theme }) => theme.spacing.padding.sm};
-  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  padding: ${({ theme }) => theme.spacing.padding.xs};
+  ${({ theme }) => theme.spacing.padding.sm};
   margin-right: ${({ theme }) => theme.spacing.padding.sm};
   border-radius: 9px;
   font-size: 16px;
@@ -383,8 +388,8 @@ const WriteLetterButton = styled.button`
   float: right;
   background-color: ${({ theme }) => theme.colors.background.default};
   color: ${({ theme }) => theme.colors.text.primary};
-  padding: ${({ theme }) => theme.spacing.padding.xs}
-    ${({ theme }) => theme.spacing.padding.md};
+  padding: ${({ theme }) => theme.spacing.padding.xs};
+  ${({ theme }) => theme.spacing.padding.md};
   border-radius: ${({ theme }) => theme.borderRadius.pill};
   border: 1px solid ${({ theme }) => theme.colors.border.main};
   margin-top: ${({ theme }) => theme.spacing.padding.md};

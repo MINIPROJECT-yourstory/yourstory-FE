@@ -22,35 +22,21 @@ const BookViewer = () => {
     const fetchPdf = async () => {
       try {
         setIsLoading(true);
-        const response = await bookApi.getBookPdf(id);
-
-        // response.data가 Blob인지 확인
-        if (!(response.data instanceof Blob)) {
-          console.error("응답이 Blob 형식이 아닙니다:", response.data);
-          throw new Error("Invalid PDF data format");
-        }
+        const { data: pdfBlob, headers } = await bookApi.getBookPdf(id);
 
         // Content-Type 확인
-        const contentType = response.headers["content-type"];
-        console.log("응답 Content-Type:", contentType);
+        const contentType = headers["content-type"];
+        console.log("PDF Content-Type:", contentType);
 
-        // PDF Blob 생성
-        const blob = new Blob([response.data], {
-          type: contentType || "application/pdf",
-        });
+        if (!contentType.includes("application/pdf")) {
+          throw new Error("서버가 PDF가 아닌 형식으로 응답했습니다");
+        }
 
-        console.log("생성된 Blob:", blob);
-        const url = URL.createObjectURL(blob);
-        console.log("생성된 URL:", url);
-
+        const url = URL.createObjectURL(pdfBlob);
+        console.log("PDF URL 생성:", url);
         setPdfUrl(url);
       } catch (error) {
         console.error("PDF 로드 실패:", error);
-        console.error("에러 상세:", {
-          message: error.message,
-          response: error.response,
-          request: error.request,
-        });
         setError(error);
       } finally {
         setIsLoading(false);

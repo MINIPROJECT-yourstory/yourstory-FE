@@ -100,15 +100,44 @@ export const bookApi = {
   getBookPdf: async (bookId) => {
     try {
       console.log(`PDF 조회 시작 - ID: ${bookId}`);
-      const headers = getAuthHeader();
+      const headers = {
+        ...getAuthHeader(),
+      };
+
+      // 먼저 PDF URL을 가져옴
       const response = await axios.get(`${baseURL}/book/pdf/${bookId}`, {
         headers,
+      });
+
+      console.log("PDF URL 응답:", response.data);
+
+      // URL을 받아서 실제 PDF 파일을 다운로드
+      const pdfResponse = await axios.get(response.data, {
+        headers: {
+          ...headers,
+          Accept: "application/pdf",
+        },
         responseType: "blob",
       });
-      console.log("PDF 조회 성공");
-      return response;
+
+      const pdfBlob = pdfResponse.data;
+
+      if (pdfBlob.size === 0) {
+        throw new Error("빈 PDF 파일입니다");
+      }
+
+      return {
+        data: pdfBlob,
+        headers: pdfResponse.headers,
+      };
     } catch (error) {
-      console.error("PDF 조회 실패:", error);
+      console.error("PDF 조회 실패:", {
+        message: error.message,
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        headers: error.response?.headers,
+        data: error.response?.data,
+      });
       throw error;
     }
   },
