@@ -34,7 +34,7 @@ export const bookApi = {
       });
 
       console.log("도서 목록 조회 성공:", response.data);
-      return response;
+      return response.data;
     } catch (error) {
       console.error("도서 목록 조회 실패:", {
         message: error.message,
