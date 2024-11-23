@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { bookApi } from "../../apis/bookApi";
+import { useParams } from "react-router-dom";
 
 const WriteLetter = () => {
+  const { book_id } = useParams();
   const [postValue, setPostValue] = useState({
     title: "",
     content: "",
@@ -15,30 +18,23 @@ const WriteLetter = () => {
     }));
   };
 
-  //   const isFilled = Boolean(postValue.title) && Boolean(postValue.content);
-  //   const SubmitLetter = () => {
-  //     if (!isFilled) {
-  //       alert("모든 항목을 입력해 주세요");
-  //     } else {
-  //       axios
-  //         .post(`${baseURL}/letter/{book_id}`, postValue, {
-  //           headers: {
-  //             Authorization: `Bearer ${accessToken}`,
-  //           },
-  //         })
-  //         .then((response) => {
-  //           alert(response.data);
-  //           setPostValue({
-  //             title: "",
-  //             content: "",
-  //           });
-  //         })
-  //         .catch((error) => {
-  //           console.error(error);
-  //           alert("편지 작성을 실패했습니다.");
-  //         });
-  //     }
-  //   };
+  const isFilled = Boolean(postValue.title) && Boolean(postValue.content);
+  const SubmitLetter = async () => {
+    if (!isFilled) {
+      alert("모든 항목을 입력해 주세요");
+    }
+    try {
+      await bookApi.postLetter(postValue, book_id);
+      window.location.reload();
+      setPostValue({
+        title: "",
+        content: "",
+      });
+    } catch (error) {
+      alert("편지 작성에 실패했습니다.");
+      console.log(error);
+    }
+  };
   return (
     <div>
       <Wrapper>
@@ -55,7 +51,7 @@ const WriteLetter = () => {
           onChange={onChange}
           name={"content"}
         />
-        <WriteBtn>작성 완료</WriteBtn>
+        <WriteBtn onClick={SubmitLetter}>작성 완료</WriteBtn>
       </Wrapper>
     </div>
   );

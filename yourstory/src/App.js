@@ -53,6 +53,7 @@ function App() {
             {/* 우리의 이야기 */}
             <Route path="story">
               <Route index element={<Story />} />
+              <Route path=":id" element={<StoryDetail />} />
             </Route>
           </Route>
         </Routes>

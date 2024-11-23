@@ -4,11 +4,12 @@ import { Link, useNavigate } from "react-router-dom";
 import AccountInput from "../../components/account/AccountInput";
 import LogoZone from "../../components/account/LogoZone";
 import AccountButton from "../../components/account/AccountButton";
-import axios from "axios";
+// import axios from "axios";
+import { accountApi } from "../../apis/accountApi";
 
 const Login = () => {
   const navigate = useNavigate();
-  const baseURL = process.env.REACT_APP_baseURL;
+  // const baseURL = process.env.REACT_APP_baseURL;
   const [formValue, setFormValue] = useState({
     username: "",
     password: "",
@@ -25,25 +26,24 @@ const Login = () => {
   const isUsername = Boolean(formValue.username);
   const isPassword = Boolean(formValue.password);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!isUsername) {
       return alert("이메일을 입력해주세요.");
     } else if (!isPassword) {
       return alert("비밀번호를 입력해주세요.");
-    } else {
-      axios
-        .post(`${baseURL}/login`, formValue)
-        .then((response) => {
-          console.log(response);
-          alert("로그인 성공!");
-          localStorage.clear();
-          const token = response.headers["authorization"];
-          localStorage.setItem("access", token.split(" ")[1]);
-          navigate("/");
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+    }
+
+    try {
+      await accountApi.postLogin(formValue);
+      alert("로그인 성공!");
+      navigate("/");
+    } catch (error) {
+      console.error("로그인 중 오류 발생:", error);
+      if (error.response?.status === 401) {
+        alert("아이디와 비밀번호를 다시 확인해 주세요!");
+      } else {
+        alert("로그인 중 문제가 발생했습니다. 다시 시도해 주세요.");
+      }
     }
   };
 
