@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import { Heart, Mail } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -10,11 +10,7 @@ const LibraryContent = () => {
   const [books, setBooks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    fetchBooks();
-  }, [navigate]);
-
-  const fetchBooks = async () => {
+  const fetchBooks = useCallback(async () => {
     try {
       setIsLoading(true);
       const token = localStorage.getItem("access");
@@ -25,8 +21,10 @@ const LibraryContent = () => {
 
       const response = await bookApi.getBooks();
       console.log("받아온 도서 데이터:", response);
-      if (response.data && Array.isArray(response.data)) {
-        setBooks(response.data);
+      if (Array.isArray(response)) {
+        setBooks(response);
+      } else {
+        console.error("예상치 못한 응답 형식:", response);
       }
     } catch (error) {
       console.error("도서 목록 조회 실패:", error);
@@ -36,7 +34,11 @@ const LibraryContent = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [navigate]);
+
+  useEffect(() => {
+    fetchBooks();
+  }, [fetchBooks]);
 
   const handleLike = async (bookId) => {
     try {
@@ -74,7 +76,7 @@ const LibraryContent = () => {
     return <LoadingContainer>도서 목록을 불러오는 중...</LoadingContainer>;
   }
 
-  if (!books || books.length === 0) {
+  if (!Array.isArray(books) || books.length === 0) {
     return <EmptyContainer>등록된 도서가 없습니다.</EmptyContainer>;
   }
 
