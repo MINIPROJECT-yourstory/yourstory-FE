@@ -3,7 +3,7 @@ import styled from "styled-components";
 import MailIcon from "../../assets/images/icon-email.svg";
 import ConfirmModal from "../common/ConfirmModal";
 
-const DetailLetter = ({ letter, index, onBtnClick }) => {
+const DetailLetter = ({ letter, index, onBtnClick, isMine }) => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const handleDelete = () => {
@@ -40,7 +40,13 @@ const DetailLetter = ({ letter, index, onBtnClick }) => {
         </TitleBox>
         <ContentBox>
           <Content>{letter.content}</Content>
-          <DeleteBtn onClick={handleDelete}>삭제</DeleteBtn>
+          {isMine ? (
+            <BtnContainer>
+              <DeleteBtn onClick={handleDelete}>삭제</DeleteBtn>{" "}
+            </BtnContainer>
+          ) : (
+            ""
+          )}
         </ContentBox>
       </Wrapper>
       {isConfirmOpen && (
@@ -92,7 +98,6 @@ const Content = styled.div`
   color: #fafc97;
   font-size: 12px;
   font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
-  border-bottom: 1.3px dashed #919400;
 `;
 
 const TitleBox = styled.div`
@@ -110,6 +115,13 @@ const ContentBox = styled.div`
   padding: 0.2rem 0rem;
 `;
 
+const BtnContainer = styled.div`
+  border-top: 1.3px dashed #919400;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+`;
+
 const DeleteBtn = styled.button`
   border: none;
   background: #bcbf1f;
@@ -119,10 +131,10 @@ const DeleteBtn = styled.button`
   font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
   line-height: 18px;
   letter-spacing: -0.06em;
-  padding: 6px 15px;
+  padding: 5px 15px;
   text-align: center;
-  margin-left: auto;
   border-radius: 7px;
   margin-top: 0.5rem;
+  margin-left: auto;
   cursor: pointer;
 `;

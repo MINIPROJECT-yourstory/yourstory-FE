@@ -61,7 +61,7 @@ const SideMenu = ({ isVisible, menu }) => {
     return null;
   };
 
-  return <Wrapper isVisible={isVisible}>{SideContent()}</Wrapper>;
+  return <Wrapper $isVisible={isVisible}>{SideContent()}</Wrapper>;
 };
 
 export default SideMenu;
@@ -71,7 +71,7 @@ const Wrapper = styled.div`
   width: 726px;
   height: 100vh;
   top: 0;
-  left: ${(props) => (props.isVisible ? "265px" : "-726px")};
+  left: ${(props) => (props.$isVisible ? "265px" : "-726px")};
   background: #bcbf1fde;
   font-family: Inter;
   font-size: 20px;
