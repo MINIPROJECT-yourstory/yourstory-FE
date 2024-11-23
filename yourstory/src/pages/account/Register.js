@@ -24,40 +24,40 @@ const Register = () => {
     }));
   };
 
-  //   const isFilled =
-  //     Boolean(formValue.nickname) &&
-  //     Boolean(formValue.username) &&
-  //     Boolean(formValue.username2) &&
-  //     Boolean(formValue.password) &&
-  //     Boolean(formValue.password2);
+  const isFilled =
+    Boolean(formValue.nickname) &&
+    Boolean(formValue.username) &&
+    Boolean(formValue.username2) &&
+    Boolean(formValue.password) &&
+    Boolean(formValue.password2);
 
-  //   const handleSignup = () => {
-  //     if (!isFilled) {
-  //       return alert("모든 항목을 입력해 주세요.");
-  //     } else {
-  //       axios
-  //         .post(`${baseURL}/join/`, formValue)
-  //         .then((response) => {
-  //           console.log(response);
-  //           alert("회원가입이 완료되었습니다.");
-  //           localStorage.clear();
-  //           const userInfo = response.data;
-  //           localStorage.setItem("access", userInfo.access);
-  //           localStorage.setItem("refresh", userInfo.refresh);
-  //         })
-  //         .catch((error) => {
-  //           if (error === "Usernames do not match") {
-  //             alert("아이디와 아이디 확인이 일치하지 않습니다.");
-  //           } else if (error === "Passwords do not match") {
-  //             alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
-  //           } else if (error === "The username already exists") {
-  //             alert("해당 아이디가 이미 존재합니다.");
-  //           } else {
-  //             console.log(error);
-  //           }
-  //         });
-  //     }
-  //   };
+  const handleSignup = () => {
+    if (!isFilled) {
+      return alert("모든 항목을 입력해 주세요.");
+    } else {
+      axios
+        .post(`${baseURL}/join/`, formValue)
+        .then((response) => {
+          console.log(response);
+          alert("회원가입이 완료되었습니다.");
+          localStorage.clear();
+          const userInfo = response.data;
+          localStorage.setItem("access", userInfo.access);
+          localStorage.setItem("refresh", userInfo.refresh);
+        })
+        .catch((error) => {
+          if (error === "Usernames do not match") {
+            alert("아이디와 아이디 확인이 일치하지 않습니다.");
+          } else if (error === "Passwords do not match") {
+            alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+          } else if (error === "The username already exists") {
+            alert("해당 아이디가 이미 존재합니다.");
+          } else {
+            console.log(error);
+          }
+        });
+    }
+  };
 
   return (
     <div>
