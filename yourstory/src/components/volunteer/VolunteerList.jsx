@@ -36,7 +36,7 @@ const VolunteerCard = ({ data }) => {
   const navigate = useNavigate();
 
   const handleDetailClick = () => {
-    navigate(`/volunteer/${data.id}`);
+    navigate(`/work/${data.id}`);
   };
 
   return (

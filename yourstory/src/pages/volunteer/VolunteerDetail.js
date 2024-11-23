@@ -5,8 +5,13 @@ import DecoratedTitle from "../../components/common/DecoratedTitle";
 import VolunteerHeader from "../../components/volunteer/VolunteerHeader";
 import { media } from "../../styles/theme";
 import VolunteerInfo from "../../components/volunteer/VolunteerInfo";
+import { useParams } from "react-router-dom";
 
 const VolunteerDetail = () => {
+  const { id } = useParams();
+
+  console.log("현재 봉사 ID:", id);
+
   return (
     <>
       <NavBar pagename={"volunteer"} />
@@ -21,7 +26,7 @@ const VolunteerDetail = () => {
           backWeight="bold"
         />
         <ContentContainer>
-          <VolunteerInfo />
+          <VolunteerInfo workId={id} />
         </ContentContainer>
         <ApplyButtonContainer>
           <ApplyButton>신청하기</ApplyButton>

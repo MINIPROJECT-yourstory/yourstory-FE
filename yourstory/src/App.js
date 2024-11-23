@@ -39,7 +39,7 @@ function App() {
             {/* 봉사활동 */}
             <Route path="work">
               <Route index element={<Volunteer />} />
-              <Route path=":work_id" element={<VolunteerDetail />} />
+              <Route path=":id" element={<VolunteerDetail />} />
               <Route path="my-status" element={<VolunteerStatus />} />
               <Route path="record" element={<VolunteerDiary />} />
             </Route>

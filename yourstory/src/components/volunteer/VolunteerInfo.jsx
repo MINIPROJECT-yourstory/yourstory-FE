@@ -11,25 +11,55 @@ const LABELS = {
 const VolunteerInfo = ({ workId }) => {
   const [volunteerInfo, setVolunteerInfo] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (!workId) {
+      setError("유효하지 않은 봉사 ID입니다.");
+      setIsLoading(false);
+      return;
+    }
     fetchVolunteerDetail();
   }, [workId]);
 
   const fetchVolunteerDetail = async () => {
     try {
       setIsLoading(true);
+      setError(null);
       const data = await volunteerApi.getVolunteerDetail(workId);
       setVolunteerInfo(data);
     } catch (error) {
       console.error("봉사 상세 정보 조회 실패:", error);
+      setError(
+        error.response?.data?.message || "봉사 정보를 불러오는데 실패했습니다."
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
   if (isLoading) return <LoadingSpinner />;
+  if (error) return <div>{error}</div>;
   if (!volunteerInfo) return <div>정보를 불러올 수 없습니다.</div>;
+
+  const infoData = [
+    {
+      value: `${volunteerInfo.period}개월`,
+      info: volunteerInfo.org,
+    },
+    {
+      value: volunteerInfo.place,
+      info: `${volunteerInfo.person}명`,
+    },
+    {
+      value: volunteerInfo.day || "-",
+      info: "-",
+    },
+    {
+      value: volunteerInfo.time || "-",
+      info: "-",
+    },
+  ];
 
   return (
     <>
@@ -39,9 +69,20 @@ const VolunteerInfo = ({ workId }) => {
           <GridLines>
             <span />
           </GridLines>
-          {/* volunteerInfo의 데이터를 사용하여 정보 표시 */}
+          {infoData.map((info, index) => (
+            <Row key={index}>
+              <StyledLabel>{LABELS.firstRow[index]}</StyledLabel>
+              <ContentText>{info.value}</ContentText>
+              <StyledLabel>{LABELS.secondRow[index]}</StyledLabel>
+              <ContentText>{info.info}</ContentText>
+            </Row>
+          ))}
         </InfoTable>
-        {/* ... 나머지 컴포넌트 ... */}
+
+        <ContentBox>
+          <BoldText>{volunteerInfo.centerTitle || "-"}</BoldText>
+          <Text>{volunteerInfo.centerContent || "-"}</Text>
+        </ContentBox>
       </Container>
     </>
   );
