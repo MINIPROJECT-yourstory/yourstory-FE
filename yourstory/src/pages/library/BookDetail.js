@@ -131,13 +131,19 @@ const BookDetail = () => {
             <RightSection>
               <MailboxHeader>
                 <div>우편함</div>
-                <span>{bookDetail.addressee}님께 드리는 우리의 편지</span>
+                <span>
+                  {bookDetail.addressee}&nbsp;어르신께 드리는 우리의 편지
+                </span>
               </MailboxHeader>
               <LetterList>
-                {letters.map((letter, index) => (
-                  <LetterItem key={letter.id || index}>
-                    <Mail />
-                    <LetterPreview>{letter.content}</LetterPreview>
+                {[...letters].reverse().map((letter, index) => (
+                  <LetterItem key={letter.id}>
+                    <LetterNumber>{index + 1}</LetterNumber>
+                    <Mail size={20} color="white" />
+                    <LetterContent>
+                      <LetterTitle>{letter.title}</LetterTitle>
+                      <LetterText>{letter.content}</LetterText>
+                    </LetterContent>
                   </LetterItem>
                 ))}
               </LetterList>
@@ -299,7 +305,7 @@ const RightSection = styled.div`
   padding: ${({ theme }) => theme.spacing.padding.lg};
   border-radius: ${({ theme }) => theme.borderRadius.md};
   height: 308px;
-  overflow: auto;
+  position: relative;
 `;
 
 const SectionTitle = styled.h3`
@@ -320,7 +326,7 @@ const DescriptionBox = styled.div`
   background-color: #ebece1;
   padding: ${({ theme }) => theme.spacing.padding.lg};
   border-radius: ${({ theme }) => theme.borderRadius.md};
-  height: calc((297px - 14px - 24px) / 2); // ContributorBox와 동일한 높이
+  height: calc((297px - 14px - 24px) / 2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -357,8 +363,6 @@ const Description = styled.p`
   text-align: center;
   color: #7f810d;
   line-height: ${({ theme }) => theme.typography.lineHeight.relaxed};
-  white-space: pre-line;
-  word-break: keep-all;
   width: 100%;
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -367,54 +371,116 @@ const Description = styled.p`
   text-overflow: ellipsis;
   margin: 0;
   padding: 0 1rem;
+
+  white-space: normal;
+  word-break: keep-all;
+  word-wrap: break-word;
+  max-width: 17em;
+  margin: 0 auto;
 `;
 
 const MailboxHeader = styled.div`
-  background-color: CED118;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   margin-bottom: ${({ theme }) => theme.spacing.padding.md};
+  position: relative;
 
   div {
     color: ${({ theme }) => theme.colors.text.white};
     font-size: ${({ theme }) => theme.typography.fontSize.lg};
     font-weight: 700;
+    margin-right: 10px;
   }
 
   span {
     color: #fafc97;
+    margin-left: 0;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: rgba(255, 255, 255, 0.8);
   }
 `;
 
 const LetterList = styled.div`
-  background-color: #ced118;
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.padding.sm};
+  gap: 0.5rem;
+  height: calc(100% - 120px);
+  overflow-y: auto;
+  padding-right: 0.5rem;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 3px;
+  }
 `;
 
 const LetterItem = styled.div`
   display: flex;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing.padding.sm};
-  padding: ${({ theme }) => theme.spacing.padding.sm};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.border.light};
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.5);
+
+  &:last-child {
+    border-bottom: none;
+  }
 `;
 
-const LetterPreview = styled.p`
-  color: ${({ theme }) => theme.colors.text.primary};
+const LetterNumber = styled.span`
+  color: white;
+  font-weight: bold;
+  min-width: 20px;
+`;
+
+const LetterContent = styled.div`
+  display: flex;
+  flex: 1;
+  gap: 1rem;
+`;
+
+const LetterTitle = styled.span`
+  color: white;
+  font-weight: bold;
+  white-space: nowrap;
+`;
+
+const LetterText = styled.p`
+  color: white;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
 `;
 
 const WriteLetterButton = styled.button`
-  float: right;
-  background-color: ${({ theme }) => theme.colors.background.default};
-  color: ${({ theme }) => theme.colors.text.primary};
-  padding: ${({ theme }) => theme.spacing.padding.xs};
-  ${({ theme }) => theme.spacing.padding.md};
-  border-radius: ${({ theme }) => theme.borderRadius.pill};
-  border: 1px solid ${({ theme }) => theme.colors.border.main};
-  margin-top: ${({ theme }) => theme.spacing.padding.md};
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  background-color: white;
+  color: #7f810d;
+  padding: 0.5rem 1.5rem;
+  border-radius: 50px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    background-color: #f8f8f8;
+  }
 `;
 
 export default BookDetail;

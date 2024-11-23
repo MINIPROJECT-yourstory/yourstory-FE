@@ -156,15 +156,27 @@ export const volunteerApi = {
   // 자서전 작성
   createRecord: async (recordData) => {
     try {
-      console.log("자서전 작성 시작");
+      console.log("자서전 작성 시작, 전송할 데이터:", recordData); // 데이터 확인용 로그
       const headers = getAuthHeader();
-      const response = await axios.post(`${baseURL}/work/record`, recordData, {
+
+      // API 요청 형식에 맞게 데이터 구조화
+      const requestData = {
+        conditionId: recordData.conditionId,
+        date: recordData.date,
+        content: recordData.content,
+      };
+
+      const response = await axios.post(`${baseURL}/work/record`, requestData, {
         headers,
       });
+
       console.log("자서전 작성 성공:", response.data);
       return response.data;
     } catch (error) {
       console.error("자서전 작성 실패:", error);
+      if (error.response?.status === 403) {
+        throw new Error("자서전 작성 권한이 없습니다.");
+      }
       throw error;
     }
   },

@@ -23,10 +23,12 @@ const VolunteerStatus = () => {
           return {
             ...status,
             ...details,
+            state: details.state,
           };
         })
       );
       setStatusList(detailedList);
+      console.log("전체 데이터:", detailedList);
     } catch (error) {
       console.error("봉사 현황 조회 실패:", error);
     }
@@ -34,6 +36,22 @@ const VolunteerStatus = () => {
 
   const handleDetailClick = (workId) => {
     navigate(`/work/${workId}`);
+  };
+
+  const handleWriteBook = (workId) => {
+    navigate(`/work/record`, {
+      state: { workId },
+    });
+  };
+
+  const getStatusText = (conditionId) => {
+    switch (conditionId) {
+      case 4:
+        return "승인";
+      // 다른 상태값들도 필요하다면 추가
+      default:
+        return "대기중";
+    }
   };
 
   return (
@@ -73,11 +91,18 @@ const VolunteerStatus = () => {
                       <InfoText>
                         <InfoLabel>[봉사요일]</InfoLabel> {volunteer.day}
                       </InfoText>
-                      <DetailButton
-                        onClick={() => handleDetailClick(volunteer.workId)}
-                      >
-                        자세히 보기
-                      </DetailButton>
+                      <ButtonContainer>
+                        <DetailButton
+                          onClick={() => handleDetailClick(volunteer.workId)}
+                        >
+                          자세히 보기
+                        </DetailButton>
+                        <WriteButton
+                          onClick={() => handleWriteBook(volunteer.workId)}
+                        >
+                          자서전 쓰기
+                        </WriteButton>
+                      </ButtonContainer>
                     </InfoContainer>
                   </HeaderRight>
                 </CardHeader>
@@ -232,6 +257,30 @@ const EmptyStateContainer = styled.div`
 const EmptyStateMessage = styled.p`
   color: #666;
   font-size: 1.1rem;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+`;
+
+const WriteButton = styled.button`
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 50px;
+  background-color: #7f810d;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: auto;
+
+  &:hover {
+    opacity: 0.9;
+  }
 `;
 
 export default VolunteerStatus;

@@ -97,7 +97,7 @@ const LibraryContent = () => {
                     <Heart
                       fill={book.isLike ? "white" : "none"}
                       color="white"
-                      size={20}
+                      size={30}
                     />
                     <span>{book.likes}</span>
                   </Stat>
@@ -105,7 +105,7 @@ const LibraryContent = () => {
                     <Mail
                       fill={book.isMine ? "white" : "none"}
                       color="white"
-                      size={20}
+                      size={30}
                       onClick={() => handleMailClick(book.id)}
                     />
                     <span>{book.letters}</span>
@@ -155,7 +155,7 @@ const BookCard = styled.div`
   display: flex;
   align-items: stretch;
   background-color: #ced118;
-  border-radius: 17px;
+  border-radius: 25px;
   overflow: hidden;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   height: 306px;
@@ -167,8 +167,7 @@ const BookCard = styled.div`
 
 const BookInfo = styled.div`
   flex: 1;
-  padding: 1.5rem;
-  padding-right: 60px;
+  padding: 3.625rem 3.875rem 1.875rem 6.25rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -178,12 +177,15 @@ const BookInfo = styled.div`
 
 const Titlediv = styled.div`
   gap: 20px;
-``
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 `;
 
 const BookTitle = styled.div`
   color: white;
   font-size: 20px;
+  font-weight: bold;
   font-family: Inter;
   text-shadow: 0px 0px 9.1px rgba(0, 0, 0, 0.16);
 `;
@@ -208,6 +210,8 @@ const Stat = styled.div`
   align-items: center;
   color: white;
   cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
 
   svg {
     margin-right: 0.5rem;

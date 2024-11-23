@@ -3,15 +3,16 @@ import styled from "styled-components";
 import NavBar from "../../components/common/NavBar";
 import VolunteerHeader from "../../components/volunteer/VolunteerHeader";
 import { media } from "../../styles/theme";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { volunteerApi } from "../../apis/volunteerApi";
 
 const VolunteerDiary = () => {
-  const { conditionId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const workId = location.state?.workId;
 
   const [diaryData, setDiaryData] = useState({
-    conditionId: conditionId,
+    conditionId: workId,
     date: new Date().toISOString().split("T")[0],
     content: "",
   });
@@ -27,10 +28,17 @@ const VolunteerDiary = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await volunteerApi.createRecord(diaryData);
+      const recordData = {
+        conditionId: workId,
+        date: diaryData.date,
+        content: diaryData.content,
+      };
+
+      await volunteerApi.createRecord(recordData);
       alert("자서전이 성공적으로 저장되었습니다!");
       navigate("/work/my-status");
     } catch (error) {
+      console.error("자서전 작성 중 오류:", error);
       alert("자서전 저장에 실패했습니다.");
     }
   };
