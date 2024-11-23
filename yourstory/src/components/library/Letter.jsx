@@ -6,14 +6,13 @@ import DetailLetter from "./DetailLetter";
 import { bookApi } from "../../apis/bookApi";
 
 const Letter = () => {
-  const [letters, setLetters] = useState([]);
+  const [letters, setLetters] = useState({});
   const [selectedLetter, setSelectedLetter] = useState(null);
   const { book_id } = useParams();
 
-  const handleDetail = (letter_id) => {
-    setSelectedLetter((prev) => (prev === letter_id ? null : letter_id));
+  const handleDetail = (id) => {
+    setSelectedLetter((prev) => (prev === id ? null : id));
   };
-
   useEffect(() => {
     const fetchLetters = async () => {
       try {
@@ -28,22 +27,19 @@ const Letter = () => {
 
   return (
     <div>
-      {letters.length > 0 ? (
-        letters.map((letter, idx) =>
-          selectedLetter === letter.letter_id ? (
+      {letters?.length > 0 ? (
+        [...letters].reverse().map((letter, idx) =>
+          selectedLetter === letter.id ? (
             <DetailLetter
-              key={letter.letter_id}
+              key={letter.id}
               letter={letter}
               isMine={letter.isMine}
-              index={idx + 1}
-              onBtnClick={() => handleDetail(letter.letter_id)}
+              index={letters.length - idx}
+              onBtnClick={() => handleDetail(letter.id)}
             />
           ) : (
-            <Wrapper
-              key={letter.letter_id}
-              onClick={() => handleDetail(letter.letter_id)}
-            >
-              <Order>{idx + 1}</Order>
+            <Wrapper key={letter.id} onClick={() => handleDetail(letter.id)}>
+              <Order>{letters.length - idx}</Order>
               <Icon src={MailIcon} alt="편지 아이콘" />
               <Title>{letter.title}</Title>
               <Content>{letter.content}</Content>

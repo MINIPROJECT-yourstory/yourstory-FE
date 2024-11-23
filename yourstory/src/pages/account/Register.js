@@ -5,12 +5,10 @@ import Line from "../../assets/images/line-register.svg";
 import AccountInput from "../../components/account/AccountInput";
 import LogoZone from "../../components/account/LogoZone";
 import AccountButton from "../../components/account/AccountButton";
-import axios from "axios";
 import { accountApi } from "../../apis/accountApi";
 
 const Register = () => {
   const navigate = useNavigate();
-  const baseURL = process.env.REACT_APP_baseURL;
   const [formValue, setFormValue] = useState({
     nickname: "",
     username: "",
@@ -39,7 +37,7 @@ const Register = () => {
       return alert("모든 항목을 입력해 주세요.");
     }
     try {
-      const response = await accountApi.postRegister(formValue);
+      await accountApi.postRegister(formValue);
       alert("회원가입이 완료되었습니다.");
       navigate("/login");
     } catch (error) {

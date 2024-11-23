@@ -128,4 +128,21 @@ export const bookApi = {
       throw error;
     }
   },
+
+  // 편지 남기기
+  postLetter: async (postValue, book_id) => {
+    try {
+      const headers = getAuthHeader();
+      const response = await axios.post(
+        `${baseURL}/letter/${book_id}`,
+        postValue,
+        {
+          headers,
+        }
+      );
+      console.log(response);
+    } catch (error) {
+      throw error;
+    }
+  },
 };
