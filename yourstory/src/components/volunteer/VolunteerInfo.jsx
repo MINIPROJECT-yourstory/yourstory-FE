@@ -67,7 +67,9 @@ const VolunteerInfo = ({ workId }) => {
       <Container>
         <InfoTable>
           <GridLines>
-            <span />
+            <div />
+            <div />
+            <div />
           </GridLines>
           {infoData.map((info, index) => (
             <Row key={index}>
@@ -176,29 +178,12 @@ const GridLines = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  pointer-events: none;
+  display: grid;
+  grid-template-columns: 25% 25% 25% 25%;
 
-  &::before,
-  &::after,
-  & span {
-    content: "";
-    position: absolute;
-    top: 0;
-    width: 0.7px;
+  & > div {
+    border-right: 0.7px solid #bcbf1f;
     height: 100%;
-    background-color: #bcbf1f;
-  }
-
-  &::before {
-    left: 25%;
-  }
-
-  &::after {
-    left: 50%;
-  }
-
-  & span {
-    left: 75%;
   }
 `;
 
