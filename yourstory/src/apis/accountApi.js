@@ -33,4 +33,12 @@ export const accountApi = {
       throw error;
     }
   },
+  postRegister: async (formValue) => {
+    try {
+      const response = await axios.post(`${baseURL}/join`, formValue);
+      console.log(response);
+    } catch (error) {
+      throw error;
+    }
+  },
 };

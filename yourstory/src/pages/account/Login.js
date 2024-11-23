@@ -34,17 +34,11 @@ const Login = () => {
     }
 
     try {
-      // 로그인 API 호출
       const response = await accountApi.postLogin(formValue);
-
-      // 성공 시 navigate 실행
       alert("로그인 성공!");
       navigate("/");
     } catch (error) {
-      // 에러 발생 시 navigate를 실행하지 않음
       console.error("로그인 중 오류 발생:", error);
-
-      // 사용자에게 적절한 에러 메시지 표시
       if (error.response?.status === 401) {
         alert("아이디와 비밀번호를 다시 확인해 주세요!");
       } else {
