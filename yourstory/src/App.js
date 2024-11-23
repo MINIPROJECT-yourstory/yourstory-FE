@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
-import theme, { media } from "./styles/theme";
+import theme from "./styles/theme";
 
 // 메인 페이지들
 import Home from "./pages/Home";
@@ -39,7 +39,7 @@ function App() {
             {/* 봉사활동 */}
             <Route path="work">
               <Route index element={<Volunteer />} />
-              <Route path=":work_id" element={<VolunteerDetail />} />
+              <Route path=":id" element={<VolunteerDetail />} />
               <Route path="my-status" element={<VolunteerStatus />} />
               <Route path="record" element={<VolunteerDiary />} />
             </Route>

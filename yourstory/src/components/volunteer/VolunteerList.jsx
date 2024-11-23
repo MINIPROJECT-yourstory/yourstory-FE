@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import theme, { media } from "../../../src/styles/theme";
+import { media } from "../../../src/styles/theme";
 import { useNavigate } from "react-router-dom";
 import DecoratedTitle from "../common/DecoratedTitle";
 
@@ -36,7 +36,7 @@ const VolunteerCard = ({ data }) => {
   const navigate = useNavigate();
 
   const handleDetailClick = () => {
-    navigate(`/volunteer/${data.id}`);
+    navigate(`/work/${data.id}`);
   };
 
   return (

@@ -13,6 +13,7 @@ const Library = () => {
         <LibraryHeader />
         <TitleContainer>
           <LibraryTitle>이타적 자서전 도서 목록</LibraryTitle>
+          <Line />
         </TitleContainer>
         <LibraryContent />
       </PageContainer>
@@ -53,6 +54,12 @@ const LibraryTitle = styled.div`
   margin: 0;
   padding: 0;
   white-space: nowrap;
+`;
+
+const Line = styled.div`
+  flex: 1;
+  height: 1px;
+  background-color: #bcbf1f;
 `;
 
 export default Library;

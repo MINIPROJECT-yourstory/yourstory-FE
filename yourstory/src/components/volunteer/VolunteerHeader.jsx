@@ -11,7 +11,7 @@ const VolunteerHeader = ({ currentPage = "apply" }) => {
   };
 
   const handleStatusClick = () => {
-    navigate("/work/my-status");
+    navigate("/wo/my-status");
   };
 
   return (

@@ -1,231 +1,269 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import { Heart, Mail } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { bookApi } from "../../apis/bookApi";
+import { media } from "../../styles/theme";
 
 const LibraryContent = () => {
   const navigate = useNavigate();
   const [books, setBooks] = useState([]);
-  const [likedBooks, setLikedBooks] = useState(new Set());
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const checkAuthAndFetchBooks = async () => {
-      try {
-        console.log("=== 인증 상태 체크 시작 ===");
-        setIsLoading(true);
-
-        const token = localStorage.getItem("access");
-        console.log("저장된 토큰:", token);
-
-        if (!token) {
-          console.log("토큰이 없습니다. 로그인 페이지로 이동합니다.");
-          navigate("/login");
-          return;
-        }
-
-        // 토큰 유효성 테스트를 위한 volunteer API 호출 테스트
-        try {
-          console.log("토큰 유효성 테스트 중...");
-          const testResponse = await bookApi.getBooks();
-          console.log("토큰 유효성 테스트 성공:", testResponse);
-        } catch (error) {
-          console.error("토큰이 유효하지 않습니다:", error);
-          localStorage.removeItem("accessToken"); // 잘못된 토큰 제거
-          navigate("/login");
-          return;
-        }
-
-        // 도서 목록 가져오기
-        console.log("도서 목록 조회 시작");
-        const response = await bookApi.getBooks();
-
-        if (response && response.data) {
-          console.log("도서 목록 조회 성공:", response.data);
-          setBooks(response.data);
-        }
-      } catch (error) {
-        console.error("도서 목록 조회 실패:", error);
-        if (error.response?.status === 403) {
-          console.log("인증 에러. 로그인 페이지로 이동합니다.");
-          navigate("/login");
-        }
-      } finally {
-        setIsLoading(false);
+  const fetchBooks = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const token = localStorage.getItem("access");
+      if (!token) {
+        navigate("/login");
+        return;
       }
-    };
 
-    checkAuthAndFetchBooks();
+      const response = await bookApi.getBooks();
+      console.log("받아온 도서 데이터:", response);
+      if (Array.isArray(response)) {
+        setBooks(response);
+      } else {
+        console.error("예상치 못한 응답 형식:", response);
+      }
+    } catch (error) {
+      console.error("도서 목록 조회 실패:", error);
+      if (error.response?.status === 403) {
+        navigate("/login");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   }, [navigate]);
+
+  useEffect(() => {
+    fetchBooks();
+  }, [fetchBooks]);
 
   const handleLike = async (bookId) => {
     try {
-      if (likedBooks.has(bookId)) {
-        await bookApi.deleteLike(bookId);
-        setLikedBooks((prev) => {
-          const newSet = new Set(prev);
-          newSet.delete(bookId);
-          return newSet;
-        });
+      const book = books.find((b) => b.id === bookId);
+      if (!book) return;
+
+      let updatedLikes;
+      if (book.isLike) {
+        updatedLikes = await bookApi.deleteLike(bookId);
       } else {
-        await bookApi.createLike(bookId);
-        setLikedBooks((prev) => new Set([...prev, bookId]));
+        updatedLikes = await bookApi.createLike(bookId);
       }
 
-      // 좋아요 업데이트 후 도서 목록 새로고침
-      const response = await bookApi.getBooks();
-      setBooks(response.data);
+      setBooks(
+        books.map((book) =>
+          book.id === bookId
+            ? { ...book, likes: updatedLikes, isLike: !book.isLike }
+            : book
+        )
+      );
     } catch (error) {
-      console.error("좋아요 처리 중 오류가 발생했습니다:", error);
+      console.error("좋아요 처리 중 오류:", error);
     }
   };
 
   const handleMailClick = (bookId) => {
-    navigate(`/letter/list/${bookId}`);
+    navigate(`/letter/${bookId}`);
   };
 
   const handleBookView = (bookId) => {
     navigate(`/book/${bookId}`);
   };
 
+  if (isLoading) {
+    return <LoadingContainer>도서 목록을 불러오는 중...</LoadingContainer>;
+  }
+
+  if (!Array.isArray(books) || books.length === 0) {
+    return <EmptyContainer>등록된 도서가 없습니다.</EmptyContainer>;
+  }
+
   return (
-    <>
-      {isLoading ? (
-        <div>로딩 중...</div>
-      ) : (
-        <BookList>
-          {books.map((book) => (
-            <BookCard key={book.id}>
+    <ContentWrapper>
+      <BookList>
+        {books.map((book, index) => (
+          <React.Fragment key={book.id}>
+            <BookCard>
               <BookInfo>
-                <div>
-                  <BookTitle>{book.title},</BookTitle>
-                  <BookSubtitle>{book.subtitle}</BookSubtitle>
-                </div>
+                <Titlediv>
+                  <BookTitle>{book.addressee} 어르신의 이야기,</BookTitle>
+                  <BookSubtitle>{book.title}</BookSubtitle>
+                </Titlediv>
 
                 <StatsContainer>
                   <Stat onClick={() => handleLike(book.id)}>
                     <Heart
-                      fill={likedBooks.has(book.id) ? "white" : "none"}
-                      style={{ cursor: "pointer" }}
+                      fill={book.isLike ? "white" : "none"}
+                      color="white"
+                      size={30}
                     />
                     <span>{book.likes}</span>
                   </Stat>
-                  <Stat onClick={() => handleMailClick(book.id)}>
-                    <Mail style={{ cursor: "pointer" }} />
-                    <span>{book.messages}</span>
+                  <Stat>
+                    <Mail
+                      fill={book.isMine ? "white" : "none"}
+                      color="white"
+                      size={30}
+                      onClick={() => handleMailClick(book.id)}
+                    />
+                    <span>{book.letters}</span>
                   </Stat>
                 </StatsContainer>
               </BookInfo>
 
               <ImageContainer>
-                <img src={book.image} alt={book.title} />
+                <BookImage src={book.imgPath} alt={book.title} />
                 <ViewButton onClick={() => handleBookView(book.id)}>
                   도서 보기
                 </ViewButton>
               </ImageContainer>
             </BookCard>
-          ))}
-        </BookList>
-      )}
-    </>
+            {index < books.length - 1 && <DashedLine />}
+          </React.Fragment>
+        ))}
+      </BookList>
+    </ContentWrapper>
   );
 };
 
-const BookList = styled.div`
-  display: grid;
-  gap: ${({ theme }) => theme.spacing.padding.md};
+const ContentWrapper = styled.div`
+  width: 100%;
+  margin-top: 2rem;
+`;
 
-  ${({ theme }) => theme.media.tablet} {
-    gap: ${({ theme }) => theme.spacing.padding.sm};
-  }
+const LoadingContainer = styled.div`
+  text-align: center;
+  padding: 2rem;
+  color: #333;
+`;
+
+const EmptyContainer = styled.div`
+  text-align: center;
+  padding: 2rem;
+  color: #333;
+`;
+
+const BookList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 `;
 
 const BookCard = styled.div`
   display: flex;
   align-items: stretch;
-  background-color: ${({ theme }) => theme.colors.primary.main};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
+  background-color: #ced118;
+  border-radius: 25px;
   overflow: hidden;
-  box-shadow: ${({ theme }) => theme.shadows.md};
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  height: 306px;
 
-  ${({ theme }) => theme.media.tablet} {
+  ${media.tablet} {
     flex-direction: column;
   }
 `;
 
 const BookInfo = styled.div`
-  flex-grow: 1;
-  padding: ${({ theme }) => theme.spacing.components.card.padding};
+  flex: 1;
+  padding: 3.625rem 3.875rem 1.875rem 6.25rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  min-width: 0;
+  align-items: flex-end;
 `;
 
-const BookTitle = styled.h2`
-  color: ${({ theme }) => theme.colors.text.white};
-  font-size: ${({ theme }) => theme.typography.fontSize.md};
-  margin-bottom: ${({ theme }) => theme.spacing.padding.xs};
-  font-family: ${({ theme }) => theme.typography.fontFamily.main};
+const Titlediv = styled.div`
+  gap: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 `;
 
-const BookSubtitle = styled.h3`
-  color: ${({ theme }) => theme.colors.text.white};
-  font-size: ${({ theme }) => theme.typography.fontSize.lg};
-  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
-  margin-bottom: ${({ theme }) => theme.spacing.padding.sm};
-  font-family: ${({ theme }) => theme.typography.fontFamily.main};
+const BookTitle = styled.div`
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  font-family: Inter;
+  text-shadow: 0px 0px 9.1px rgba(0, 0, 0, 0.16);
+`;
+
+const BookSubtitle = styled.div`
+  color: white;
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  font-family: Inter;
+  text-shadow: 0px 0px 9.1px rgba(0, 0, 0, 0.16);
 `;
 
 const StatsContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing.components.card.gap};
+  gap: 1rem;
 `;
 
 const Stat = styled.div`
   display: flex;
   align-items: center;
-  color: ${({ theme }) => theme.colors.text.white};
+  color: white;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
 
   svg {
-    width: 1.25rem;
-    height: 1.25rem;
-    margin-right: ${({ theme }) => theme.spacing.padding.xs};
+    margin-right: 0.5rem;
   }
 `;
 
 const ImageContainer = styled.div`
-  width: 20rem;
+  width: 379px;
   position: relative;
+  flex-shrink: 0;
 
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  ${({ theme }) => theme.media.tablet} {
+  ${media.tablet} {
     width: 100%;
     height: 15rem;
   }
 `;
 
+const BookImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
 const ViewButton = styled.button`
   position: absolute;
-  bottom: ${({ theme }) => theme.spacing.padding.sm};
-  right: ${({ theme }) => theme.spacing.padding.sm};
-  background-color: ${({ theme }) => theme.colors.primary.main};
-  color: ${({ theme }) => theme.colors.text.white};
-  padding: ${({ theme }) =>
-    `${theme.spacing.padding.xs} ${theme.spacing.padding.md}`};
-  border-radius: ${({ theme }) => theme.borderRadius.pill};
-  transition: ${({ theme }) => theme.transitions.short};
-  font-family: ${({ theme }) => theme.typography.fontFamily.main};
+  width: 170px;
+  height: 42.95px;
+  bottom: 1rem;
+  right: 1rem;
+  background-color: #ced118;
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border: none;
+  border-radius: 50px;
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: -0.02em;
+  cursor: pointer;
+  transition: all 0.2s ease;
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.primary.dark};
+    opacity: 0.9;
   }
+`;
+
+const DashedLine = styled.div`
+  width: 100%;
+  height: 2px;
+  margin: 70px 0;
+  background-image: linear-gradient(to right, #ced118 50%, transparent 50%);
+  background-size: 10px 2px;
+  background-repeat: repeat-x;
 `;
 
 export default LibraryContent;

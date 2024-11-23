@@ -5,8 +5,39 @@ import DecoratedTitle from "../../components/common/DecoratedTitle";
 import VolunteerHeader from "../../components/volunteer/VolunteerHeader";
 import { media } from "../../styles/theme";
 import VolunteerInfo from "../../components/volunteer/VolunteerInfo";
+import { useParams, useNavigate } from "react-router-dom";
+import { volunteerApi } from "../../apis/volunteerApi";
 
 const VolunteerDetail = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const handleApply = async () => {
+    try {
+      // 토큰 존재 여부 먼저 확인
+      const token = localStorage.getItem("access");
+      if (!token) {
+        alert("로그인이 필요한 서비스입니다.");
+        // 로그인 페이지로 리다이렉트
+        navigate("/login");
+        return;
+      }
+
+      await volunteerApi.applyVolunteer(id);
+      alert("봉사활동이 신청되었습니다!");
+      navigate("/work/my-status");
+    } catch (error) {
+      if (error.message.includes("토큰")) {
+        alert(error.message);
+        navigate("/login");
+      } else {
+        alert(error.message || "봉사 신청에 실패했습니다.");
+      }
+    }
+  };
+
+  console.log("현재 봉사 ID:", id);
+
   return (
     <>
       <NavBar pagename={"volunteer"} />
@@ -21,10 +52,10 @@ const VolunteerDetail = () => {
           backWeight="bold"
         />
         <ContentContainer>
-          <VolunteerInfo />
+          <VolunteerInfo workId={id} />
         </ContentContainer>
         <ApplyButtonContainer>
-          <ApplyButton>신청하기</ApplyButton>
+          <ApplyButton onClick={handleApply}>신청하기</ApplyButton>
         </ApplyButtonContainer>
       </PageContainer>
     </>

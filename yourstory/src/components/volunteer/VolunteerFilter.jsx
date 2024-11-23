@@ -213,8 +213,8 @@ const TitlesContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   background: ${({ theme }) => theme.colors.primary.main};
-  border-top-left-radius: ${({ theme }) => theme.borderRadius.sm}; // 추가
-  border-top-right-radius: ${({ theme }) => theme.borderRadius.sm}; // 추가
+  border-top-left-radius: ${({ theme }) => theme.borderRadius.sm};
+  border-top-right-radius: ${({ theme }) => theme.borderRadius.sm};
   position: relative;
   z-index: 1;
 

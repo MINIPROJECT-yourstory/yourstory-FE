@@ -11,25 +11,55 @@ const LABELS = {
 const VolunteerInfo = ({ workId }) => {
   const [volunteerInfo, setVolunteerInfo] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (!workId) {
+      setError("유효하지 않은 봉사 ID입니다.");
+      setIsLoading(false);
+      return;
+    }
     fetchVolunteerDetail();
   }, [workId]);
 
   const fetchVolunteerDetail = async () => {
     try {
       setIsLoading(true);
+      setError(null);
       const data = await volunteerApi.getVolunteerDetail(workId);
       setVolunteerInfo(data);
     } catch (error) {
       console.error("봉사 상세 정보 조회 실패:", error);
+      setError(
+        error.response?.data?.message || "봉사 정보를 불러오는데 실패했습니다."
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
   if (isLoading) return <LoadingSpinner />;
+  if (error) return <div>{error}</div>;
   if (!volunteerInfo) return <div>정보를 불러올 수 없습니다.</div>;
+
+  const infoData = [
+    {
+      value: `${volunteerInfo.period}개월`,
+      info: volunteerInfo.org,
+    },
+    {
+      value: volunteerInfo.place,
+      info: `${volunteerInfo.person}명`,
+    },
+    {
+      value: volunteerInfo.day || "-",
+      info: "-",
+    },
+    {
+      value: volunteerInfo.time || "-",
+      info: "-",
+    },
+  ];
 
   return (
     <>
@@ -37,11 +67,24 @@ const VolunteerInfo = ({ workId }) => {
       <Container>
         <InfoTable>
           <GridLines>
-            <span />
+            <div />
+            <div />
+            <div />
           </GridLines>
-          {/* volunteerInfo의 데이터를 사용하여 정보 표시 */}
+          {infoData.map((info, index) => (
+            <Row key={index}>
+              <StyledLabel>{LABELS.firstRow[index]}</StyledLabel>
+              <ContentText>{info.value}</ContentText>
+              <StyledLabel>{LABELS.secondRow[index]}</StyledLabel>
+              <ContentText>{info.info}</ContentText>
+            </Row>
+          ))}
         </InfoTable>
-        {/* ... 나머지 컴포넌트 ... */}
+
+        <ContentBox>
+          <BoldText>{volunteerInfo.centerTitle || "-"}</BoldText>
+          <Text>{volunteerInfo.centerContent || "-"}</Text>
+        </ContentBox>
       </Container>
     </>
   );
@@ -113,15 +156,6 @@ const Text = styled.p`
   margin-bottom: 1rem;
 `;
 
-const Contact = styled.div`
-  margin-top: 0.5rem;
-  color: #666;
-`;
-
-const PhoneNumber = styled.div`
-  margin-top: 0.5rem;
-`;
-
 const StyledLabel = styled.div`
   font-weight: 700;
   font-size: 20px;
@@ -135,29 +169,12 @@ const GridLines = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  pointer-events: none;
+  display: grid;
+  grid-template-columns: 25% 25% 25% 25%;
 
-  &::before,
-  &::after,
-  & span {
-    content: "";
-    position: absolute;
-    top: 0;
-    width: 0.7px;
+  & > div {
+    border-right: 0.7px solid #bcbf1f;
     height: 100%;
-    background-color: #bcbf1f;
-  }
-
-  &::before {
-    left: 25%;
-  }
-
-  &::after {
-    left: 50%;
-  }
-
-  & span {
-    left: 75%;
   }
 `;
 
