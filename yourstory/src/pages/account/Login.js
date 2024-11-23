@@ -4,9 +4,11 @@ import { Link, useNavigate } from "react-router-dom";
 import AccountInput from "../../components/account/AccountInput";
 import LogoZone from "../../components/account/LogoZone";
 import AccountButton from "../../components/account/AccountButton";
+import axios from "axios";
 
 const Login = () => {
   const navigate = useNavigate();
+  const baseURL = process.env.REACT_APP_baseURL;
   const [formValue, setFormValue] = useState({
     username: "",
     password: "",
@@ -20,30 +22,30 @@ const Login = () => {
     }));
   };
 
-  //   const isUsername = Boolean(formValue.username);
-  //   const isPassword = Boolean(formValue.password);
+  const isUsername = Boolean(formValue.username);
+  const isPassword = Boolean(formValue.password);
 
-  //   const handleLogin = () => {
-  //     if (!isUsername) {
-  //       return alert("이메일을 입력해주세요.");
-  //     } else if (!isPassword) {
-  //       return alert("비밀번호를 입력해주세요.");
-  //     } else {
-  //       axios
-  //         .post(`${baseURL}/login/`, formValue)
-  //         .then((response) => {
-  //           console.log(response);
-  //           alert("로그인 성공!");
-  //           localStorage.clear();
-  //           const userInfo = response.data;
-  //           localStorage.setItem("access", userInfo.access);
-  //           localStorage.setItem("refresh", userInfo.refresh);
-  //         })
-  //         .catch((error) => {
-  //           console.log(error);
-  //         });
-  //     }
-  //   };
+  const handleLogin = () => {
+    if (!isUsername) {
+      return alert("이메일을 입력해주세요.");
+    } else if (!isPassword) {
+      return alert("비밀번호를 입력해주세요.");
+    } else {
+      axios
+        .post(`${baseURL}/login`, formValue)
+        .then((response) => {
+          console.log(response);
+          alert("로그인 성공!");
+          localStorage.clear();
+          const token = response.headers["authorization"];
+          localStorage.setItem("access", token.split(" ")[1]);
+          navigate("/");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
 
   return (
     <div>
@@ -81,6 +83,7 @@ const Login = () => {
               txt={"로그인"}
               backgroundColor={"#EAF0C3"}
               color={"#919400"}
+              onBtnClick={handleLogin}
             />
           </BtnBox>
         </Right>
