@@ -20,6 +20,25 @@ const NavBar = ({ pagename }) => {
     setIsConfirmOpen(true);
   };
 
+  //   const onConfirm = () => {
+  //     axios
+  //       .delete(`${baseURL}/`, {
+  //         headers: {
+  //           Authorization: `Bearer ${accessToken}`,
+  //         },
+  //       })
+  //       .then((response) => {
+  //         setIsConfirmOpen(false);
+  //         alert("로그아웃되었습니다.");
+  //         navigate("/");
+  //       })
+  //       .catch((error) => {
+  //         setIsConfirmOpen(false);
+  //         console.log(error);
+  //         alert("로그아웃에 실패했습니다.");
+  //       });
+  //   };
+
   localStorage.clear();
   //   연동 시 여기에서 회원 이름 조회
   localStorage.setItem("username", "숙멋사");
@@ -89,8 +108,9 @@ const NavBar = ({ pagename }) => {
           isConfirmOpen={isConfirmOpen}
           onConfirm={() => {
             setIsConfirmOpen(false);
-            navigate("/login");
+            navigate("/");
           }}
+          // onConfirm={onConfirm}
           message={"로그아웃 하시겠습니까?"}
           onCancel={() => setIsConfirmOpen(false)}
         />

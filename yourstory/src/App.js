@@ -20,6 +20,9 @@ import BookDetail from "./pages/library/BookDetail";
 import BookViewer from "./pages/library/BookViewer";
 import LetterBox from "./pages/library/LetterBox";
 
+// 이야기 관련 서브페이지
+import StoryDetail from "./pages/story/StoryDetail";
+
 function App() {
   return (
     <ThemeProvider theme={theme}>
@@ -50,6 +53,7 @@ function App() {
             {/* 우리의 이야기 */}
             <Route path="story">
               <Route index element={<Story />} />
+              <Route path=":id" element={<StoryDetail />} />
             </Route>
           </Route>
         </Routes>
