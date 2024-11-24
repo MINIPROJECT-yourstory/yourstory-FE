@@ -285,7 +285,7 @@ const SectionContainer = styled.div`
 `;
 
 const LeftSection = styled.div`
-  width: 353px;
+  width: 430px;
   display: flex;
   flex-direction: column;
   height: 300px;
