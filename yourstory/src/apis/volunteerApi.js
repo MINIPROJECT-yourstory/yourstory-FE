@@ -39,49 +39,37 @@ export const volunteerApi = {
   // 봉사 목록 조회 (필터링 포함)
   getVolunteerList: async (filters = {}) => {
     try {
-      console.log("API 호출 시작 - 필터:", filters);
+      console.log("=== API 디버깅 시작 ===");
+      console.log("전송할 필터:", filters);
+
       const headers = getAuthHeader();
       let url = `${baseURL}/work/list`;
-
-      // 개별 파라미터로 URL 생성
       let queryParams = [];
 
-      // regions 파라미터 처리
-      if (filters.regions?.length > 0) {
-        filters.regions.forEach((region) => {
-          queryParams.push(`regions=${encodeURIComponent(region)}`);
-        });
+      // null이 아닌 필터만 파라미터에 추가
+      if (filters.regions) {
+        queryParams.push(`regions=${encodeURIComponent(filters.regions)}`);
       }
 
-      // recruitmentStatus 파라미터 처리
-      if (filters.recruitmentStatus?.length > 0) {
-        filters.recruitmentStatus.forEach((status) => {
-          queryParams.push(`recruitmentStatus=${encodeURIComponent(status)}`);
-        });
+      if (filters.recruitmentStatus) {
+        queryParams.push(
+          `recruitmentStatus=${encodeURIComponent(filters.recruitmentStatus)}`
+        );
       }
 
-      // dayOfWeek 파라미터 처리
-      if (filters.dayOfWeek?.length > 0) {
-        filters.dayOfWeek.forEach((day) => {
-          queryParams.push(`dayOfWeek=${encodeURIComponent(day)}`);
-        });
+      if (filters.dayOfWeek) {
+        queryParams.push(`dayOfWeek=${encodeURIComponent(filters.dayOfWeek)}`);
       }
 
-      const finalUrl =
-        queryParams.length > 0 ? `${url}?${queryParams.join("&")}` : url;
+      if (queryParams.length > 0) {
+        url += `?${queryParams.join("&")}`;
+      }
 
-      console.log("최종 요청 URL:", finalUrl);
-
-      const response = await axios.get(finalUrl, { headers });
-      console.log("API 응답:", response.data);
-
+      console.log("최종 요청 URL:", url);
+      const response = await axios.get(url, { headers });
       return response.data;
     } catch (error) {
       console.error("API 에러:", error);
-      if (error.response) {
-        console.error("응답 상태:", error.response.status);
-        console.error("응답 데이터:", error.response.data);
-      }
       throw error;
     }
   },

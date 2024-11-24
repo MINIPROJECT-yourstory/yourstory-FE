@@ -26,7 +26,7 @@ const VolunteerPage = () => {
       setVolunteers(data);
       setSearchResults(data);
     } catch (error) {
-      console.error("봉사 목록 조회 ���패:", error);
+      console.error("봉사 목록 조회 패:", error);
     } finally {
       setIsLoading(false);
     }
@@ -37,41 +37,30 @@ const VolunteerPage = () => {
       setIsLoading(true);
       console.log("검색 시작 - 원본 필터:", filters);
 
-      // API 요청용 필터 데이터 변환
-      const apiFilters = {
-        regions: filters.location.filter((loc) => loc !== "전체"),
-        recruitmentStatus: filters.status
-          .filter((status) => status !== "전체")
-          .map((status) => {
-            // "모집중" -> "모집 중" 변환
-            if (status === "모집중") return "모집 중";
-            return status;
-          }),
-        dayOfWeek: [],
-      };
-
-      // 요일 처리
-      if (!filters.day.includes("전체")) {
-        if (filters.day.includes("평일")) {
-          apiFilters.dayOfWeek.push(
-            ...["월요일", "화요일", "수요일", "목요일", "금요일"]
-          );
-        }
-        if (filters.day.includes("주말")) {
-          apiFilters.dayOfWeek.push(...["토요일", "일요일"]);
-        }
-        // 개별 요일 추가
-        filters.day.forEach((day) => {
-          if (!["전체", "평일", "주말"].includes(day)) {
-            apiFilters.dayOfWeek.push(day);
-          }
-        });
+      // 평일/주말 여부에 따라 요일 배열 생성
+      let dayOfWeek = null;
+      if (filters.day.includes("평일")) {
+        dayOfWeek = ["월요일", "화요일", "수요일", "목요일", "금요일"];
+      } else if (filters.day.includes("주말")) {
+        dayOfWeek = ["토요일", "일요일"];
       }
 
-      console.log("변환된 API 필터:", apiFilters);
+      const apiFilters = {
+        regions: filters.location.includes("전체") ? null : filters.location[0],
+        recruitmentStatus: filters.status.includes("전체")
+          ? null
+          : filters.status[0] === "모집중"
+          ? "모집 중"
+          : filters.status[0],
+      };
 
-      const filteredData = await volunteerApi.getVolunteerList(apiFilters);
-      console.log("필터링 결과:", filteredData);
+      // 전체 데이터를 가져온 후 프론트에서 요일 필터링
+      const response = await volunteerApi.getVolunteerList(apiFilters);
+
+      // 요일 필터링 적용
+      const filteredData = dayOfWeek
+        ? response.filter((item) => dayOfWeek.includes(item.day))
+        : response;
 
       setSearchResults(filteredData);
       setIsSearched(true);

@@ -15,16 +15,35 @@ const VolunteerFilter = ({ onSearch }) => {
 
     setFilters((prev) => {
       const updated = { ...prev };
+
       if (value === "전체") {
+        // 전체 선택 시 해당 카테고리의 다른 모든 선택 해제
         updated[category] = updated[category].includes("전체") ? [] : ["전체"];
       } else {
+        // 개별 항목 선택 시
         const withoutAll = prev[category].filter((item) => item !== "전체");
-        if (withoutAll.includes(value)) {
-          updated[category] = withoutAll.filter((item) => item !== value);
+
+        if (category === "day") {
+          if (value === "평일") {
+            // 평일 선택 시 주말과 개별 요일 선택 해제
+            updated[category] = withoutAll.includes("평일") ? [] : ["평일"];
+          } else if (value === "주말") {
+            // 주말 선택 시 평일과 개별 요일 선택 해제
+            updated[category] = withoutAll.includes("주말") ? [] : ["주말"];
+          } else {
+            // 개별 요일 선택 시 전체/평일/주말 선택 해제
+            if (withoutAll.includes(value)) {
+              updated[category] = withoutAll.filter((item) => item !== value);
+            } else {
+              updated[category] = [value];
+            }
+          }
         } else {
-          updated[category] = [...withoutAll, value];
+          // 지역, 상태는 단일 선택만 가능하도록
+          updated[category] = [value];
         }
       }
+
       console.log("업데이트된 필터:", updated);
       return updated;
     });
