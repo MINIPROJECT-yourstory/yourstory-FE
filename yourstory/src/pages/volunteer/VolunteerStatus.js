@@ -38,6 +38,10 @@ const VolunteerStatus = () => {
     navigate(`/work/${workId}`);
   };
 
+  const handleJournalClick = (workId) => {
+    navigate(`/work/record/${workId}`);
+  };
+
   return (
     <>
       <NavBar pagename={"volunteer"} />
@@ -94,7 +98,11 @@ const VolunteerStatus = () => {
                       <StoryTitle>어르신의 이야기를 듣고 있어요</StoryTitle>
                       <DayCount>시작한지 {volunteer.days || 0}일째</DayCount>
                     </StoryContainer>
-                    <JournalButton>자서전 기록장</JournalButton>
+                    <JournalButton
+                      onClick={() => handleJournalClick(volunteer.workId)}
+                    >
+                      자서전 기록장
+                    </JournalButton>
                   </GreenSection>
                 </CardContainer>
                 {index < statusList.length - 1 && <DashedDivider />}
