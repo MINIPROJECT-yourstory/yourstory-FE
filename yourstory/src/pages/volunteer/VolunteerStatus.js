@@ -38,75 +38,67 @@ const VolunteerStatus = () => {
     navigate(`/work/${workId}`);
   };
 
-  const handleWriteBook = (workId) => {
-    navigate(`/work/record`, {
-      state: { workId },
-    });
-  };
-
-  const getStatusText = (conditionId) => {
-    switch (conditionId) {
-      case 4:
-        return "승인";
-      // 다른 상태값들도 필요하다면 추가
-      default:
-        return "대기중";
-    }
-  };
-
   return (
     <>
       <NavBar pagename={"volunteer"} />
       <PageContainer>
         <VolunteerHeader currentPage="status" />
+        <TitleContainer>
+          <StateTitle>진행 중인 봉사활동</StateTitle>
+          <Line />
+        </TitleContainer>
         <ListContainer>
           {statusList.length === 0 ? (
             <EmptyStateContainer>
               <EmptyStateMessage>신청한 봉사활동이 없습니다.</EmptyStateMessage>
             </EmptyStateContainer>
           ) : (
-            statusList.map((volunteer) => (
-              <CardContainer key={volunteer.id}>
-                <CardHeader>
-                  <HeaderLeft>
-                    <CardTitle>
-                      <CenterName>{volunteer.title}</CenterName>
-                      <StatusBadge status={volunteer.state}>
-                        {volunteer.state}
-                      </StatusBadge>
-                    </CardTitle>
-                    <InfoText>
-                      <InfoLabel>[모집기간]</InfoLabel>{" "}
-                      {volunteer.recruitmentStart} ~ {volunteer.recruitmentEnd}
-                    </InfoText>
-                    <InfoText>
-                      <InfoLabel>[등록기관]</InfoLabel> {volunteer.org}
-                    </InfoText>
-                  </HeaderLeft>
-                  <HeaderRight>
-                    <InfoText>
-                      <InfoLabel>[봉사기간]</InfoLabel> {volunteer.period}개월
-                    </InfoText>
-                    <InfoContainer>
-                      <InfoText>
-                        <InfoLabel>[봉사요일]</InfoLabel> {volunteer.day}
-                      </InfoText>
-                      <ButtonContainer>
-                        <DetailButton
-                          onClick={() => handleDetailClick(volunteer.workId)}
-                        >
-                          자세히 보기
-                        </DetailButton>
-                        <WriteButton
-                          onClick={() => handleWriteBook(volunteer.workId)}
-                        >
-                          자서전 쓰기
-                        </WriteButton>
-                      </ButtonContainer>
-                    </InfoContainer>
-                  </HeaderRight>
-                </CardHeader>
-              </CardContainer>
+            statusList.map((volunteer, index) => (
+              <>
+                <CardContainer key={volunteer.id}>
+                  <WhiteSection>
+                    <CardHeader>
+                      <HeaderLeft>
+                        <CardTitle>
+                          <CenterName>{volunteer.title}</CenterName>
+                        </CardTitle>
+                        <InfoText>
+                          <InfoLabel>[모집기간]</InfoLabel>{" "}
+                          {volunteer.recruitmentStart} ~{" "}
+                          {volunteer.recruitmentEnd}
+                        </InfoText>
+                        <InfoText>
+                          <InfoLabel>[등록기관]</InfoLabel> {volunteer.org}
+                        </InfoText>
+                      </HeaderLeft>
+                      <HeaderRight>
+                        <InfoText>
+                          <InfoLabel>[봉사기간]</InfoLabel> {volunteer.period}
+                          개월
+                        </InfoText>
+                        <InfoContainer>
+                          <InfoText>
+                            <InfoLabel>[봉사요일]</InfoLabel> {volunteer.day}
+                          </InfoText>
+                          <DetailButton
+                            onClick={() => handleDetailClick(volunteer.workId)}
+                          >
+                            자세히 보기
+                          </DetailButton>
+                        </InfoContainer>
+                      </HeaderRight>
+                    </CardHeader>
+                  </WhiteSection>
+                  <GreenSection>
+                    <StoryContainer>
+                      <StoryTitle>어르신의 이야기를 듣고 있어요</StoryTitle>
+                      <DayCount>시작한지 {volunteer.days || 0}일째</DayCount>
+                    </StoryContainer>
+                    <JournalButton>자서전 기록장</JournalButton>
+                  </GreenSection>
+                </CardContainer>
+                {index < statusList.length - 1 && <DashedDivider />}
+              </>
             ))
           )}
         </ListContainer>
@@ -131,37 +123,111 @@ const PageContainer = styled.div`
   }
 `;
 
+const TitleContainer = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 17px;
+  margin-top: 50px;
+  margin-bottom: 60px;
+  padding: 0;
+`;
+
+const StateTitle = styled.div`
+  font-family: "Inter", sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  color: #bcbf1f;
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+`;
+
+const Line = styled.div`
+  flex: 1;
+  height: 1px;
+  background-color: #bcbf1f;
+`;
+
 const ListContainer = styled.div`
   display: flex;
   flex-direction: column;
-  background: #f3f3f3;
+  background: transparent;
   border-radius: 17px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 `;
 
 const CardContainer = styled.div`
   background: transparent;
-  padding: 1.125rem;
-  transition: transform 0.2s ease;
   position: relative;
+  transition: transform 0.2s ease;
+  border-radius: 17px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 
   &:hover {
     transform: translateY(-2px);
   }
+`;
 
-  &:not(:last-child)::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 28px;
-    right: 28px;
-    height: 0.7px;
-    background-color: #bcbf1f;
-  }
+const WhiteSection = styled.div`
+  background: #f3f3f3;
+  padding: 40px 35px 60px 35px;
+`;
 
-  ${media.tablet} {
-    padding: 1rem;
-  }
+const GreenSection = styled.div`
+  background: #bcbf1f;
+  padding: 43px 35px 32px 35px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+`;
+
+const StoryContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+const StoryTitle = styled.h2`
+  font-size: 26px;
+  font-weight: 400;
+  letter-spacing: -0.1em;
+  color: white;
+  margin: 0;
+`;
+
+const DayCount = styled.p`
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.1em;
+  color: white;
+  margin: 0;
+`;
+
+const JournalButton = styled.button`
+  width: 248px;
+  height: 59px;
+  background-color: #ced118;
+  border: none;
+  border-radius: 50px;
+  color: white;
+  font-family: "Inter", sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  letter-spacing: -0.1em;
+  cursor: pointer;
+  box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.06);
+  align-self: flex-end;
+`;
+
+const DashedDivider = styled.div`
+  width: 100%;
+  height: 2px;
+  border: none;
+  background-image: linear-gradient(to right, #bcbf1f 75%, transparent 25%);
+  background-size: 8px 1px;
+  background-repeat: repeat-x;
+  margin: 70px 0;
 `;
 
 const CardHeader = styled.div`
@@ -207,21 +273,15 @@ const CenterName = styled.h3`
   color: #919400;
 `;
 
-const StatusBadge = styled.span`
-  padding: 0.25rem 2.6875rem;
-  border-radius: 999px;
-  font-size: 1.125rem;
-  font-weight: 800;
-  color: #ced118;
-`;
-
 const DetailButton = styled.button`
-  padding: 0.5rem 1rem;
+  padding: 10px 25px;
+  width: 116px;
+  height: 37px;
   border: none;
   border-radius: 50px;
   background-color: #ced118;
   color: white;
-  font-size: 0.875rem;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: -0.04em;
   cursor: pointer;
@@ -257,30 +317,6 @@ const EmptyStateContainer = styled.div`
 const EmptyStateMessage = styled.p`
   color: #666;
   font-size: 1.1rem;
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-`;
-
-const WriteButton = styled.button`
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 50px;
-  background-color: #7f810d;
-  color: white;
-  font-size: 0.875rem;
-  font-weight: 700;
-  letter-spacing: -0.04em;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-bottom: auto;
-
-  &:hover {
-    opacity: 0.9;
-  }
 `;
 
 export default VolunteerStatus;
