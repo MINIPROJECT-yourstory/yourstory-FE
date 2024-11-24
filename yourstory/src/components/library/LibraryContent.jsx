@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
-import { Heart, Mail } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { bookApi } from "../../apis/bookApi";
 import { media } from "../../styles/theme";
+import EmailIcon from "../../assets/images/icon-email-white.svg";
+import HeartFillIcon from "../../assets/images/icon-heart-fill.svg";
+import HeartEmptyIcon from "../../assets/images/icon-heart-empty.svg";
 
 const LibraryContent = () => {
   const navigate = useNavigate();
@@ -47,9 +49,11 @@ const LibraryContent = () => {
 
       let updatedLikes;
       if (book.isLike) {
-        updatedLikes = await bookApi.deleteLike(bookId);
+        const response = await bookApi.deleteLike(bookId);
+        updatedLikes = response.data;
       } else {
-        updatedLikes = await bookApi.createLike(bookId);
+        const response = await bookApi.createLike(bookId);
+        updatedLikes = response.data;
       }
 
       setBooks(
@@ -94,18 +98,16 @@ const LibraryContent = () => {
 
                 <StatsContainer>
                   <Stat onClick={() => handleLike(book.id)}>
-                    <Heart
-                      fill={book.isLike ? "white" : "none"}
-                      color="white"
-                      size={30}
+                    <HeartImg
+                      src={book.isLike ? HeartFillIcon : HeartEmptyIcon}
+                      alt="heart"
                     />
                     <span>{book.likes}</span>
                   </Stat>
                   <Stat>
-                    <Mail
-                      fill={book.isMine ? "white" : "none"}
-                      color="white"
-                      size={30}
+                    <EmailImg
+                      src={EmailIcon}
+                      alt="email"
                       onClick={() => handleMailClick(book.id)}
                     />
                     <span>{book.letters}</span>
@@ -264,6 +266,20 @@ const DashedLine = styled.div`
   background-image: linear-gradient(to right, #ced118 50%, transparent 50%);
   background-size: 10px 2px;
   background-repeat: repeat-x;
+`;
+
+const EmailImg = styled.img`
+  width: 30px;
+  height: 30px;
+  margin-right: 0.5rem;
+  cursor: pointer;
+`;
+
+const HeartImg = styled.img`
+  width: 28px;
+  height: 28px;
+  margin-right: 0.5rem;
+  cursor: pointer;
 `;
 
 export default LibraryContent;

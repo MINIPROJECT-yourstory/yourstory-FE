@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Heart, Mail } from "lucide-react";
+import { Heart } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import NavBar from "../../components/common/NavBar";
 import LibraryHeader from "../../components/library/LibraryHeader";
 import { bookApi } from "../../apis/bookApi";
+import EmailIcon from "../../assets/images/icon-email.svg";
 
 const BookDetail = () => {
   const { id } = useParams();
@@ -139,7 +140,7 @@ const BookDetail = () => {
                 {[...letters].reverse().map((letter, index) => (
                   <LetterItem key={letter.id}>
                     <LetterNumber>{index + 1}</LetterNumber>
-                    <Mail size={20} color="white" />
+                    <EmailImg src={EmailIcon} alt="email" />
                     <LetterContent>
                       <LetterTitle>{letter.title}</LetterTitle>
                       <LetterText>{letter.content}</LetterText>
@@ -395,6 +396,8 @@ const MailboxHeader = styled.div`
   span {
     color: #fafc97;
     margin-left: 0;
+    font-size: 15px;
+    font-weight: 700;
   }
 
   &::after {
@@ -469,18 +472,25 @@ const WriteLetterButton = styled.button`
   position: absolute;
   bottom: 1.5rem;
   right: 1.5rem;
+  width: 110px;
+  height: 37px;
+  font-size: 16px;
+  letter-spacing: -0.06em;
   background-color: white;
-  color: #7f810d;
-  padding: 0.5rem 1.5rem;
+  color: #bcbf1f;
   border-radius: 50px;
   border: none;
   font-weight: bold;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
   &:hover {
     background-color: #f8f8f8;
   }
+`;
+
+const EmailImg = styled.img`
+  width: 28px;
+  height: 28px;
 `;
 
 export default BookDetail;
