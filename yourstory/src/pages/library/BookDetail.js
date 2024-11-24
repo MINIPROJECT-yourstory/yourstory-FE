@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Heart } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import NavBar from "../../components/common/NavBar";
 import LibraryHeader from "../../components/library/LibraryHeader";
 import { bookApi } from "../../apis/bookApi";
-import EmailIcon from "../../assets/images/icon-email.svg";
+import Mailbox from "../../components/library/MailBox";
+import HeartFillIcon from "../../assets/images/icon-heart-fill.svg";
+import HeartEmptyIcon from "../../assets/images/icon-heart-empty.svg";
 
 const BookDetail = () => {
   const { id } = useParams();
@@ -39,12 +40,13 @@ const BookDetail = () => {
     try {
       let updatedLikes;
       if (bookDetail.isLike) {
-        updatedLikes = await bookApi.deleteLike(id);
+        const response = await bookApi.deleteLike(id);
+        updatedLikes = response.data;
       } else {
-        updatedLikes = await bookApi.createLike(id);
+        const response = await bookApi.createLike(id);
+        updatedLikes = response.data;
       }
 
-      // 좋아요 상태
       setBookDetail((prev) => ({
         ...prev,
         likes: updatedLikes,
@@ -94,10 +96,9 @@ const BookDetail = () => {
                 <Title>{bookDetail.addressee} 어르신의 이야기,</Title>
                 <Subtitle>{bookDetail.title}</Subtitle>
                 <Stats onClick={handleLike}>
-                  <Heart
-                    fill={bookDetail.isLike ? "white" : "none"}
-                    style={{ cursor: "pointer" }}
-                    size={22}
+                  <HeartImg
+                    src={bookDetail.isLike ? HeartFillIcon : HeartEmptyIcon}
+                    alt="heart"
                   />
                   <Likespan>{bookDetail.likes}</Likespan>
                 </Stats>
@@ -130,43 +131,28 @@ const BookDetail = () => {
               </DescriptionBox>
             </LeftSection>
             <RightSection>
-              <MailboxHeader>
-                <div>우편함</div>
-                <span>
-                  {bookDetail.addressee}&nbsp;어르신께 드리는 우리의 편지
-                </span>
-              </MailboxHeader>
-              <LetterList>
-                {[...letters].reverse().map((letter, index) => (
-                  <LetterItem key={letter.id}>
-                    <LetterNumber>{index + 1}</LetterNumber>
-                    <EmailImg src={EmailIcon} alt="email" />
-                    <LetterContent>
-                      <LetterTitle>{letter.title}</LetterTitle>
-                      <LetterText>{letter.content}</LetterText>
-                    </LetterContent>
-                  </LetterItem>
-                ))}
-              </LetterList>
-              <WriteLetterButton onClick={handleWriteLetter}>
-                편지 남기기
-              </WriteLetterButton>
+              <Mailbox
+                addressee={bookDetail.addressee}
+                letters={letters}
+                onWriteLetter={handleWriteLetter}
+              />
             </RightSection>
           </SectionContainer>
         </ContentWrapper>
+        <Footer />
       </Container>
     </>
   );
 };
 
 const HeaderWrapper = styled.div`
-  margin-left: 16.5625rem;
+  margin-left: ${({ theme }) => theme.spacing.components.sidebar.width};
   padding: 81px 5% 0px 5%;
 `;
 
 const Container = styled.div`
   padding: 0px 5%;
-  margin-left: 16.5625rem;
+  margin-left: ${({ theme }) => theme.spacing.components.sidebar.width};
   font-family: ${({ theme }) => theme.typography.fontFamily.main};
 `;
 
@@ -289,82 +275,132 @@ const SectionContainer = styled.div`
   display: flex;
   width: 100%;
   gap: 14px;
-  margin-bottom: ${({ theme }) => theme.spacing.padding.lg};
+  height: 300px;
+
+  ${({ theme }) => theme.media.tablet} {
+    flex-direction: column;
+    height: auto;
+    gap: 20px;
+  }
 `;
 
 const LeftSection = styled.div`
-  flex: 1;
+  width: 353px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  max-height: 297px;
+  height: 300px;
+  flex-shrink: 0;
+
+  ${({ theme }) => theme.media.laptop} {
+    width: calc(40% - 7px);
+    min-width: 300px;
+  }
+
+  ${({ theme }) => theme.media.tablet} {
+    width: 100%;
+    height: auto;
+  }
 `;
 
 const RightSection = styled.div`
-  flex: 1.3;
-  background-color: #ced118;
+  width: 462px;
+  height: 248px;
+  background-color: ${({ theme }) => theme.colors.primary.light};
   padding: ${({ theme }) => theme.spacing.padding.lg};
   border-radius: ${({ theme }) => theme.borderRadius.md};
-  height: 308px;
   position: relative;
+  flex-grow: 1;
+
+  ${({ theme }) => theme.media.laptop} {
+    width: calc(60% - 7px);
+    min-width: 400px;
+  }
+
+  ${({ theme }) => theme.media.tablet} {
+    width: 100%;
+    height: auto;
+    min-height: 300px;
+  }
 `;
 
-const SectionTitle = styled.h3`
+const SectionTitle = styled.div`
   color: ${({ theme }) => theme.colors.primary.main};
-  font-size: ${({ theme }) => theme.typography.fontSize.lg};
-  margin: 0;
-  align-self: center;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.06em;
+  height: 29px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
 `;
 
 const ContributorBox = styled.div`
   background-color: #ebece1;
   padding: ${({ theme }) => theme.spacing.padding.lg};
   border-radius: ${({ theme }) => theme.borderRadius.md};
-  height: calc((297px - 14px - 24px) / 2);
+  height: 144px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+
+  ${({ theme }) => theme.media.tablet} {
+    height: auto;
+    min-height: 144px;
+  }
 `;
 
 const DescriptionBox = styled.div`
   background-color: #ebece1;
-  padding: ${({ theme }) => theme.spacing.padding.lg};
+  padding: 25px 66px;
   border-radius: ${({ theme }) => theme.borderRadius.md};
-  height: calc((297px - 14px - 24px) / 2);
+  height: 93px;
   display: flex;
   align-items: center;
   justify-content: center;
+
+  ${({ theme }) => theme.media.tablet} {
+    height: auto;
+    min-height: 93px;
+  }
 `;
 
 const ContributorList = styled.div`
-  height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  gap: 8px;
 `;
 
 const ContributorItem = styled.div`
   display: flex;
-  margin-bottom: ${({ theme }) => theme.spacing.padding.sm};
+  align-items: center;
 `;
 
 const Label = styled.span`
   background-color: ${({ theme }) => theme.colors.primary.main};
   color: ${({ theme }) => theme.colors.text.white};
-  padding: ${({ theme }) => theme.spacing.padding.xs};
-  ${({ theme }) => theme.spacing.padding.sm};
   margin-right: ${({ theme }) => theme.spacing.padding.sm};
   border-radius: 9px;
   font-size: 16px;
   font-weight: 700;
+  width: 80px;
+  height: 37px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const Value = styled.span`
   color: #7f810d;
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
 `;
 
 const Description = styled.p`
   text-align: center;
   color: #7f810d;
   line-height: ${({ theme }) => theme.typography.lineHeight.relaxed};
-  width: 100%;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -372,125 +408,21 @@ const Description = styled.p`
   text-overflow: ellipsis;
   margin: 0;
   padding: 0 1rem;
-
-  white-space: normal;
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
   word-break: keep-all;
   word-wrap: break-word;
   max-width: 17em;
-  margin: 0 auto;
 `;
 
-const MailboxHeader = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: ${({ theme }) => theme.spacing.padding.md};
-  position: relative;
-
-  div {
-    color: ${({ theme }) => theme.colors.text.white};
-    font-size: ${({ theme }) => theme.typography.fontSize.lg};
-    font-weight: 700;
-    margin-right: 10px;
-  }
-
-  span {
-    color: #fafc97;
-    margin-left: 0;
-    font-size: 15px;
-    font-weight: 700;
-  }
-
-  &::after {
-    content: "";
-    position: absolute;
-    bottom: -8px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background-color: rgba(255, 255, 255, 0.8);
-  }
+const Footer = styled.div`
+  height: 100px;
 `;
 
-const LetterList = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  height: calc(100% - 120px);
-  overflow-y: auto;
-  padding-right: 0.5rem;
-
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.5);
-    border-radius: 3px;
-  }
-`;
-
-const LetterItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  border-bottom: 1px dashed rgba(255, 255, 255, 0.5);
-
-  &:last-child {
-    border-bottom: none;
-  }
-`;
-
-const LetterNumber = styled.span`
-  color: white;
-  font-weight: bold;
-  min-width: 20px;
-`;
-
-const LetterContent = styled.div`
-  display: flex;
-  flex: 1;
-  gap: 1rem;
-`;
-
-const LetterTitle = styled.span`
-  color: white;
-  font-weight: bold;
-  white-space: nowrap;
-`;
-
-const LetterText = styled.p`
-  color: white;
-  margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 200px;
-`;
-
-const WriteLetterButton = styled.button`
-  position: absolute;
-  bottom: 1.5rem;
-  right: 1.5rem;
-  width: 110px;
-  height: 37px;
-  font-size: 16px;
-  letter-spacing: -0.06em;
-  background-color: white;
-  color: #bcbf1f;
-  border-radius: 50px;
-  border: none;
-  font-weight: bold;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #f8f8f8;
-  }
-`;
-
-const EmailImg = styled.img`
+const HeartImg = styled.img`
   width: 28px;
   height: 28px;
+  margin-right: -6px;
+  cursor: pointer;
 `;
 
 export default BookDetail;
