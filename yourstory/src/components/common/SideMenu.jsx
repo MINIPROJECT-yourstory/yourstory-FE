@@ -1,9 +1,31 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Line from "../../assets/images/line-menu.svg";
+import { volunteerApi } from "../../apis/volunteerApi";
 
 const SideMenu = ({ isVisible, menu }) => {
+  const navigate = useNavigate();
+
+  const handleRecordClick = async (e) => {
+    e.preventDefault();
+    try {
+      const myStatus = await volunteerApi.getMyStatus();
+      if (myStatus && myStatus.length > 0) {
+        navigate(`/work/record/${myStatus[0].workId}`);
+      } else {
+        alert(
+          "신청된 봉사활동이 없어 자서전을 쓸 수 없어요.. 메인화면으로 돌아갑니다!"
+        );
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("봉사현황 조회 실패:", error);
+      alert("신청된 봉사활동을 조회하지 못했어요. 메인화면으로 돌아갑니다!");
+      navigate("/");
+    }
+  };
+
   const SideContent = () => {
     if (menu === "volunteer") {
       return (
@@ -25,7 +47,9 @@ const SideMenu = ({ isVisible, menu }) => {
                   {">"}&nbsp;&nbsp;봉사 현황
                 </TitleLink>
                 <SubLink to={"/work/my-status"}>진행 중인 봉사활동</SubLink>
-                <SubLink to={"/work/record"}>자서전 기록장</SubLink>
+                <SubLink onClick={handleRecordClick} to="">
+                  자서전 기록장
+                </SubLink>
               </div>
             </LinkBox>
           </Container>

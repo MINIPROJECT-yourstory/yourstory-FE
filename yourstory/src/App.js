@@ -41,7 +41,7 @@ function App() {
               <Route index element={<Volunteer />} />
               <Route path=":id" element={<VolunteerDetail />} />
               <Route path="my-status" element={<VolunteerStatus />} />
-              <Route path="record" element={<VolunteerDiary />} />
+              <Route path="record/:workId" element={<VolunteerDiary />} />
             </Route>
 
             {/* 이타적 도서관 */}

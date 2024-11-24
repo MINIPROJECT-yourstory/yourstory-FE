@@ -36,29 +36,40 @@ const getAuthHeader = () => {
 };
 
 export const volunteerApi = {
-  // 봉사 목록 조회
+  // 봉사 목록 조회 (필터링 포함)
   getVolunteerList: async (filters = {}) => {
     try {
-      console.log("봉사 목록 조회 시작");
-      const { regions, recruitmentStatus, dayOfWeek } = filters;
-      let url = `${baseURL}/work`;
-
-      const params = new URLSearchParams();
-      if (regions) params.append("regions", regions);
-      if (recruitmentStatus)
-        params.append("recruitmentStatus", recruitmentStatus);
-      if (dayOfWeek) params.append("dayOfWeek", dayOfWeek);
-
-      if (params.toString()) {
-        url += `?${params.toString()}`;
-      }
+      console.log("=== API 디버깅 시작 ===");
+      console.log("전송할 필터:", filters);
 
       const headers = getAuthHeader();
+      let url = `${baseURL}/work/list`;
+      let queryParams = [];
+
+      // null이 아닌 필터만 파라미터에 추가
+      if (filters.regions) {
+        queryParams.push(`regions=${encodeURIComponent(filters.regions)}`);
+      }
+
+      if (filters.recruitmentStatus) {
+        queryParams.push(
+          `recruitmentStatus=${encodeURIComponent(filters.recruitmentStatus)}`
+        );
+      }
+
+      if (filters.dayOfWeek) {
+        queryParams.push(`dayOfWeek=${encodeURIComponent(filters.dayOfWeek)}`);
+      }
+
+      if (queryParams.length > 0) {
+        url += `?${queryParams.join("&")}`;
+      }
+
+      console.log("최종 요청 URL:", url);
       const response = await axios.get(url, { headers });
-      console.log("봉사 목록 조회 성공:", response.data);
       return response.data;
     } catch (error) {
-      console.error("봉사 목록 조회 실패:", error);
+      console.error("API 에러:", error);
       throw error;
     }
   },

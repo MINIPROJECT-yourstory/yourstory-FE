@@ -3,13 +3,12 @@ import styled from "styled-components";
 import NavBar from "../../components/common/NavBar";
 import VolunteerHeader from "../../components/volunteer/VolunteerHeader";
 import { media } from "../../styles/theme";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { volunteerApi } from "../../apis/volunteerApi";
 
 const VolunteerDiary = () => {
+  const { workId } = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
-  const workId = location.state?.workId;
   const [records, setRecords] = useState([]);
 
   const [diaryData, setDiaryData] = useState({
@@ -21,6 +20,11 @@ const VolunteerDiary = () => {
   console.log("전달받은 workId:", workId);
 
   useEffect(() => {
+    if (!workId) {
+      alert("잘못된 접근입니다.");
+      navigate("/work/my-status");
+      return;
+    }
     const fetchRecords = async () => {
       try {
         console.log("기록 조회 시작 - workId:", workId);
@@ -52,9 +56,7 @@ const VolunteerDiary = () => {
       }
     };
 
-    if (workId) {
-      fetchRecords();
-    }
+    fetchRecords();
   }, [workId]);
 
   const handleChange = (e) => {

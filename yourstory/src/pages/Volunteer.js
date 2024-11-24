@@ -26,7 +26,7 @@ const VolunteerPage = () => {
       setVolunteers(data);
       setSearchResults(data);
     } catch (error) {
-      console.error("봉사 목록 조회 실패:", error);
+      console.error("봉사 목록 조회 패:", error);
     } finally {
       setIsLoading(false);
     }
@@ -35,21 +35,38 @@ const VolunteerPage = () => {
   const handleSearch = async (filters) => {
     try {
       setIsLoading(true);
+      console.log("검색 시작 - 원본 필터:", filters);
+
+      // 평일/주말 여부에 따라 요일 배열 생성
+      let dayOfWeek = null;
+      if (filters.day.includes("평일")) {
+        dayOfWeek = ["월요일", "화요일", "수요일", "목요일", "금요일"];
+      } else if (filters.day.includes("주말")) {
+        dayOfWeek = ["토요일", "일요일"];
+      }
+
       const apiFilters = {
-        regions: filters.location.includes("전체")
-          ? null
-          : filters.location.join(","),
+        regions: filters.location.includes("전체") ? null : filters.location[0],
         recruitmentStatus: filters.status.includes("전체")
           ? null
-          : filters.status.join(","),
-        dayOfWeek: filters.day.includes("전체") ? null : filters.day.join(","),
+          : filters.status[0] === "모집중"
+          ? "모집 중"
+          : filters.status[0],
       };
 
-      const filteredData = await volunteerApi.getVolunteerList(apiFilters);
+      // 전체 데이터를 가져온 후 프론트에서 요일 필터링
+      const response = await volunteerApi.getVolunteerList(apiFilters);
+
+      // 요일 필터링 적용
+      const filteredData = dayOfWeek
+        ? response.filter((item) => dayOfWeek.includes(item.day))
+        : response;
+
       setSearchResults(filteredData);
       setIsSearched(true);
     } catch (error) {
       console.error("필터링 실패:", error);
+      alert("봉사 목록을 불러오는데 실패했습니다.");
     } finally {
       setIsLoading(false);
     }
