@@ -15,6 +15,7 @@ const VolunteerDiary = () => {
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
   const [showForm, setShowForm] = useState(true);
+  const [allRecords, setAllRecords] = useState([]);
 
   const [diaryData, setDiaryData] = useState({
     conditionId: workId,
@@ -22,19 +23,13 @@ const VolunteerDiary = () => {
     content: "",
   });
 
-  useEffect(() => {
-    if (!workId) {
-      alert("잘못된 접근입니다.");
-      navigate("/work/my-status");
-      return;
-    }
-    fetchRecords();
-  }, [workId]);
-
-  const fetchRecords = async () => {
+  const fetchRecordsByDate = async (date) => {
     try {
-      const date = new Date().toISOString().split("T")[0];
-      const currentRecords = await volunteerApi.getRecordDetail(workId, date);
+      const formattedDate = date.toISOString().split("T")[0];
+      const currentRecords = await volunteerApi.getRecordDetail(
+        workId,
+        formattedDate
+      );
 
       if (currentRecords) {
         const validRecords = Array.isArray(currentRecords)
@@ -43,18 +38,48 @@ const VolunteerDiary = () => {
         const filteredRecords = validRecords.filter(
           (record) => record && record.content
         );
-        setRecords(filteredRecords);
+
+        setAllRecords((prevRecords) => {
+          const newRecords = [...prevRecords, ...filteredRecords];
+          return Array.from(
+            new Map(newRecords.map((record) => [record.id, record])).values()
+          ).sort((a, b) => new Date(b.date) - new Date(a.date));
+        });
       }
     } catch (error) {
       console.error("기록 조회 중 에러:", error);
     }
   };
 
+  useEffect(() => {
+    if (!workId) {
+      alert("잘못된 접근입니다.");
+      navigate("/work/my-status");
+      return;
+    }
+
+    const fetchLast3MonthsRecords = async () => {
+      const today = new Date();
+      const threeMonthsAgo = new Date(today.setMonth(today.getMonth() - 3));
+
+      for (
+        let d = new Date();
+        d >= threeMonthsAgo;
+        d.setDate(d.getDate() - 1)
+      ) {
+        await fetchRecordsByDate(new Date(d));
+      }
+    };
+
+    fetchLast3MonthsRecords();
+  }, [workId]);
+
   const handleDateChange = (date) => {
     setDiaryData((prev) => ({
       ...prev,
       date: date,
     }));
+    fetchRecordsByDate(date);
   };
 
   const handleContentChange = (e) => {
@@ -74,12 +99,11 @@ const VolunteerDiary = () => {
       };
 
       await volunteerApi.createRecord(recordData);
-      await fetchRecords();
+      await fetchRecordsByDate(diaryData.date);
 
       setDiaryData((prev) => ({
         ...prev,
         content: "",
-        date: new Date(),
       }));
       setShowForm(false);
     } catch (error) {
@@ -133,9 +157,11 @@ const VolunteerDiary = () => {
           </DiaryForm>
         )}
 
-        <AddButton onClick={() => setShowForm(true)}>
-          <PlusIcon>+</PlusIcon>
-        </AddButton>
+        <ButtonContainer>
+          <AddButton onClick={() => setShowForm(true)}>
+            <PlusIcon>+</PlusIcon>
+          </AddButton>
+        </ButtonContainer>
 
         <SaveButton type="submit" onClick={handleSubmit}>
           저장하기
@@ -144,7 +170,7 @@ const VolunteerDiary = () => {
         <DashedLine />
 
         <RecordsList>
-          {records.map((record) => (
+          {allRecords.map((record) => (
             <DiaryEntry key={record.id}>
               <DateSection>
                 <DatePickerWrapper>
@@ -167,6 +193,8 @@ const PageContainer = styled.div`
   padding: 81px 5%;
   margin-left: 16.5625rem;
   font-family: Inter;
+  max-width: 100%;
+  overflow-x: hidden;
 
   ${media.laptop} {
     margin-left: 16.5625rem;
@@ -206,9 +234,12 @@ const TitleLine = styled.div`
 
 const DiaryForm = styled.form`
   width: 100%;
-  height: 301px;
+  height: 350px;
   border-radius: 17px;
   overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
 `;
 
 const DateSection = styled.div`
@@ -219,6 +250,9 @@ const DateSection = styled.div`
   align-items: center;
   border-top-left-radius: 17px;
   border-top-right-radius: 17px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 `;
 
 const DatePickerWrapper = styled.div`
@@ -229,8 +263,8 @@ const DatePickerWrapper = styled.div`
 `;
 
 const StyledDateIcon = styled(DateIcon)`
-  width: 24px;
-  height: 24px;
+  width: 40px;
+  height: 40px;
   cursor: pointer;
 `;
 
@@ -238,15 +272,17 @@ const DateText = styled.span`
   font-family: Inter;
   font-weight: bold;
   font-size: 24px;
-  letter-spacing: -4%;
+  letter-spacing: -0.04em;
   color: #ffffff;
 `;
 
 const ContentSection = styled.div`
-  height: 214px;
+  flex: 1;
   background-color: #f3f3f3;
   border-bottom-left-radius: 17px;
   border-bottom-right-radius: 17px;
+  overflow: hidden;
+  position: relative;
 `;
 
 const TextArea = styled.textarea`
@@ -258,8 +294,13 @@ const TextArea = styled.textarea`
   resize: none;
   font-family: Inter;
   font-size: 24px;
-  letter-spacing: -6%;
+  letter-spacing: -0.06em;
   color: #919400;
+  box-sizing: border-box;
+  overflow-y: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
 
   &::placeholder {
     color: #919400;
@@ -280,30 +321,48 @@ const ReadOnlyContent = styled.div`
   color: #919400;
   font-family: Inter;
   font-size: 24px;
-  letter-spacing: -6%;
+  letter-spacing: -0.06em;
   white-space: pre-wrap;
+  overflow-y: auto;
+  box-sizing: border-box;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 29px;
+  position: relative;
+  height: 39px;
 `;
 
 const AddButton = styled.button`
   width: 236px;
-  height: 39px;
+  height: 100%;
   background-color: #ced118;
   border: none;
   border-radius: 50px;
-  margin-top: 29px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 `;
 
 const PlusIcon = styled.span`
   color: #fafc97;
   font-size: 44px;
-  line-height: 39px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  line-height: 1;
 `;
 
 const SaveButton = styled.button`
+  margin-top: 20px;
   width: 226px;
   height: 67.39px;
   background-color: #ced118;
@@ -313,7 +372,7 @@ const SaveButton = styled.button`
   font-family: Inter;
   font-size: 24px;
   font-weight: bold;
-  letter-spacing: -6%;
+  letter-spacing: -0.06em;
   margin-left: auto;
   display: block;
   cursor: pointer;
@@ -348,7 +407,7 @@ const CustomDatePicker = styled(DatePicker)`
   font-family: Inter;
   font-weight: bold;
   font-size: 24px;
-  letter-spacing: -4%;
+  letter-spacing: -0.04em;
   cursor: pointer;
   width: auto;
 `;

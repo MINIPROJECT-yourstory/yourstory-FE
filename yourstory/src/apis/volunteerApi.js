@@ -168,6 +168,7 @@ export const volunteerApi = {
   createRecord: async (recordData) => {
     try {
       console.log("자서전 작성 API 호출 - 데이터:", recordData);
+      console.log("콘텐츠 길이:", recordData.content.length);
       const headers = getAuthHeader();
       console.log("사용할 헤더:", headers);
 
@@ -193,9 +194,14 @@ export const volunteerApi = {
       return response.data;
     } catch (error) {
       console.error("API 에러 상세:", error.response?.data);
+      console.error("에러 상태:", error.response?.status);
+      console.error("에러 메시지:", error.response?.data?.message);
+      console.error("에러 상세:", error.response?.data?.detail);
+
       if (error.response?.status === 403) {
         throw new Error(
-          error.response.data?.message || "자서전 작성 권한이 없습니다."
+          error.response.data?.message ||
+            "자서전 작성에 실패했습니다. 내용이 너무 길 수 있습니다."
         );
       }
       throw error;

@@ -4,21 +4,22 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
   font-family: Inter !important;
   background-color: #bcbf1f !important;
+  opacity: 0.95 !important;
 }
 
 .react-datepicker__header {
-  background-color: #ced118 !important;
+  background-color: #ffffff !important;
   border-bottom: none !important;
   padding-top: 12px !important;
 }
 
 .react-datepicker__current-month {
-  color: #ffffff !important;
+  color: #bcbf1f !important;
   font-weight: bold !important;
 }
 
 .react-datepicker__day-name {
-  color: #ffffff !important;
+  color: #bcbf1f !important;
 }
 
 .react-datepicker__day {
@@ -40,7 +41,7 @@
 }
 
 .react-datepicker__navigation-icon::before {
-  border-color: #ffffff !important;
+  border-color: #bcbf1f !important;
 }
 
 .react-datepicker-wrapper {
