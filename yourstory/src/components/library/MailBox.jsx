@@ -11,7 +11,7 @@ const Mailbox = ({ addressee, letters, onWriteLetter }) => {
         <span>{addressee}&nbsp;어르신께 드리는 우리의 편지</span>
       </MailboxHeader>
       <LetterList>
-        {letters.map((letter, index) => (
+        {[...letters].reverse().map((letter, index) => (
           <LetterItem key={letter.id}>
             <LetterNumber>{letters.length - index}</LetterNumber>
             <EmailImg src={EmailIcon} alt="email" />
