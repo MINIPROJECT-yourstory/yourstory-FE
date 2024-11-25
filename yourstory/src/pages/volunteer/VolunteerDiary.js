@@ -74,6 +74,10 @@ const VolunteerDiary = () => {
     fetchLast3MonthsRecords();
   }, [workId]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const handleDateChange = (date) => {
     setDiaryData((prev) => ({
       ...prev,
@@ -109,6 +113,18 @@ const VolunteerDiary = () => {
     } catch (error) {
       alert(error.message || "자서전 저장에 실패했습니다.");
     }
+  };
+
+  const handleAddButtonClick = () => {
+    const today = new Date(
+      new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" })
+    );
+    setDiaryData((prev) => ({
+      ...prev,
+      date: today,
+      content: "",
+    }));
+    setShowForm(true);
   };
 
   return (
@@ -158,7 +174,7 @@ const VolunteerDiary = () => {
         )}
 
         <ButtonContainer>
-          <AddButton onClick={() => setShowForm(true)}>
+          <AddButton onClick={handleAddButtonClick}>
             <PlusIcon>+</PlusIcon>
           </AddButton>
         </ButtonContainer>
@@ -313,6 +329,24 @@ const TextArea = styled.textarea`
   }
 
   caret-color: #919400;
+
+  /* 스크롤바 스타일링 */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f3f3f3;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #bcbf1f;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #919400;
+  }
 `;
 
 const ReadOnlyContent = styled.div`
@@ -326,6 +360,23 @@ const ReadOnlyContent = styled.div`
   white-space: pre-wrap;
   overflow-y: auto;
   box-sizing: border-box;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f3f3f3;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #bcbf1f;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #919400;
+  }
 `;
 
 const ButtonContainer = styled.div`
