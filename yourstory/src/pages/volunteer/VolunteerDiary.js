@@ -95,6 +95,12 @@ const VolunteerDiary = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!diaryData.content.trim()) {
+      alert("입력을 하지 않았어요. 입력을 한 뒤 저장을 눌러주세요.");
+      return;
+    }
+
     try {
       const recordData = {
         conditionId: workId,
