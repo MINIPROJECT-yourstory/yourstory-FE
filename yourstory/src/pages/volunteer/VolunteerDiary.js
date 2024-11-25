@@ -210,6 +210,7 @@ const PageContainer = styled.div`
 const DiaryTitleContainer = styled.div`
   display: flex;
   align-items: center;
+  margin-top: 50px;
   width: 100%;
   gap: 17px;
   margin-bottom: 60px;

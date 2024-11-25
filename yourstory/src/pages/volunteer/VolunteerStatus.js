@@ -20,10 +20,22 @@ const VolunteerStatus = () => {
       const detailedList = await Promise.all(
         data.map(async (status) => {
           const details = await volunteerApi.getVolunteerDetail(status.workId);
+
+          // 한국 시간 기준으로 현재 날짜 계산
+          const now = new Date(
+            new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" })
+          );
+          const startDate = new Date(details.recruitmentStart);
+
+          // 날짜 차이 계산 (밀리초를 일 단위로 변환)
+          const diffTime = Math.abs(now - startDate);
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
           return {
             ...status,
             ...details,
             state: details.state,
+            days: diffDays || 0, // 계산된 일수 사용
           };
         })
       );
