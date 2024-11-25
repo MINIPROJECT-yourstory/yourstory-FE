@@ -6,7 +6,6 @@ console.log("현재 baseURL:", baseURL); // baseURL 확인
 // 토큰을 가져오는 함수
 const getToken = () => {
   const token = localStorage.getItem("access");
-  console.log("가져온 토큰:", token); // 토큰 값 확인
   return token;
 };
 

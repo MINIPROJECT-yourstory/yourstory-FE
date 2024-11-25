@@ -167,35 +167,28 @@ export const volunteerApi = {
   // 자서전 작성
   createRecord: async (recordData) => {
     try {
-      console.log("자서전 작성 API 호출 - 데이터:", recordData);
-      const headers = getAuthHeader();
-      console.log("사용할 헤더:", headers);
-
-      // username 추가
-      const token = localStorage.getItem("access");
-      const base64Url = token.split(".")[1];
-      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-      const payload = JSON.parse(window.atob(base64));
-      const username = payload.username;
-
-      const requestData = {
-        ...recordData,
-        username, // username 추가
+      const headers = {
+        ...getAuthHeader(),
+        "Content-Type": "application/json", // Content-Type 명시적 설정
       };
 
-      console.log("최종 요청 데이터:", requestData);
-
-      const response = await axios.post(`${baseURL}/work/record`, requestData, {
+      const response = await axios.post(`${baseURL}/work/record`, recordData, {
         headers,
+        maxContentLength: Infinity, // 콘텐츠 길이 제한 해제
+        maxBodyLength: Infinity,
       });
 
-      console.log("API 응답:", response.data);
       return response.data;
     } catch (error) {
       console.error("API 에러 상세:", error.response?.data);
+      console.error("에러 상태:", error.response?.status);
+      console.error("에러 메시지:", error.response?.data?.message);
+      console.error("에러 상세:", error.response?.data?.detail);
+
       if (error.response?.status === 403) {
         throw new Error(
-          error.response.data?.message || "자서전 작성 권한이 없습니다."
+          error.response.data?.message ||
+            "자서전 작성에 실패했습니다. 내용이 너무 길 수 있습니다."
         );
       }
       throw error;

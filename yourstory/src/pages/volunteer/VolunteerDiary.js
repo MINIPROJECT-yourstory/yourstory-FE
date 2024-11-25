@@ -5,43 +5,33 @@ import VolunteerHeader from "../../components/volunteer/VolunteerHeader";
 import { media } from "../../styles/theme";
 import { useNavigate, useParams } from "react-router-dom";
 import { volunteerApi } from "../../apis/volunteerApi";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import "../../styles/datepicker.css";
+import { ReactComponent as DateIcon } from "../../assets/images/icon-date.svg";
 
 const VolunteerDiary = () => {
   const { workId } = useParams();
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
+  const [showForm, setShowForm] = useState(true);
+  const [allRecords, setAllRecords] = useState([]);
 
   const [diaryData, setDiaryData] = useState({
     conditionId: workId,
-    date: new Date().toISOString().split("T")[0],
+    date: new Date(),
     content: "",
   });
 
-  console.log("전달받은 workId:", workId);
+  const fetchRecordsByDate = async (date) => {
+    try {
+      const formattedDate = date.toISOString().split("T")[0];
+      const currentRecords = await volunteerApi.getRecordDetail(
+        workId,
+        formattedDate
+      );
 
-  useEffect(() => {
-    if (!workId) {
-      alert("잘못된 접근입니다.");
-      navigate("/work/my-status");
-      return;
-    }
-    const fetchRecords = async () => {
-      try {
-        console.log("기록 조회 시작 - workId:", workId);
-        const endDate = new Date();
-        const startDate = new Date();
-        startDate.setDate(startDate.getDate() - 30);
-
-        console.log("조회 기간:", startDate, "~", endDate);
-
-        const currentDateStr = new Date().toISOString().split("T")[0];
-        const currentRecords = await volunteerApi.getRecordDetail(
-          workId,
-          currentDateStr
-        );
-
-        console.log("현재 날짜 기록:", currentRecords);
-
+      if (currentRecords) {
         const validRecords = Array.isArray(currentRecords)
           ? currentRecords
           : [currentRecords];
@@ -49,62 +39,98 @@ const VolunteerDiary = () => {
           (record) => record && record.content
         );
 
-        console.log("필터링된 기록:", filteredRecords);
-        setRecords(filteredRecords);
-      } catch (error) {
-        console.error("기록 조회 중 에러:", error);
+        setAllRecords((prevRecords) => {
+          const newRecords = [...prevRecords, ...filteredRecords];
+          return Array.from(
+            new Map(newRecords.map((record) => [record.id, record])).values()
+          ).sort((a, b) => new Date(b.date) - new Date(a.date));
+        });
+      }
+    } catch (error) {
+      console.error("기록 조회 중 에러:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (!workId) {
+      alert("잘못된 접근입니다.");
+      navigate("/work/my-status");
+      return;
+    }
+
+    const fetchLast3MonthsRecords = async () => {
+      const today = new Date();
+      const threeMonthsAgo = new Date(today.setMonth(today.getMonth() - 3));
+
+      for (
+        let d = new Date();
+        d >= threeMonthsAgo;
+        d.setDate(d.getDate() - 1)
+      ) {
+        await fetchRecordsByDate(new Date(d));
       }
     };
 
-    fetchRecords();
+    fetchLast3MonthsRecords();
   }, [workId]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const handleDateChange = (date) => {
     setDiaryData((prev) => ({
       ...prev,
-      [name]: value,
+      date: date,
+    }));
+    fetchRecordsByDate(date);
+  };
+
+  const handleContentChange = (e) => {
+    setDiaryData((prev) => ({
+      ...prev,
+      content: e.target.value,
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!diaryData.content.trim()) {
+      alert("입력을 하지 않았어요. 입력을 한 뒤 저장을 눌러주세요.");
+      return;
+    }
+
     try {
       const recordData = {
         conditionId: workId,
-        date: diaryData.date,
+        date: diaryData.date.toISOString().split("T")[0],
         content: diaryData.content,
       };
 
       await volunteerApi.createRecord(recordData);
-      console.log("자서전 작성 성공!");
-
-      const newRecords = await volunteerApi.getRecordDetail(
-        workId,
-        diaryData.date
-      );
-      console.log("새로 조회된 기록:", newRecords);
-
-      const validRecords = Array.isArray(newRecords)
-        ? newRecords
-        : [newRecords];
-      const filteredRecords = validRecords.filter(
-        (record) => record && record.content
-      );
-
-      if (filteredRecords.length > 0) {
-        setRecords(filteredRecords);
-      }
+      await fetchRecordsByDate(diaryData.date);
 
       setDiaryData((prev) => ({
         ...prev,
         content: "",
-        date: new Date().toISOString().split("T")[0],
       }));
+      setShowForm(false);
     } catch (error) {
-      console.error("자서전 작성 실패 상세:", error);
       alert(error.message || "자서전 저장에 실패했습니다.");
     }
+  };
+
+  const handleAddButtonClick = () => {
+    const today = new Date(
+      new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" })
+    );
+    setDiaryData((prev) => ({
+      ...prev,
+      date: today,
+      content: "",
+    }));
+    setShowForm(true);
   };
 
   return (
@@ -112,126 +138,85 @@ const VolunteerDiary = () => {
       <NavBar pagename={"volunteer"} />
       <PageContainer>
         <VolunteerHeader currentPage="status" />
-        <ContentContainer>
-          <Title>자서전 기록장</Title>
-          <Form onSubmit={handleSubmit}>
-            <FormGroup>
-              <Label>날짜</Label>
-              <Input
-                type="date"
-                name="date"
-                value={diaryData.date}
-                onChange={handleChange}
-                required
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label>내용</Label>
-              <TextArea
-                name="content"
-                value={diaryData.content}
-                onChange={handleChange}
-                placeholder="오늘의 봉사활동을 기록해주세요."
-                required
-              />
-            </FormGroup>
-            <ButtonContainer>
-              <SubmitButton type="submit">저장하기</SubmitButton>
-            </ButtonContainer>
-          </Form>
+        <DiaryTitleContainer>
+          <DiaryTitle>자서전 기록장</DiaryTitle>
+          <TitleLine />
+        </DiaryTitleContainer>
 
-          <RecordsList>
-            <RecordsTitle>작성된 기록</RecordsTitle>
-            {records && records.length > 0 ? (
-              records.map((record) => (
-                <RecordItem key={record.id}>
-                  <RecordDate>{record.date}</RecordDate>
-                  <RecordContent>{record.content}</RecordContent>
-                </RecordItem>
-              ))
-            ) : (
-              <EmptyMessage>작성된 기록이 없습니다.</EmptyMessage>
-            )}
-          </RecordsList>
-        </ContentContainer>
+        {showForm && (
+          <DiaryForm onSubmit={handleSubmit}>
+            <DateSection>
+              <DatePickerWrapper>
+                <StyledDateIcon
+                  onClick={() => {
+                    const datePickerInput = document.querySelector(
+                      `#diary-date-${showForm ? "input" : "readonly"}`
+                    );
+                    datePickerInput?.click();
+                  }}
+                />
+                <CustomDatePicker
+                  id={`diary-date-${showForm ? "input" : "readonly"}`}
+                  selected={diaryData.date}
+                  onChange={handleDateChange}
+                  dateFormat="yyyy-MM-dd"
+                  customInput={
+                    <DateText>
+                      {diaryData.date.toISOString().split("T")[0]}
+                    </DateText>
+                  }
+                />
+              </DatePickerWrapper>
+            </DateSection>
+            <ContentSection>
+              <TextArea
+                value={diaryData.content}
+                onChange={handleContentChange}
+                placeholder="(텍스트를 입력하세요)"
+                required
+              />
+            </ContentSection>
+          </DiaryForm>
+        )}
+
+        <ButtonContainer>
+          <AddButton onClick={handleAddButtonClick}>
+            <PlusIcon>+</PlusIcon>
+          </AddButton>
+        </ButtonContainer>
+
+        <SaveButton type="submit" onClick={handleSubmit}>
+          저장하기
+        </SaveButton>
+
+        <DashedLine />
+
+        <RecordsList>
+          {allRecords.map((record) => (
+            <DiaryEntry key={record.id}>
+              <DateSection>
+                <DatePickerWrapper>
+                  <StyledDateIcon />
+                  <DateText>{record.date}</DateText>
+                </DatePickerWrapper>
+              </DateSection>
+              <ContentSection>
+                <ReadOnlyContent>{record.content}</ReadOnlyContent>
+              </ContentSection>
+            </DiaryEntry>
+          ))}
+        </RecordsList>
       </PageContainer>
     </>
   );
 };
 
-const ContentContainer = styled.div`
-  background: #ffffff;
-  border-radius: 17px;
-  padding: 2rem;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  margin-top: 2rem;
-`;
-
-const Title = styled.h2`
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 2rem;
-  color: #333;
-`;
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-`;
-
-const FormGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-`;
-
-const Label = styled.label`
-  font-weight: 600;
-  color: #333;
-`;
-
-const Input = styled.input`
-  padding: 0.8rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 16px;
-`;
-
-const TextArea = styled.textarea`
-  padding: 0.8rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  min-height: 200px;
-  font-size: 16px;
-  resize: vertical;
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 1rem;
-`;
-
-const SubmitButton = styled.button`
-  background-color: #ced118;
-  color: white;
-  padding: 0.8rem 2rem;
-  border: none;
-  border-radius: 50px;
-  font-size: 18px;
-  font-weight: 700;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #bfc017;
-  }
-`;
-
 const PageContainer = styled.div`
   padding: 81px 5%;
   margin-left: 16.5625rem;
   font-family: Inter;
+  max-width: 100%;
+  overflow-x: hidden;
 
   ${media.laptop} {
     margin-left: 16.5625rem;
@@ -244,42 +229,245 @@ const PageContainer = styled.div`
   }
 `;
 
-const RecordsList = styled.div`
-  margin-top: 3rem;
-  border-top: 2px solid #eee;
-  padding-top: 2rem;
+const DiaryTitleContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 50px;
+  width: 100%;
+  gap: 17px;
+  margin-bottom: 60px;
+  padding: 0;
 `;
 
-const RecordsTitle = styled.h3`
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 1.5rem;
+const DiaryTitle = styled.div`
+  font-family: "Inter", sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  color: #bcbf1f;
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
 `;
 
-const RecordItem = styled.div`
-  background: #f9f9f9;
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-bottom: 1rem;
+const TitleLine = styled.div`
+  flex: 1;
+  height: 1px;
+  background-color: #bcbf1f;
 `;
 
-const RecordDate = styled.div`
-  font-weight: 600;
-  color: #7f810d;
-  margin-bottom: 0.5rem;
+const DiaryForm = styled.form`
+  width: 100%;
+  height: 350px;
+  border-radius: 17px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
 `;
 
-const RecordContent = styled.div`
-  color: #333;
-  line-height: 1.6;
+const DateSection = styled.div`
+  height: 67px;
+  background-color: #bcbf1f;
+  padding: 20px 35px;
+  display: flex;
+  align-items: center;
+  border-top-left-radius: 17px;
+  border-top-right-radius: 17px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+`;
+
+const DatePickerWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  position: relative;
+`;
+
+const StyledDateIcon = styled(DateIcon)`
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+`;
+
+const DateText = styled.span`
+  font-family: Inter;
+  font-weight: bold;
+  font-size: 24px;
+  letter-spacing: -0.04em;
+  color: #ffffff;
+`;
+
+const ContentSection = styled.div`
+  flex: 1;
+  background-color: #f3f3f3;
+  border-bottom-left-radius: 17px;
+  border-bottom-right-radius: 17px;
+  overflow: hidden;
+  position: relative;
+`;
+
+const TextArea = styled.textarea`
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  border: none;
+  background: none;
+  resize: none;
+  font-family: Inter;
+  font-size: 24px;
+  letter-spacing: -0.06em;
+  color: #919400;
+  box-sizing: border-box;
+  overflow-y: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  &::placeholder {
+    color: #919400;
+    font-weight: 400;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  caret-color: #919400;
+
+  /* 스크롤바 스타일링 */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f3f3f3;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #bcbf1f;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #919400;
+  }
+`;
+
+const ReadOnlyContent = styled.div`
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  color: #919400;
+  font-family: Inter;
+  font-size: 24px;
+  letter-spacing: -0.06em;
   white-space: pre-wrap;
+  overflow-y: auto;
+  box-sizing: border-box;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f3f3f3;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #bcbf1f;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #919400;
+  }
 `;
 
-const EmptyMessage = styled.p`
-  text-align: center;
-  color: #666;
-  padding: 2rem;
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 29px;
+  position: relative;
+  height: 39px;
+`;
+
+const AddButton = styled.button`
+  width: 236px;
+  height: 100%;
+  background-color: #ced118;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+`;
+
+const PlusIcon = styled.span`
+  color: #fafc97;
+  font-size: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  line-height: 1;
+`;
+
+const SaveButton = styled.button`
+  margin-top: 20px;
+  width: 226px;
+  height: 67.39px;
+  background-color: #ced118;
+  border: none;
+  border-radius: 50px;
+  color: #ffffff;
+  font-family: Inter;
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: -0.06em;
+  margin-left: auto;
+  display: block;
+  cursor: pointer;
+`;
+
+const DashedLine = styled.div`
+  width: 100%;
+  height: 2px;
+  margin: 70px 0;
+  background-image: linear-gradient(to right, #ced118 50%, transparent 50%);
+  background-size: 10px 2px;
+  background-repeat: repeat-x;
+`;
+
+const DiaryEntry = styled(DiaryForm)`
+  margin-bottom: 30px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+`;
+
+const RecordsList = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const CustomDatePicker = styled(DatePicker)`
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-family: Inter;
+  font-weight: bold;
+  font-size: 24px;
+  letter-spacing: -0.04em;
+  cursor: pointer;
+  width: auto;
 `;
 
 export default VolunteerDiary;
