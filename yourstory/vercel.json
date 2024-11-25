@@ -1,0 +1,14 @@
+{
+  "builds": [
+    {
+      "src": "yourstory/package.json",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "yourstory/$1"
+    }
+  ]
+}
