@@ -22,6 +22,7 @@ const WriteLetter = () => {
   const SubmitLetter = async () => {
     if (!isFilled) {
       alert("모든 항목을 입력해 주세요");
+      return;
     }
     try {
       await bookApi.postLetter(postValue, book_id);
