@@ -1,6 +1,6 @@
 import NavBar from "../components/common/NavBar";
 import HomeIntro from "../components/common/HomeIntro";
-import HomeImg from "../assets/images/img-home.png";
+import HomeImg from "../assets/images/img-home.svg";
 import styled from "styled-components";
 import VisionImg from "../assets/images/img-vision.svg";
 
