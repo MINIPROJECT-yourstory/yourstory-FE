@@ -35,6 +35,7 @@
 
 
 <img width="1440" alt="봉사 필터링 검색" src="https://github.com/user-attachments/assets/c92ec8a2-c491-4169-9bff-4e5af6d09492">
+<img width="1439" alt="봉사 검색 결과" src="https://github.com/user-attachments/assets/61121a71-d19f-4250-971f-4c4fdc8333cc">
 
 
 #### 1. **봉사 필터링 검색 및 신청 🛠️**  
