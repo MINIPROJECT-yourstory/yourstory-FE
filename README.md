@@ -41,6 +41,9 @@
 #### 1. **봉사 필터링 검색 및 신청 🛠️**  
 봉사 활동 일정을 지역 및 카테고리별로 손쉽게 필터링하고 신청할 수 있습니다.  
 <br/>
+<br/>
+<br/>
+
 
 
 <img width="1440" alt="자서전 메인 화면" src="https://github.com/user-attachments/assets/1418b05c-2225-4c55-9f42-f0b35cbdbad9">
