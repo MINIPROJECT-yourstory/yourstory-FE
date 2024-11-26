@@ -33,6 +33,10 @@
 
 ### 🌟 주요 기능
 
+
+<img width="1440" alt="봉사 필터링 검색" src="https://github.com/user-attachments/assets/c92ec8a2-c491-4169-9bff-4e5af6d09492">
+
+
 #### 1. **봉사 필터링 검색 및 신청 🛠️**  
 봉사 활동 일정을 지역 및 카테고리별로 손쉽게 필터링하고 신청할 수 있습니다.  
 <br/>
