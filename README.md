@@ -44,14 +44,23 @@
 <br/>
 <br/>
 
+<img width="1440" alt="스크린샷 2024-11-26 오후 7 07 44" src="https://github.com/user-attachments/assets/8aac6aec-8a63-4f6c-8fc2-b539e7f3a419">
+<img width="1440" alt="스크린샷 2024-11-26 오후 7 07 54" src="https://github.com/user-attachments/assets/3774f9da-c8c2-4f9b-8080-3d411bc35445">
+
+
+#### 2-1 **자서전 작성**
+어르신과 함께 이타적 자서전을 작성합니다.
+
 
 
 <img width="1440" alt="자서전 메인 화면" src="https://github.com/user-attachments/assets/1418b05c-2225-4c55-9f42-f0b35cbdbad9">
 <img width="1440" alt="자서전 상세" src="https://github.com/user-attachments/assets/17513fe9-d4ee-4b27-a121-ef908123d7ff">
 <img width="1440" alt="PDF" src="https://github.com/user-attachments/assets/5a3701bd-85b1-46c3-a1c7-8bddc0931d97">
 
-#### 2. **자서전 작성 및 뷰어 ✍️**  
-어르신과 함께 이타적 자서전을 작성하고, PDF 뷰어로 내용을 확인할 수 있습니다.  
+#### 2-2 **자서전 보기 뷰어 ✍️**  
+작성하여 완성된 자서전은 PDF 뷰어로 내용을 확인할 수 있습니다.  
+
+
 <br/>
 
 
@@ -60,6 +69,10 @@
 #### 3. **우편함 기능 📬**  
 완성된 자서전을 조회하며 우편함을 통해 어르신의 이야기에 감상평을 남길 수 있습니다.
 <br/>
+
+
+![Uploading 스크린샷 2024-11-26 오후 7.09.31.png…]()
+
 
 #### 4. **‘우리의 이야기’ 게시판 💬**  
 봉사자와 주최 측이 소통할 수 있는 게시판 기능을 통해 이야기를 공유하세요.  
@@ -92,7 +105,6 @@
 ## 시연 영상 및 링크
 
 - [배포 링크](https://yourstory-pi.vercel.app/)  
-- 
 
 <br/>
 <br/>
