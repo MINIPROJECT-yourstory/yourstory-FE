@@ -68,7 +68,7 @@
 - **Design Tools**: Figma  
 - **배포**:
   - 프론트엔드: vercel
-  - 백엔드: 
+  - 백엔드: Aws Ec2(NginX, Let's encrypt를 통한 SSL 인증서) 
 <br/>
 
 ---
