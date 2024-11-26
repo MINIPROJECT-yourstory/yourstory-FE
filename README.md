@@ -1,11 +1,17 @@
 
 <div align="center">
+  
+  ![](https://github.com/user-attachments/assets/7f106795-e719-4b33-8475-89d5ee27df73)
+
+
 <h2>📖 당신의 이야기 📖</h2>
 <strong>이타적 자서전을 통해 세대를 연결하는 사회적 가치 창출 플랫폼</strong><br/>
 봉사센터와의 연계를 통해 봉사활동을 쉽게 관리하고<br/>
 어르신들과의 자서전 작성을 통해 세대 간의 교감을 돕는 공공 웹 서비스
 </div>
 <br/>
+
+[사이트 둘러보기](https://yourstory-pi.vercel.app/)  
 
 ---
 
