@@ -64,7 +64,7 @@ const VolunteerInfo = ({ workId }) => {
       info: "-",
     },
     {
-      value: volunteerInfo.manager || "김봉사",
+      value: `${volunteerInfo.manager}` || "김봉사",
       info: "-",
     },
   ];
