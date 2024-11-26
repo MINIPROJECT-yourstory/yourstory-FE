@@ -47,7 +47,7 @@
 
 
 <img width="1440" alt="자서전 메인 화면" src="https://github.com/user-attachments/assets/1418b05c-2225-4c55-9f42-f0b35cbdbad9">
-<img width="1440" alt="자서전 상세" src="https://github.com/user-attachments/assets/02e47439-c35a-433f-b35c-96d6c3eb7456">
+<img width="1440" alt="자서전 상세" src="https://github.com/user-attachments/assets/17513fe9-d4ee-4b27-a121-ef908123d7ff">
 <img width="1440" alt="PDF" src="https://github.com/user-attachments/assets/5a3701bd-85b1-46c3-a1c7-8bddc0931d97">
 
 #### 2. **자서전 작성 및 뷰어 ✍️**  
