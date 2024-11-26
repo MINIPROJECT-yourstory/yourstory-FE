@@ -48,6 +48,7 @@
 
 <img width="1440" alt="자서전 메인 화면" src="https://github.com/user-attachments/assets/1418b05c-2225-4c55-9f42-f0b35cbdbad9">
 <img width="1440" alt="자서전 상세" src="https://github.com/user-attachments/assets/02e47439-c35a-433f-b35c-96d6c3eb7456">
+<img width="1440" alt="PDF" src="https://github.com/user-attachments/assets/5a3701bd-85b1-46c3-a1c7-8bddc0931d97">
 
 #### 2. **자서전 작성 및 뷰어 ✍️**  
 어르신과 함께 이타적 자서전을 작성하고, PDF 뷰어로 내용을 확인할 수 있습니다.  
