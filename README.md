@@ -69,25 +69,19 @@
 - **Design Tools**: Figma  
 - **배포**:
   - 프론트엔드: vercel
-  - 백엔드: 정지윤  
+  - 백엔드: 
 <br/>
 
 ---
 
 ## 시연 영상 및 링크
 
-- [프로토타입 링크](https://example.com/prototype)  
-- [시연 영상](https://example.com/video)  
+- [배포 링크](https://yourstory-pi.vercel.app/)  
+- 
+
 <br/>
 <br/>
 
----
-
-## 시연 영상 및 링크
-
-- [프로토타입 링크](https://example.com/prototype)  
-- [시연 영상](https://example.com/video)  
-<br/>
 
 ---
 
