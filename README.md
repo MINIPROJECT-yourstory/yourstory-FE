@@ -98,7 +98,7 @@
 
 - **Frontend**: React, HTML/CSS, JavaScript  
 - **Backend**: Spring Framework  
-- **Database**: PostgreSQL  
+- **Database**: mySQL  
 - **Design Tools**: Figma  
 - **배포**:
   - 프론트엔드: vercel
