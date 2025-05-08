@@ -12,7 +12,7 @@
 <br/>
 <br/>
 
-[사이트 둘러보기](https://yourstory-pi.vercel.app/)  
+[사이트 둘러보기](https://yourstory-fe.vercel.app/)  
 
 </div>
 <br/>
